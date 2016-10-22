@@ -1,5 +1,4 @@
 #include "cvar.hpp"
-#include <iostream>
 
 namespace kk
 {
@@ -29,8 +28,7 @@ namespace kk
 			}
 			catch (const std::invalid_argument& ia)
 			{
-				// LOG THIS INSTEAD OF COUT
-				std::cout << value + " is invalid input for" + name + ": " + ia.what() << std::endl;
+				kk::log (logBasic{value + "is invalid input for " + name, kk::logType::warning});
 			}
 		}
 	}
@@ -42,11 +40,12 @@ namespace kk
 		{
 			var.next_cvar = cvars;
 			cvars = &var;
+
+			kk::log ("Registered cvar: " + var.name);
 		}
 		else
 		{
-			// REPLACE: log instead of cout
-			std::cout << var.name + " already exists!\n";
+			kk::log (logBasic{var.name + " already exists!", kk::logType::warning});
 		}
 	}
 }

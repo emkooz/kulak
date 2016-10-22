@@ -1,6 +1,7 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include "cvar.hpp"
+#include "log.hpp"
 
 int main()
 {

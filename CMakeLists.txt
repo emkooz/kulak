@@ -13,6 +13,8 @@ set (CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/build; ${CMAKE_MODULE_PATH})
 set (CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/bin)
 set (EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 
+set (CMAKE_CXX_FLAGS "-std=c++14")
+
 add_executable (kulak ${kulak_src})
 
 ## Libraries
