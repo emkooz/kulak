@@ -27,7 +27,7 @@ set (SFML_STATIC_LIBRARIES TRUE)
 endif()
 # Dynamically linked on Linux
 
-find_package (SFML 2 COMPONENTS graphics window system REQUIRED)
+find_package (SFML 2 COMPONENTS system window graphics audio REQUIRED)
 if (SFML_FOUND)
 	# SFML dependencies for static linking on Windows
 	if (WIN32)
@@ -35,8 +35,16 @@ if (SFML_FOUND)
 		target_link_libraries (kulak opengl32.lib)
 		target_link_libraries (kulak winmm.lib)
 		target_link_libraries (kulak gdi32.lib)
+		# graphics
 		target_link_libraries (kulak ${FREETYPE_LIBRARY}) # FREETYPE_LIBRARY should be found by find_package (sfml)
 		target_link_libraries (kulak ${JPEG_LIBRARY}) # JPEG_LIBRARY should be found by find_package (sfml)
+		# audio
+		target_link_libraries (kulak ${OPENAL_LIBRARY})
+		target_link_libraries (kulak ${OGG_LIBRARY})
+		target_link_libraries (kulak ${VORBIS_LIBRARY})
+		target_link_libraries (kulak ${VORBISFILE_LIBRARY})
+		target_link_libraries (kulak ${VORBISENC_LIBRARY})
+		target_link_libraries (kulak ${FLAC_LIBRARY})
 	endif()
 
 	include_directories (${SFML_INCLUDE_DIR})

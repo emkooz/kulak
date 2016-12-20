@@ -10,6 +10,7 @@ cmake_install.cmake
 *.sln
 *.sublime-project
 *.sublime-workspace
+CMakeSettings.json
 
 ##### CMake #####
 CMakeCache.txt

@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include <iostream>
-#include "log.hpp" // TEMPORARY, REPLACE WITH LOGGING NEXT
+#include "log.hpp"
 
 // largely inspired by how Quake handles cvars
 /*

@@ -2,6 +2,8 @@
 #include <SFML/Graphics.hpp>
 #include "cvar.hpp"
 #include "log.hpp"
+#include "resource.hpp"
+
 
 int main()
 {
