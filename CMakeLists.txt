@@ -19,14 +19,18 @@ add_executable (kulak ${kulak_src})
 
 ## Libraries
 
-# SFML
+# Windows defines
 if (WIN32)
+#SFML
 set (SFML_STATIC_LIBRARIES TRUE)
 	set (SFML_ROOT C:/lib/SFML)
 	link_directories (C:/lib/SFML/lib)
+#Entityx
+link_directories (C:/lib/entityx/lib)
 endif()
-# Dynamically linked on Linux
 
+find_package(EntityX REQUIRED)
+# Dynamically linked on Linux
 find_package (SFML 2 COMPONENTS system window graphics audio REQUIRED)
 if (SFML_FOUND)
 	# SFML dependencies for static linking on Windows
@@ -48,5 +52,6 @@ if (SFML_FOUND)
 	endif()
 
 	include_directories (${SFML_INCLUDE_DIR})
-	target_link_libraries (kulak ${SFML_LIBRARIES})
+	include_directories (${ENTITYX_INCLUDE_DIR})
+	target_link_libraries (kulak ${SFML_LIBRARIES} debug ${ENTITYX_LIBRARY_DEBUG} optimized ${ENTITYX_LIBRARY})
 endif()
