@@ -2,7 +2,8 @@
 
 Game::Game() :
 	window(sf::VideoMode(800, 600), "kulak"), // shift to config file later
-	clearColor(100, 149, 237, 255)
+	clearColor(100, 149, 237, 255),
+	world(&window)
 {
 
 }
@@ -12,9 +13,9 @@ Game::~Game()
 
 }
 
-void Game::update()
+void Game::update(sf::Time deltaTime)
 {
-
+	world.systems.update_all(deltaTime.asSeconds());
 }
 
 void Game::render()
@@ -38,7 +39,7 @@ void Game::run()
 			updateTime -= tickrate;
 
 			pollSFMLEvent();
-			update();
+			update(tickrate);
 		} // possibly do something if update time was lower than tickrate?
 
 		window.clear(clearColor);
@@ -58,6 +59,11 @@ void Game::pollSFMLEvent()
 		case sf::Event::Closed:
 			window.close();
 			break;
+		case sf::Event::KeyPressed:
+			world.events.emit<evKeyboard>(event.key.code, true);
+			break;
+		case sf::Event::KeyReleased:
+			world.events.emit<evKeyboard>(event.key.code, false);
 		}
 	}
 }

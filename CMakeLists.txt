@@ -5,6 +5,10 @@ project (kulak)
 file (GLOB kulak_src
 	"src/*.hpp"
 	"src/*.cpp"
+	"src/systems/*.hpp"
+	"src/systems/*.cpp"
+	"src/components/*.hpp"
+	"src/components/*.cpp"
 )
 include_directories (${CMAKE_SOURCE_DIR}/src)
 
