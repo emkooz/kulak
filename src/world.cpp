@@ -7,14 +7,29 @@ World::World(sf::RenderWindow* _window)
 	// generate all systems
 	systems.add<inputSystem>(events);
 	systems.configure();
-
-	// possibly load entity data from file
 }
 
 void World::update(sf::Time deltaTime)
 {
 	// send updates to all systems eg. systems.update<movementsystem>(deltaTime);
 	systems.update<inputSystem>(deltaTime.asSeconds());
+}
+
+void World::createEntities()
+{
+	ePlayer = entities.create(); // does scope matter? could declare it in this function instead of class?
+	// something like ePlayer.assign<health>(100); etc...
+	ePlayer.assign<health>(100);
+	ePlayer.assign<position>(sf::Vector2f(0.f, 0.f));
+	ePlayer.assign<direction>(sf::Vector2f(0.f, 0.f));
+	ePlayer.assign<velocity>(0.f);
+	std::unique_ptr<sf::Sprite> pSprite(new sf::Sprite());
+	pSprite->setTexture(*kk::getTexture("rtz"));
+	ePlayer.assign<renderable>(
+		std::move(pSprite),
+		0,
+		true
+		);
 }
 
 void World::configure(entityx::EventManager &event_manager)

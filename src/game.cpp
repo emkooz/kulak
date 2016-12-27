@@ -5,12 +5,19 @@ Game::Game() :
 	clearColor(100, 149, 237, 255),
 	world(&window)
 {
-
+	loadTextures();
+	world.createEntities();
 }
 
 Game::~Game()
 {
 
+}
+
+void Game::loadTextures()
+{
+	kk::log("Loading textures...");
+	kk::loadTexture("rtz", "rtzw.jpg");
 }
 
 void Game::update(sf::Time deltaTime)
@@ -20,7 +27,15 @@ void Game::update(sf::Time deltaTime)
 
 void Game::render()
 {
-
+	// loop through render layer, render layer should probably be outside of renderable component
+	world.entities.each<renderable>([this](entityx::Entity entity, renderable &sprite)
+	{
+		if (sprite.render) // set to its own component?? as a flag kinda, so this if isn't required, less traversal through entities
+		{
+			kk::log("rendering entity");
+			window.draw(*sprite.box);
+		}
+	});
 }
 
 void Game::run()
