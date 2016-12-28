@@ -6,6 +6,7 @@
 #include "log.hpp"
 #include "systems/state.hpp"
 #include "systems/input.hpp"
+#include "systems/player_movement.hpp"
 #include "components/cPlayer.hpp"
 
 class World : public entityx::EntityX, public entityx::Receiver<World>

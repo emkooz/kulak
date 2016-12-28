@@ -22,7 +22,8 @@ void Game::loadTextures()
 
 void Game::update(sf::Time deltaTime)
 {
-	world.systems.update_all(deltaTime.asSeconds());
+	//world.systems.update_all(deltaTime.asSeconds());
+	world.update(deltaTime);
 }
 
 void Game::render()
@@ -32,7 +33,6 @@ void Game::render()
 	{
 		if (sprite.render) // set to its own component?? as a flag kinda, so this if isn't required, less traversal through entities
 		{
-			kk::log("rendering entity");
 			window.draw(*sprite.box);
 		}
 	});
@@ -44,23 +44,26 @@ void Game::run()
 	sf::Clock clock;
 	sf::Time updateTime = sf::Time::Zero;
 
-	while (window.isOpen()) // main loop
+	while (kk::getState() != kk::STATE_QUIT) // main loop
 	{
 		sf::Time deltaTime = clock.restart();
 		updateTime += deltaTime;
-		
-		while (updateTime > tickrate)
-		{
-			updateTime -= tickrate;
 
-			pollSFMLEvent();
-			update(tickrate);
-		} // possibly do something if update time was lower than tickrate?
+			while (updateTime > tickrate)
+			{
+				updateTime -= tickrate;
 
-		window.clear(clearColor);
-		render();
-		window.display();
+				pollSFMLEvent();
+				update(tickrate);
+			} // possibly do something if update time was lower than tickrate?
+
+
+			window.clear(clearColor);
+			render();
+			window.display();
 	}
+
+	window.close();
 }
 
 void Game::pollSFMLEvent()
@@ -72,7 +75,7 @@ void Game::pollSFMLEvent()
 		switch (event.type)
 		{
 		case sf::Event::Closed:
-			window.close();
+			world.events.emit<evQuit>();
 			break;
 		case sf::Event::KeyPressed:
 			world.events.emit<evKeyboard>(event.key.code, true);

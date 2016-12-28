@@ -22,7 +22,12 @@ public:
 	inputSystem(entityx::EventManager& _eventManager);
 	void configure(entityx::EventManager& eventManager);
 	void update(entityx::EntityManager &entities, entityx::EventManager &events, entityx::TimeDelta dt) override {};
-	void receive(const evKeyboard & _evKeyboard);
+	void receive(const evKeyboard& _evKeyboard);
 private:
 	entityx::EventManager& eventManager;
 };
+
+struct evLeft { evLeft(bool pressed) : pressed(pressed) {} bool pressed; };
+struct evRight { evRight(bool pressed) : pressed(pressed) {} bool pressed; };
+struct evUp { evUp(bool pressed) : pressed(pressed) {} bool pressed; };
+struct evDown { evDown(bool pressed) : pressed(pressed) {} bool pressed; };

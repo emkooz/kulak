@@ -5,6 +5,7 @@
 
 /* Components that a player requires:
 health
+player id
 mana?
 Physics:
 	position
@@ -18,6 +19,12 @@ struct health
 {
 	health(int hp = 100) : hp(hp) {}
 	int hp;
+};
+
+struct playerID
+{
+	playerID(int id = 0) : id(id) {}
+	int id;
 };
 
 // Physics
@@ -35,8 +42,8 @@ struct direction
 
 struct velocity
 {
-	velocity(float vel = 0.0f) : vel(vel) {}
-	float vel;
+	velocity(float x = 0.0f, float y = 0.0f) : x(x), y(y) {}
+	float x, y;
 };
 
 //Render

@@ -6,6 +6,7 @@ World::World(sf::RenderWindow* _window)
 	configure(events); // configure base before all else
 	// generate all systems
 	systems.add<inputSystem>(events);
+	systems.add<movementSystem>(entities);
 	systems.configure();
 }
 
@@ -13,16 +14,17 @@ void World::update(sf::Time deltaTime)
 {
 	// send updates to all systems eg. systems.update<movementsystem>(deltaTime);
 	systems.update<inputSystem>(deltaTime.asSeconds());
+	systems.update<movementSystem>(deltaTime.asSeconds());
 }
 
 void World::createEntities()
 {
 	ePlayer = entities.create(); // does scope matter? could declare it in this function instead of class?
-	// something like ePlayer.assign<health>(100); etc...
 	ePlayer.assign<health>(100);
+	ePlayer.assign<playerID>(0);
 	ePlayer.assign<position>(sf::Vector2f(0.f, 0.f));
 	ePlayer.assign<direction>(sf::Vector2f(0.f, 0.f));
-	ePlayer.assign<velocity>(0.f);
+	ePlayer.assign<velocity>(0.f, 0.f);
 	std::unique_ptr<sf::Sprite> pSprite(new sf::Sprite());
 	pSprite->setTexture(*kk::getTexture("rtz"));
 	ePlayer.assign<renderable>(
@@ -53,5 +55,5 @@ void World::receive(const evQuit& quit)
 {
 	// handle saving
 	kk::log("Received a quit event.");
-	window->close();
+	kk::setState(kk::gameState::STATE_QUIT);
 }

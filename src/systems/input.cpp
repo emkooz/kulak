@@ -14,9 +14,28 @@ void update(entityx::EntityManager &entities, entityx::EventManager &events, ent
 
 void inputSystem::receive(const evKeyboard& keyboard)
 {
-	if (keyboard.key == sf::Keyboard::Escape)
+	// TODO: make customizable
+	switch (keyboard.key)
 	{
+	case sf::Keyboard::Escape:
 		kk::log("Quitting...");
 		eventManager.emit<evQuit>();
+		break;
+	case sf::Keyboard::W:
+		kk::log("Pressing W");
+		eventManager.emit<evUp>(keyboard.pressed);
+		break;
+	case sf::Keyboard::A:
+		kk::log("Pressing A");
+		eventManager.emit<evLeft>(keyboard.pressed);
+		break;
+	case sf::Keyboard::S:
+		kk::log("Pressing S");
+		eventManager.emit<evDown>(keyboard.pressed);
+		break;
+	case sf::Keyboard::D:
+		kk::log("Pressing D");
+		eventManager.emit<evRight>(keyboard.pressed);
+		break;
 	}
 }
