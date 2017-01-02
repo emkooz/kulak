@@ -15,41 +15,41 @@ Render:
 	renderable (sf::RectangleShape, sf::Texture/animation class later, int render_layer, bool render)
 */
 
-struct health
+struct cHealth
 {
-	health(int hp = 100) : hp(hp) {}
+	cHealth(int hp = 100) : hp(hp) {}
 	int hp;
 };
 
-struct playerID
+struct cPlayerID
 {
-	playerID(int id = 0) : id(id) {}
+	cPlayerID(int id = 0) : id(id) {}
 	int id;
 };
 
 // Physics
-struct position
+struct cPosition
 {
-	position(sf::Vector2f pos = sf::Vector2f(0.0f, 0.0f)) : pos(pos) {}
+	cPosition(sf::Vector2f pos = sf::Vector2f(0.0f, 0.0f)) : pos(pos) {}
 	sf::Vector2f pos;
 };
 
-struct direction
+struct cDirection
 {
-	direction(sf::Vector2f angle = sf::Vector2f(0.0f, 0.0f)) : angle(angle) {}
+	cDirection(sf::Vector2f angle = sf::Vector2f(0.0f, 0.0f)) : angle(angle) {}
 	sf::Vector2f angle;
 };
 
-struct velocity
+struct cVelocity
 {
-	velocity(float x = 0.0f, float y = 0.0f) : x(x), y(y) {}
+	cVelocity(float x = 0.0f, float y = 0.0f) : x(x), y(y) {}
 	float x, y;
 };
 
 //Render
-struct renderable
+struct cRenderable
 {
-	renderable(
+	cRenderable(
 		std::unique_ptr<sf::Sprite> box,
 		int renderLayer = 0,
 		bool render = true

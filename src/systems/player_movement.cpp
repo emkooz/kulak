@@ -26,7 +26,7 @@ void movementSystem::update(entityx::EntityManager &entities, entityx::EventMana
 	if (kk::getPressed(sf::Keyboard::D))
 		moveRight = true;
 
-	entities.each<playerID, position, velocity, renderable>([dt, moveUp, moveDown, moveLeft, moveRight](entityx::Entity entity, playerID &player, position &pos, velocity &vel, renderable &render)
+	entities.each<cPlayerID, cPosition, cVelocity, cRenderable>([dt, moveUp, moveDown, moveLeft, moveRight](entityx::Entity entity, cPlayerID &player, cPosition &pos, cVelocity &vel, cRenderable &render)
 	{
 		// temporary solution, extremely basic
 		if (moveUp)

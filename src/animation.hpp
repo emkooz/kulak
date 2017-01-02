@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include "log.hpp"
+#include "resource.hpp"
 
 /*
 Intended usage:
@@ -23,7 +25,6 @@ class animationSheet
 public:
 	animationSheet(sf::Texture* sheet, 
 		unsigned int rowSize, 
-		unsigned int columnSize, 
 		unsigned int totalFrames, 
 		sf::Vector2i sizePerFrame,
 		float speed);
@@ -34,24 +35,26 @@ public:
 	class animation
 	{
 	public:
-		animation (const std::string& name, unsigned int firstFrame, unsigned int lastFrame);
-		void update (float deltaTime);
+		animation (const std::string& name, unsigned int firstFrame, unsigned int lastFrame, float speed, mode currentMode);
+		void update (sf::Clock* clock);
 		unsigned int getCurrentFrame();
+		unsigned int getFirstFrame();
 		std::string name;
+		unsigned int currentFrame;
 
 	private:
 		float speed;
-		unsigned int currentFrame;
 		mode currentMode;
+		unsigned int firstFrame, lastFrame, totalFrames;
 	};
 
 	void addAnimation (animation& anim);
 	void addAnimation (const std::string& name, unsigned int first, unsigned int last);
-	void setAnimation (const std::string& animation); // reset old animation on every new set animation
+	void setAnimation (const std::string& name); // reset old animation on every new set animation
 	void setAnimation (int animation);
 	void setMode (mode _mode);
 	void setSpeed (float speed);
-	void update (float deltaTime);
+	void update ();
 
 	std::string getCurrentAnimation();
 	mode getMode();
@@ -63,11 +66,12 @@ private:
 	sf::Texture* sheet;
 	std::string name;
 	sf::Vector2i sizePerFrame; // might possibly want to move this into the animation class, allow different animation to be dynamic	
-	unsigned int rowSize, columnSize, totalFrames;
+	unsigned int rowSize, totalFrames;
 	std::unordered_map<std::string, unsigned int> animationMap;
 	std::vector<animation> animationVector;
 	mode currentMode;
 	float defaultSpeed; // speed is in frames per second
 	std::string currentAnimation; // used for external purposes, being able to easily read the current animation
 	unsigned int iCurrentAnimation; // used internally to directly acces the vector instead of doing a map lookup with string
+	sf::Clock timer; // internal clock used to update animations
 };

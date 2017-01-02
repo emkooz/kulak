@@ -11,8 +11,7 @@ struct evKeyboard
 	evKeyboard(sf::Keyboard::Key _key, bool _pressed) :
 		key(_key),
 		pressed(_pressed)
-	{
-	}
+	{}
 
 	sf::Keyboard::Key key;
 	bool pressed;

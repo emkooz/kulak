@@ -7,6 +7,7 @@ World::World(sf::RenderWindow* _window)
 	// generate all systems
 	systems.add<inputSystem>(events);
 	systems.add<movementSystem>(entities);
+	systems.add<animationSystem>(events);
 	systems.configure();
 }
 
@@ -15,23 +16,34 @@ void World::update(sf::Time deltaTime)
 	// send updates to all systems eg. systems.update<movementsystem>(deltaTime);
 	systems.update<inputSystem>(deltaTime.asSeconds());
 	systems.update<movementSystem>(deltaTime.asSeconds());
+	systems.update<animationSystem>(deltaTime.asSeconds());
 }
 
 void World::createEntities()
 {
 	ePlayer = entities.create(); // does scope matter? could declare it in this function instead of class?
-	ePlayer.assign<health>(100);
-	ePlayer.assign<playerID>(0);
-	ePlayer.assign<position>(sf::Vector2f(0.f, 0.f));
-	ePlayer.assign<direction>(sf::Vector2f(0.f, 0.f));
-	ePlayer.assign<velocity>(0.f, 0.f);
+	ePlayer.assign<cHealth>(100);
+	ePlayer.assign<cPlayerID>(0);
+	ePlayer.assign<cPosition>(sf::Vector2f(0.f, 0.f));
+	ePlayer.assign<cDirection>(sf::Vector2f(0.f, 0.f));
+	ePlayer.assign<cVelocity>(0.f, 0.f);
 	std::unique_ptr<sf::Sprite> pSprite(new sf::Sprite());
-	pSprite->setTexture(*kk::getTexture("rtz"));
-	ePlayer.assign<renderable>(
+	pSprite->setTexture(*kk::getTexture("player"));
+	pSprite->setTextureRect(sf::IntRect(0, 0, 0, 0));
+	ePlayer.assign<cRenderable>(
 		std::move(pSprite), // sf::Sprite
 		0, // renderLayer
 		true // render
 		);
+	ePlayer.assign<cAnimation>(
+		kk::getTexture("player"), // sprite sheet
+		8, // row size
+		65, // total frames
+		sf::Vector2i(64, 64), // each frame is 64x64px
+		10); // runs at 2 frames per second
+	ePlayer.component<cAnimation>()->animations.addAnimation("running", 5, 12);
+	ePlayer.component<cAnimation>()->animations.setAnimation("running");
+
 }
 
 void World::configure(entityx::EventManager &event_manager)

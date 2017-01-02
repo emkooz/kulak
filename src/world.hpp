@@ -7,7 +7,9 @@
 #include "systems/state.hpp"
 #include "systems/input.hpp"
 #include "systems/player_movement.hpp"
+#include "systems/animation_system.hpp"
 #include "components/cPlayer.hpp"
+#include "components/cAnimation.hpp"
 
 class World : public entityx::EntityX, public entityx::Receiver<World>
 {

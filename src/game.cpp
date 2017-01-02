@@ -18,6 +18,7 @@ void Game::loadTextures()
 {
 	kk::log("Loading textures...");
 	kk::loadTexture("rtz", "rtzw.jpg");
+	kk::loadTexture("player", "player_sheet_fix.png");
 }
 
 void Game::update(sf::Time deltaTime)
@@ -29,11 +30,19 @@ void Game::update(sf::Time deltaTime)
 void Game::render()
 {
 	// loop through render layer, render layer should probably be outside of renderable component
-	world.entities.each<renderable>([this](entityx::Entity entity, renderable &sprite)
+	world.entities.each<cRenderable>([this](entityx::Entity entity, cRenderable &sprite)
 	{
 		if (sprite.render) // set to its own component?? as a flag kinda, so this if isn't required, less traversal through entities
 		{
+			/*sf::RectangleShape debug;
+			debug.setFillColor(sf::Color::Transparent);
+			debug.setSize(sf::Vector2f(sprite.box->getLocalBounds().width, sprite.box->getLocalBounds().height));
+			debug.setPosition(sf::Vector2f(sprite.box->getGlobalBounds().left, sprite.box->getGlobalBounds().top));
+			debug.setOutlineThickness(2);
+			debug.setOutlineColor(sf::Color::White);
+			window.draw(debug);*/
 			window.draw(*sprite.box);
+			
 		}
 	});
 }
