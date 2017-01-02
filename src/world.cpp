@@ -28,9 +28,9 @@ void World::createEntities()
 	std::unique_ptr<sf::Sprite> pSprite(new sf::Sprite());
 	pSprite->setTexture(*kk::getTexture("rtz"));
 	ePlayer.assign<renderable>(
-		std::move(pSprite),
-		0,
-		true
+		std::move(pSprite), // sf::Sprite
+		0, // renderLayer
+		true // render
 		);
 }
 

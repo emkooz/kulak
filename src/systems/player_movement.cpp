@@ -7,16 +7,61 @@ movementSystem::movementSystem(entityx::EntityManager& _entityManager) :
 
 void movementSystem::configure(entityx::EventManager& eventManager)
 {
-	eventManager.subscribe<evUp>(*this);
+	/*eventManager.subscribe<evUp>(*this);
 	eventManager.subscribe<evDown>(*this);
 	eventManager.subscribe<evLeft>(*this);
-	eventManager.subscribe<evRight>(*this);
+	eventManager.subscribe<evRight>(*this);*/
 }
 
 void movementSystem::update(entityx::EntityManager &entities, entityx::EventManager &events, entityx::TimeDelta dt)
 {
-	entities.each<playerID, position, velocity, renderable>([dt](entityx::Entity entity, playerID &player, position &pos, velocity &vel, renderable &render)
+	bool moveLeft = false, moveRight = false, moveDown = false, moveUp = false;
+
+	if (kk::getPressed(sf::Keyboard::W))
+		moveUp = true;
+	if (kk::getPressed(sf::Keyboard::A))
+		moveLeft = true;
+	if (kk::getPressed(sf::Keyboard::S))
+		moveDown = true;
+	if (kk::getPressed(sf::Keyboard::D))
+		moveRight = true;
+
+	entities.each<playerID, position, velocity, renderable>([dt, moveUp, moveDown, moveLeft, moveRight](entityx::Entity entity, playerID &player, position &pos, velocity &vel, renderable &render)
 	{
+		// temporary solution, extremely basic
+		if (moveUp)
+		{
+			if (moveDown)
+				vel.y = 0.f;
+			else
+				vel.y = -320.f;
+		}
+		if (moveDown)
+		{
+			if (moveUp)
+				vel.y = 0.f;
+			else
+				vel.y = 320.f;
+		}
+		if (moveLeft)
+		{
+			if (moveRight)
+				vel.x = 0.f;
+			else
+				vel.x = -320.f;
+		}
+		if (moveRight)
+		{
+			if (moveLeft)
+				vel.x = 0.f;
+			else
+				vel.x = 320.f;
+		}
+		if (!moveRight && !moveLeft)
+			vel.x = 0.f;
+		if (!moveUp && !moveDown)
+			vel.y = 0.f;
+
 		pos.pos.x += (vel.x * dt);
 		pos.pos.y += (vel.y * dt);
 		render.box->setPosition(pos.pos);
@@ -27,7 +72,7 @@ void movementSystem::update(entityx::EntityManager &entities, entityx::EventMana
 // maybe it's better to store a pointer to the player entity? instead of searching
 // TODO SOON: check if vely is 320, if so make it 0, else make it -320, final else make it 0
 // probably just better to do bool set on key down/key up and manage from there
-void movementSystem::receive(const evUp& _evUp)
+/*void movementSystem::receive(const evUp& _evUp)
 {
 	entityManager.each<playerID, velocity>([_evUp](entityx::Entity entity, playerID &player, velocity &vel)
 	{
@@ -69,4 +114,4 @@ void movementSystem::receive(const evRight& _evRight)
 		else
 			vel.x = 0.f;
 	});
-}
+}*/

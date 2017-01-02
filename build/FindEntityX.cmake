@@ -15,7 +15,8 @@ set(ENTITYX_PATHS	${ENTITYX_ROOT}
 					/opt/local
 					/opt/csw
 					/opt
-					C:/lib/entityx)
+					C:/lib/entityx
+					/usr/lib)
 
 find_path(ENTITYX_INCLUDE_DIR entityx/entityx.h PATH_SUFFIXES include PATHS ${ENTITYX_PATHS})
 find_library(ENTITYX_LIBRARY NAMES entityx PATH_SUFFIXES lib PATHS ${ENTITYX_PATHS})
