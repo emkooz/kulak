@@ -11,7 +11,8 @@
 Intended usage:
 animationSheet player;
 set speed, number of rows, columns, and frames
-player.addAnimation("running", 8, 12); // add new animation called "running" that is from frames 8 to 12 on the sheet
+frames start at 1, not 0!
+player.addAnimation("running", 5, 12); // add new animation called "running" that is from frames 5 to 12 on the sheet
 
 ...animation system will update each running animation on an entity...
 
@@ -50,10 +51,13 @@ public:
 
 	void addAnimation (animation& anim);
 	void addAnimation (const std::string& name, unsigned int first, unsigned int last);
-	void setAnimation (const std::string& name); // reset old animation on every new set animation
-	void setAnimation (int animation);
+	void setAnimation (const std::string& name, bool reversed); // reset old animation on every new set animation
+	void setAnimation (int animation, bool reversed);
 	void setMode (mode _mode);
 	void setSpeed (float speed);
+	void setReversed(bool reversed);
+	bool getReversed();
+	sf::Vector2i getSize();
 	void update ();
 
 	std::string getCurrentAnimation();
@@ -74,4 +78,5 @@ private:
 	std::string currentAnimation; // used for external purposes, being able to easily read the current animation
 	unsigned int iCurrentAnimation; // used internally to directly acces the vector instead of doing a map lookup with string
 	sf::Clock timer; // internal clock used to update animations
+	bool reversed;
 };

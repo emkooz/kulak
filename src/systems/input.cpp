@@ -7,7 +7,7 @@ namespace kk
 	void setPressed(const evKeyboard& keyboard)
 	{
 		pressed[keyboard.key] = keyboard.pressed;
-		log("key: " + std::to_string(keyboard.key) + " set: " + (pressed[keyboard.key]? "true" : "false"));
+		//log("key: " + std::to_string(keyboard.key) + " set: " + (pressed[keyboard.key]? "true" : "false"));
 	}
 
 	bool getPressed(sf::Keyboard::Key key)

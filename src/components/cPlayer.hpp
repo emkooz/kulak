@@ -2,6 +2,7 @@
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Graphics.hpp>
 #include <memory>
+#include <string>
 
 /* Components that a player requires:
 health
@@ -36,8 +37,10 @@ struct cPosition
 
 struct cDirection
 {
-	cDirection(sf::Vector2f angle = sf::Vector2f(0.0f, 0.0f)) : angle(angle) {}
+	cDirection(sf::Vector2f angle = sf::Vector2f(0.0f, 0.0f), bool right = true) : angle(angle), right(right) {}
+	cDirection(bool right) : right(right) {};
 	sf::Vector2f angle;
+	bool right;
 };
 
 struct cVelocity

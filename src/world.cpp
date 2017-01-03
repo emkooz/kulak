@@ -7,7 +7,7 @@ World::World(sf::RenderWindow* _window)
 	// generate all systems
 	systems.add<inputSystem>(events);
 	systems.add<movementSystem>(entities);
-	systems.add<animationSystem>(events);
+	systems.add<animationSystem>(entities);
 	systems.configure();
 }
 
@@ -25,7 +25,7 @@ void World::createEntities()
 	ePlayer.assign<cHealth>(100);
 	ePlayer.assign<cPlayerID>(0);
 	ePlayer.assign<cPosition>(sf::Vector2f(0.f, 0.f));
-	ePlayer.assign<cDirection>(sf::Vector2f(0.f, 0.f));
+	ePlayer.assign<cDirection>(true); // true = right, make enum for DIR_LEFT and DIR_RIGHT later
 	ePlayer.assign<cVelocity>(0.f, 0.f);
 	std::unique_ptr<sf::Sprite> pSprite(new sf::Sprite());
 	pSprite->setTexture(*kk::getTexture("player"));
@@ -40,9 +40,10 @@ void World::createEntities()
 		8, // row size
 		65, // total frames
 		sf::Vector2i(64, 64), // each frame is 64x64px
-		10); // runs at 2 frames per second
+		10); // runs at 10 frames per second
 	ePlayer.component<cAnimation>()->animations.addAnimation("running", 5, 12);
-	ePlayer.component<cAnimation>()->animations.setAnimation("running");
+	ePlayer.component<cAnimation>()->animations.addAnimation("idle", 65, 65);
+	ePlayer.component<cAnimation>()->animations.setAnimation("idle", false);
 
 }
 

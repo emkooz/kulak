@@ -9,7 +9,7 @@ animationSheet::animationSheet(sf::Texture* sheet,
 		sf::Vector2i sizePerFrame,
 		float speed) :
 		sheet(sheet), rowSize(rowSize), totalFrames(totalFrames), iCurrentAnimation(0),
-		sizePerFrame(sizePerFrame), defaultSpeed (speed), currentMode(LOOP)
+		sizePerFrame(sizePerFrame), defaultSpeed (speed), currentMode(LOOP), reversed(false)
 {
 }
 
@@ -26,7 +26,7 @@ void animationSheet::animation::update(sf::Clock* clock)
 	if (currentMode == LOOP)
 	{
 		// (time elapsed * frames per second) % total frames = index for next frame
-		currentFrame = (unsigned int)fmod(clock->getElapsedTime().asSeconds() * speed, totalFrames - 1);
+		currentFrame = (unsigned int)fmod(clock->getElapsedTime().asSeconds() * speed, totalFrames);
 	}
 	// TODO SOON: handle ping pong mode 
 }
@@ -43,13 +43,13 @@ sf::IntRect animationSheet::getCurrentRect() // used by sprites to get the frame
 
 	unsigned int row, column, currentFrame;
 	sf::Vector2i pos;
-	currentFrame = animationVector[iCurrentAnimation].getCurrentFrame() + animationVector[iCurrentAnimation].getFirstFrame();
+	currentFrame = animationVector[iCurrentAnimation].getCurrentFrame() + (animationVector[iCurrentAnimation].getFirstFrame() - 1);
 	row = ceil(currentFrame / rowSize); // ceil(7 / 3) = 3
 	column = currentFrame % rowSize; // 7 % 3 = 1
 	pos.x = (column) * sizePerFrame.x; // (1 - 1) * 64 = 0
 	pos.y = (row) * sizePerFrame.y; // (3 - 1) * 64 = 128
 
-	sf::IntRect rect(pos, sizePerFrame);
+	sf::IntRect rect(pos, sf::Vector2i(sizePerFrame.x, sizePerFrame.y));
 	return rect;
 }
 
@@ -57,16 +57,29 @@ void animationSheet::addAnimation(animation& anim)
 {
 	animationVector.push_back(anim);
 	animationMap[anim.name] = animationVector.size() - 1;
+
+	if (currentAnimation.empty())
+	{
+		currentAnimation = anim.name;
+		iCurrentAnimation = 0;
+	}
 }
 
 void animationSheet::addAnimation(const std::string& name, unsigned int first, unsigned int last)
 {
+
 	animation newAnim (name, first, last, defaultSpeed, currentMode);
 	animationVector.push_back(newAnim);
 	animationMap[name] = animationVector.size() - 1;
+
+	if (currentAnimation.empty()) // automatically set to first animation once added
+	{
+		currentAnimation = name;
+		iCurrentAnimation = 0;
+	}
 }
 
-void animationSheet::setAnimation(const std::string& name)
+void animationSheet::setAnimation(const std::string& name, bool _reversed)
 {
 	auto index = animationMap.find(name);
 	if (index != animationMap.end())
@@ -74,6 +87,8 @@ void animationSheet::setAnimation(const std::string& name)
 		animationVector[iCurrentAnimation].currentFrame = 0; // set the current anim to first frame before swapping
 		currentAnimation = name;
 		iCurrentAnimation = index->second;
+
+		reversed = _reversed;
 	}
 	else
 	{
@@ -81,11 +96,13 @@ void animationSheet::setAnimation(const std::string& name)
 	}
 }
 
-void animationSheet::setAnimation(int index)
+void animationSheet::setAnimation(int index, bool _reversed)
 {
-	animationVector[iCurrentAnimation].currentFrame = 0; // set the current anim to first frame before swapping
+	animationVector[iCurrentAnimation].currentFrame = 0; 
 	iCurrentAnimation = index;
 	currentAnimation = animationVector[iCurrentAnimation].name;
+
+	reversed = _reversed;
 }
 
 std::string animationSheet::getCurrentAnimation()
@@ -106,4 +123,19 @@ unsigned int animationSheet::animation::getCurrentFrame()
 unsigned int animationSheet::getCurrentFrame()
 {
 	return animationVector[iCurrentAnimation].getCurrentFrame();
+}
+
+void animationSheet::setReversed(bool rev)
+{
+	reversed = rev;
+}
+
+bool animationSheet::getReversed()
+{
+	return reversed;
+}
+
+sf::Vector2i animationSheet::getSize()
+{
+	return sizePerFrame;
 }

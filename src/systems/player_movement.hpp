@@ -2,6 +2,7 @@
 #include <entityx/entityx.h>
 #include "components/cPlayer.hpp"
 #include "systems/input.hpp"
+#include "systems/animation_system.hpp"
 
 class movementSystem : public entityx::System<movementSystem>, public entityx::Receiver<movementSystem>
 {

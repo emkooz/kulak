@@ -26,7 +26,7 @@ void movementSystem::update(entityx::EntityManager &entities, entityx::EventMana
 	if (kk::getPressed(sf::Keyboard::D))
 		moveRight = true;
 
-	entities.each<cPlayerID, cPosition, cVelocity, cRenderable>([dt, moveUp, moveDown, moveLeft, moveRight](entityx::Entity entity, cPlayerID &player, cPosition &pos, cVelocity &vel, cRenderable &render)
+	entities.each<cPlayerID, cPosition, cVelocity, cRenderable, cDirection>([dt, &events, moveUp, moveDown, moveLeft, moveRight](entityx::Entity entity, cPlayerID &player, cPosition &pos, cVelocity &vel, cRenderable &render, cDirection &direction)
 	{
 		// temporary solution, extremely basic
 		if (moveUp)
@@ -34,33 +34,59 @@ void movementSystem::update(entityx::EntityManager &entities, entityx::EventMana
 			if (moveDown)
 				vel.y = 0.f;
 			else
+			{
 				vel.y = -320.f;
+				events.emit<evPlayerAnimationSet>(0, direction.right, "running");
+			}
 		}
 		if (moveDown)
 		{
 			if (moveUp)
 				vel.y = 0.f;
 			else
+			{
 				vel.y = 320.f;
+				events.emit<evPlayerAnimationSet>(0, direction.right, "running");
+			}
 		}
 		if (moveLeft)
 		{
 			if (moveRight)
+			{
 				vel.x = 0.f;
+			}
 			else
+			{
 				vel.x = -320.f;
+				events.emit<evPlayerAnimationSet>(0, false, "running");
+				direction.right = false;
+			}
 		}
 		if (moveRight)
 		{
 			if (moveLeft)
+			{
 				vel.x = 0.f;
+			}
 			else
+			{
 				vel.x = 320.f;
+				events.emit<evPlayerAnimationSet>(0, true, "running");
+				direction.right = true;
+			}
 		}
 		if (!moveRight && !moveLeft)
 			vel.x = 0.f;
 		if (!moveUp && !moveDown)
 			vel.y = 0.f;
+
+		if (vel.x == 0 && vel.y == 0)
+		{
+			if (direction.right)
+				events.emit<evPlayerAnimationSet>(0, true, "idle");
+			else
+				events.emit<evPlayerAnimationSet>(0, false, "idle");
+		}
 
 		pos.pos.x += (vel.x * dt);
 		pos.pos.y += (vel.y * dt);

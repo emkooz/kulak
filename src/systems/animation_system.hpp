@@ -6,18 +6,20 @@
 
 struct evPlayerAnimationSet
 {
-	evPlayerAnimationSet(int id, std::string name) : id(id), name(name) {}
-	int id;
-	std::string name;
+	evPlayerAnimationSet(int id, bool right, std::string name) : id(id), right(right), name(name) {}
+	int id; // player id
+	bool right; // facing the right direction or left (left == reversed)
+	std::string name; // name of animation to change to
 };
 
 class animationSystem : public entityx::System<animationSystem>, public entityx::Receiver<animationSystem>
 {
 public:
-	animationSystem(entityx::EventManager& _eventManager);
+	animationSystem(entityx::EntityManager& entityManager);
 	void configure(entityx::EventManager& eventManager);
 	void update(entityx::EntityManager &entities, entityx::EventManager &events, entityx::TimeDelta dt);
-	//void receive(const evPlayerAnimationSet& animation);
+	void receive(const evPlayerAnimationSet& animation);
+	void receive(const entityx::ComponentAddedEvent<cAnimation> &event);
 private:
-	entityx::EventManager& eventManager;
+	entityx::EntityManager& entityManager;
 };
