@@ -3,6 +3,7 @@
 #include <SFML/System.hpp>
 #include <string>
 #include <vector>
+#include <cmath>
 #include <unordered_map>
 #include "log.hpp"
 #include "resource.hpp"
