@@ -8,6 +8,7 @@ World::World(sf::RenderWindow* _window)
 	systems.add<inputSystem>(events);
 	systems.add<movementSystem>(entities);
 	systems.add<animationSystem>(entities);
+	systems.add<enemySpawnSystem>(entities);
 	systems.configure();
 }
 
@@ -17,6 +18,7 @@ void World::update(sf::Time deltaTime)
 	systems.update<inputSystem>(deltaTime.asSeconds());
 	systems.update<movementSystem>(deltaTime.asSeconds());
 	systems.update<animationSystem>(deltaTime.asSeconds());
+	systems.update<enemySpawnSystem>(deltaTime.asSeconds());
 }
 
 void World::createEntities()
