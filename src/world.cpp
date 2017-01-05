@@ -8,7 +8,7 @@ World::World(sf::RenderWindow* _window)
 	systems.add<inputSystem>(events);
 	systems.add<movementSystem>(entities);
 	systems.add<animationSystem>(entities);
-	systems.add<enemySpawnSystem>(entities);
+	systems.add<enemySpawnSystem>(entities, window);
 	systems.configure();
 }
 
