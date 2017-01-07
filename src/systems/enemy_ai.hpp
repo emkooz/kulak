@@ -1,6 +1,9 @@
 #pragma once
 #include <entityx/entityx.h>
 #include <SFML/Graphics.hpp>
+#include <components/cAnimation.hpp>
+#include <components/cPlayer.hpp>
+#include <components/cEnemy.hpp>
 
 class enemyAISystem : public entityx::System<enemyAISystem>, public entityx::Receiver<enemyAISystem>
 {

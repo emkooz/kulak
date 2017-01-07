@@ -130,6 +130,14 @@ void animationSheet::setReversed(bool rev)
 	reversed = rev;
 }
 
+void animationSheet::setReversed(cRenderable &render, bool reversed)
+{
+	if (reversed)
+		render.box->setScale({ -1, 1 });
+	else
+		render.box->setScale({ 1,1 });
+}
+
 bool animationSheet::getReversed()
 {
 	return reversed;

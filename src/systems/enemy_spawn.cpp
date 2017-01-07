@@ -31,12 +31,13 @@ void enemySpawnSystem::spawnEnemy(int type, sf::Vector2f position)
 {
 	kk::log("creating enemy");
 	entityx::Entity enemy = entityManager.create();
+	enemy.assign<cEnemyType>(0);
 	enemy.assign<cHealth>(10);
 	//sf::Vector2f position((800 / 2) + offset(rand), (600 / 2) + offset(rand));
 	//kk::log("position: " + std::to_string(position.x) + "   " + std::to_string(position.y));
 	enemy.assign<cPosition>(position);
 	enemy.assign<cDirection>(true);
-	enemy.assign<cVelocity>(0.f, 0.f);
+	enemy.assign<cVelocity>(280.f, 280.f);
 	std::unique_ptr<sf::Sprite> sprite(new sf::Sprite());
 	sprite->setTexture(*kk::getTexture("player"));
 	sprite->setTextureRect({ 0,0,0,0 });

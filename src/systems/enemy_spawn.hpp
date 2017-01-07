@@ -6,6 +6,7 @@
 #include <SFML/System.hpp>
 #include "components/cAnimation.hpp"
 #include "components/cPlayer.hpp"
+#include "components/cEnemy.hpp"
 #include "log.hpp"
 #include "resource.hpp"
 #include "systems/input.hpp"

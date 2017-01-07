@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include "log.hpp"
 #include "resource.hpp"
+#include "components/cPlayer.hpp"
 
 /*
 Intended usage:
@@ -57,6 +58,7 @@ public:
 	void setMode (mode _mode);
 	void setSpeed (float speed);
 	void setReversed(bool reversed);
+	void setReversed(cRenderable &render, bool reversed);
 	bool getReversed();
 	sf::Vector2i getSize();
 	void update ();

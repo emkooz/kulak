@@ -9,6 +9,7 @@
 #include "systems/player_movement.hpp"
 #include "systems/animation_system.hpp"
 #include "systems/enemy_spawn.hpp"
+#include "systems/enemy_ai.hpp"
 #include "components/cPlayer.hpp"
 #include "components/cAnimation.hpp"
 

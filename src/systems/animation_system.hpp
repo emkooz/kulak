@@ -12,6 +12,11 @@ struct evPlayerAnimationSet
 	std::string name; // name of animation to change to
 };
 
+struct evEntityAnimationSet
+{
+	evEntityAnimationSet(entityx::Entity &ent) : ent(ent) {}
+	entityx::Entity &ent;
+};
 class animationSystem : public entityx::System<animationSystem>, public entityx::Receiver<animationSystem>
 {
 public:
