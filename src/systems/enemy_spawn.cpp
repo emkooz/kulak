@@ -37,7 +37,7 @@ void enemySpawnSystem::spawnEnemy(int type, sf::Vector2f position)
 	//kk::log("position: " + std::to_string(position.x) + "   " + std::to_string(position.y));
 	enemy.assign<cPosition>(position);
 	enemy.assign<cDirection>(true);
-	enemy.assign<cVelocity>(280.f, 280.f);
+	enemy.assign<cVelocity>(130.f, 130.f);
 	std::unique_ptr<sf::Sprite> sprite(new sf::Sprite());
 	sprite->setTexture(*kk::getTexture("player"));
 	sprite->setTextureRect({ 0,0,0,0 });

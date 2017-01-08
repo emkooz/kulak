@@ -10,6 +10,8 @@ World::World(sf::RenderWindow* _window)
 	systems.add<animationSystem>(entities);
 	systems.add<enemySpawnSystem>(entities, window);
 	systems.add<enemyAISystem>(entities);
+	systems.add<weaponSystem>(entities);
+	systems.add<playerWeaponSystem>(entities, events);
 	systems.configure();
 }
 
@@ -21,6 +23,8 @@ void World::update(sf::Time deltaTime)
 	systems.update<animationSystem>(deltaTime.asSeconds());
 	systems.update<enemySpawnSystem>(deltaTime.asSeconds());
 	systems.update<enemyAISystem>(deltaTime.asSeconds());
+	systems.update<weaponSystem>(deltaTime.asSeconds());
+	systems.update<playerWeaponSystem>(deltaTime.asSeconds());
 }
 
 void World::createEntities()
@@ -48,6 +52,7 @@ void World::createEntities()
 	ePlayer.component<cAnimation>()->animations.addAnimation("running", 5, 12);
 	ePlayer.component<cAnimation>()->animations.addAnimation("idle", 65, 65);
 	ePlayer.component<cAnimation>()->animations.setAnimation("idle", false);
+	ePlayer.assign<cRail>(sf::Vector2f(0.f, 0.f));
 
 }
 

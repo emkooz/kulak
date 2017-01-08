@@ -10,8 +10,11 @@
 #include "systems/animation_system.hpp"
 #include "systems/enemy_spawn.hpp"
 #include "systems/enemy_ai.hpp"
+#include "systems/weapons.hpp"
+#include "systems/player_weapons.hpp"
 #include "components/cPlayer.hpp"
 #include "components/cAnimation.hpp"
+#include "components/cWeapon.hpp"
 
 class World : public entityx::EntityX, public entityx::Receiver<World>
 {
