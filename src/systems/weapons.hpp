@@ -5,6 +5,7 @@
 #include <components/cPlayer.hpp>
 #include <components/cEnemy.hpp>
 #include "log.hpp"
+#include <vector>
 
 // handles gun management (ammo, state, etc), position?, all properties like damage, and hitscan collisions
 
@@ -29,4 +30,5 @@ private:
 	entityx::EntityManager& entityManager;
 	bool same_sign(float a, float b);
 	int line_intersects(sf::Vector2f p1, sf::Vector2f p2, sf::Vector2f p3, sf::Vector2f p4, sf::Vector2f& collision);
+	std::vector<entityx::Entity> rails;
 };

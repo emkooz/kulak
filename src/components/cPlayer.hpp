@@ -61,3 +61,15 @@ struct cRenderable
 	int renderLayer; // change to enum later
 	bool render;
 };
+
+struct cBasicRail
+{
+	cBasicRail(
+		std::unique_ptr<sf::RectangleShape> box,
+		int renderLayer = 0,
+		bool render = true
+	) : box(std::move(box)), renderLayer(renderLayer), render(render){}
+	std::unique_ptr<sf::RectangleShape> box;
+	int renderLayer;
+	bool render;
+};

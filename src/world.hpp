@@ -25,7 +25,7 @@ public:
 	void receive(const evPause& pause);
 	void receive(const evResume& resume);
 	void receive(const evQuit& quit);
-	void createEntities();
+	void createEntities(entityx::EventManager& event_manager);
 
 	entityx::Entity ePlayer; // temporary
 private:

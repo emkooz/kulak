@@ -27,7 +27,7 @@ void World::update(sf::Time deltaTime)
 	systems.update<playerWeaponSystem>(deltaTime.asSeconds());
 }
 
-void World::createEntities()
+void World::createEntities(entityx::EventManager& event_manager)
 {
 	ePlayer = entities.create(); // does scope matter? could declare it in this function instead of class?
 	ePlayer.assign<cHealth>(100);
@@ -52,8 +52,9 @@ void World::createEntities()
 	ePlayer.component<cAnimation>()->animations.addAnimation("running", 5, 12);
 	ePlayer.component<cAnimation>()->animations.addAnimation("idle", 65, 65);
 	ePlayer.component<cAnimation>()->animations.setAnimation("idle", false);
-	ePlayer.assign<cRail>(sf::Vector2f(0.f, 0.f));
+	//ePlayer.assign<cRail>(sf::Vector2f(0.f, 0.f));
 
+	event_manager.emit<evAddWeapon>("rail");
 }
 
 void World::configure(entityx::EventManager &event_manager)

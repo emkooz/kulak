@@ -6,7 +6,7 @@ Game::Game() :
 	world(&window)
 {
 	loadTextures();
-	world.createEntities();
+	world.createEntities(world.events);
 }
 
 Game::~Game()
@@ -19,6 +19,7 @@ void Game::loadTextures()
 	kk::log("Loading textures...");
 	kk::loadTexture("rtz", "rtzw.jpg");
 	kk::loadTexture("player", "player_sheet_fix.png");
+	kk::loadTexture("ak", "ak47.png");
 }
 
 void Game::update(sf::Time deltaTime)
@@ -36,14 +37,22 @@ void Game::render()
 		{
 			/*sf::RectangleShape debug;
 			debug.setFillColor(sf::Color::Transparent);
-			debug.setSize(sf::Vector2f(sprite.box->getLocalBounds().width, sprite.box->getLocalBounds().height));
-			debug.setPosition(sf::Vector2f(sprite.box->getGlobalBounds().left, sprite.box->getGlobalBounds().top));
+			debug.setSize(sf::Vector2f(sprite.box->getLocalBounds().width * sprite.box->getScale().x, sprite.box->getLocalBounds().height * sprite.box->getScale().y));
+			debug.setOrigin(sf::Vector2f(debug.getSize().x / 2, debug.getSize().y / 2));
+			debug.setPosition(sf::Vector2f(sprite.box->getGlobalBounds().left + ((sprite.box->getLocalBounds().width * fabs(sprite.box->getScale().x)) / 2), sprite.box->getGlobalBounds().top + ((sprite.box->getLocalBounds().height * fabs(sprite.box->getScale().y)) / 2)));
 			debug.setOutlineThickness(2);
 			debug.setOutlineColor(sf::Color::White);
 			window.draw(debug);*/
 			window.draw(*sprite.box);
 			
 		}
+	});
+
+	// temporary, later will be a cRenderable
+	world.entities.each<cBasicRail>([this](entityx::Entity entity, cBasicRail& rail)
+	{
+		if (rail.render)
+			window.draw(*rail.box);
 	});
 }
 

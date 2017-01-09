@@ -29,7 +29,6 @@ void enemySpawnSystem::update(entityx::EntityManager &entities, entityx::EventMa
 
 void enemySpawnSystem::spawnEnemy(int type, sf::Vector2f position)
 {
-	kk::log("creating enemy");
 	entityx::Entity enemy = entityManager.create();
 	enemy.assign<cEnemyType>(0);
 	enemy.assign<cHealth>(10);
