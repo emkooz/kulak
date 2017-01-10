@@ -26,7 +26,7 @@ void playerWeaponSystem::update(entityx::EntityManager &entities, entityx::Event
 			cRail rail(sf::Vector2f(weaponInventory[currentWeapon].component<cPosition>()->pos));
 			cPlayerID pID(0);
 			cPosition pos(sf::Vector2f(weaponInventory[currentWeapon].component<cPosition>()->pos));
-			cDirection dir(pEntity.component<cDirection>()->right);
+			cDirection dir(weaponInventory[currentWeapon].component<cDirection>()->right);
 			// temporary. just to get something testable right now
 			eventManager.emit<evFireRail>(rail, pID, pos, dir);
 		}
@@ -43,7 +43,7 @@ void playerWeaponSystem::update(entityx::EntityManager &entities, entityx::Event
 			cRail rail(sf::Vector2f(weaponInventory[currentWeapon].component<cPosition>()->pos));
 			cPlayerID pID(0);
 			cPosition pos(sf::Vector2f(weaponInventory[currentWeapon].component<cPosition>()->pos));
-			cDirection dir(pEntity.component<cDirection>()->right);
+			cDirection dir(weaponInventory[currentWeapon].component<cDirection>()->right);
 			// temporary. just to get something testable right now
 			eventManager.emit<evFireRail>(rail, pID, pos, dir);
 		}
