@@ -30,12 +30,12 @@ void enemyAISystem::update(entityx::EntityManager &entities, entityx::EventManag
 		if (vector.x < 0) // moving left
 		{
 			direction.right = false;
-			anim.animations.setReversed(render, true); 
+			anim.animations.setReversed(render.box.get(), true); 
 		}
 		else
 		{
 			direction.right = true;
-			anim.animations.setReversed(render, false);
+			anim.animations.setReversed(render.box.get(), false);
 		}
 
 		position.pos.x += (vector.x * vel.x * dt);

@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include "components/cPlayer.hpp"
 #include "components/cWeapon.hpp"
+#include "components/cAnimation.hpp"
 #include "systems/weapons.hpp"
 #include "input.hpp"
 #include "log.hpp"
@@ -40,4 +41,5 @@ private:
 	entityx::Entity pEntity;
 	std::vector<entityx::Entity> weaponInventory;
 	int currentWeapon;
+	std::string currentDirection;
 };

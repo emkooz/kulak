@@ -130,12 +130,14 @@ void animationSheet::setReversed(bool rev)
 	reversed = rev;
 }
 
-void animationSheet::setReversed(cRenderable &render, bool reversed)
+void animationSheet::setReversed(sf::Sprite* box, bool _reversed)
 {
-	if (reversed)
-		render.box->setScale({ -1, 1 });
+	if (_reversed)
+		box->setScale({ -1, 1 });
 	else
-		render.box->setScale({ 1,1 });
+		box->setScale({ 1,1 });
+
+	reversed = _reversed;
 }
 
 bool animationSheet::getReversed()

@@ -1,7 +1,7 @@
 #include "player_weapons.hpp"
 
 playerWeaponSystem::playerWeaponSystem(entityx::EntityManager& _entityManager, entityx::EventManager& _eventManager) :
-	entityManager(_entityManager), eventManager(_eventManager), currentWeapon(0)
+	entityManager(_entityManager), eventManager(_eventManager), currentWeapon(0), currentDirection("right")
 {};
 
 void playerWeaponSystem::configure(entityx::EventManager& eventManager)
@@ -14,8 +14,30 @@ void playerWeaponSystem::configure(entityx::EventManager& eventManager)
 void playerWeaponSystem::update(entityx::EntityManager &entities, entityx::EventManager &events, entityx::TimeDelta dt)
 {
 
-	if (kk::getPressed(sf::Keyboard::Space))
+	if (kk::getPressed(sf::Keyboard::Left))
 	{
+		weaponInventory[currentWeapon].component<cDirection>()->right = false;
+		sf::Sprite* box = weaponInventory[currentWeapon].component<cRenderable>()->box.get();
+		weaponInventory[currentWeapon].component<cAnimation>()->animations.setReversed(box, true);
+		currentDirection = "left";
+
+		if (currentWeapon == 0)
+		{
+			cRail rail(sf::Vector2f(weaponInventory[currentWeapon].component<cPosition>()->pos));
+			cPlayerID pID(0);
+			cPosition pos(sf::Vector2f(weaponInventory[currentWeapon].component<cPosition>()->pos));
+			cDirection dir(pEntity.component<cDirection>()->right);
+			// temporary. just to get something testable right now
+			eventManager.emit<evFireRail>(rail, pID, pos, dir);
+		}
+	}
+	else if (kk::getPressed(sf::Keyboard::Right))
+	{
+		weaponInventory[currentWeapon].component<cDirection>()->right = true;
+		sf::Sprite* box = weaponInventory[currentWeapon].component<cRenderable>()->box.get();
+		weaponInventory[currentWeapon].component<cAnimation>()->animations.setReversed(box, false);
+		currentDirection = "right";
+
 		if (currentWeapon == 0)
 		{
 			cRail rail(sf::Vector2f(weaponInventory[currentWeapon].component<cPosition>()->pos));
@@ -31,9 +53,9 @@ void playerWeaponSystem::update(entityx::EntityManager &entities, entityx::Event
 	{
 		for (int x = 0; x < weaponInventory.size(); x++)
 		{
-			weaponInventory[x].component<cPosition>()->pos.x = pos.pos.x;
+			weaponInventory[x].component<cPosition>()->pos.x = pos.pos.x + 32;
 			weaponInventory[x].component<cPosition>()->pos.y = pos.pos.y;
-			weaponInventory[x].component<cRenderable>()->box->setPosition(pos.pos.x, pos.pos.y - 32);
+			weaponInventory[x].component<cRenderable>()->box->setPosition(pos.pos.x, pos.pos.y);
 		}
 	});
 
@@ -71,7 +93,14 @@ void playerWeaponSystem::receive(const evAddWeapon &event)
 		std::move(railSprite),
 		0,
 		true);
-
+	weaponInventory[currentWeapon].assign<cAnimation>(
+		kk::getTexture("ak"),
+		1,
+		1,
+		sf::Vector2i(256,256),
+		10);
+	weaponInventory[currentWeapon].component<cAnimation>()->animations.addAnimation("idle", 1, 1);
+	weaponInventory[currentWeapon].component<cAnimation>()->animations.setAnimation("idle", false);
 }
 
 // TODO: make fireWeapon() function
