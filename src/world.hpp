@@ -12,6 +12,7 @@
 #include "systems/enemy_ai.hpp"
 #include "systems/weapons.hpp"
 #include "systems/player_weapons.hpp"
+#include "systems/camera.hpp"
 #include "components/cPlayer.hpp"
 #include "components/cAnimation.hpp"
 #include "components/cWeapon.hpp"

@@ -16,7 +16,7 @@ void enemySpawnSystem::update(entityx::EntityManager &entities, entityx::EventMa
 	{
 		if (spawnAvailable)
 		{
-			spawnEnemy(0, { (float)sf::Mouse::getPosition(*window).x, (float)sf::Mouse::getPosition(*window).y });
+			spawnEnemy(0, window->mapPixelToCoords({ sf::Mouse::getPosition(*window).x, sf::Mouse::getPosition(*window).y }));
 			spawnAvailable = false;
 		}
 	}

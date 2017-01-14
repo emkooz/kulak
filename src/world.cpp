@@ -12,6 +12,7 @@ World::World(sf::RenderWindow* _window)
 	systems.add<enemyAISystem>(entities);
 	systems.add<weaponSystem>(entities);
 	systems.add<playerWeaponSystem>(entities, events);
+	systems.add<cameraSystem>(entities, window);
 	systems.configure();
 }
 
@@ -25,6 +26,7 @@ void World::update(sf::Time deltaTime)
 	systems.update<enemyAISystem>(deltaTime.asSeconds());
 	systems.update<weaponSystem>(deltaTime.asSeconds());
 	systems.update<playerWeaponSystem>(deltaTime.asSeconds());
+	systems.update<cameraSystem>(deltaTime.asSeconds());
 }
 
 void World::createEntities(entityx::EventManager& event_manager)

@@ -87,9 +87,17 @@ void movementSystem::update(entityx::EntityManager &entities, entityx::EventMana
 			else
 				events.emit<evPlayerAnimationSet>(0, false, "idle");
 		}
+		
+		float deltaPosX = vel.x * dt;
+		float deltaPosY = vel.y * dt;
 
-		pos.pos.x += (vel.x * dt);
-		pos.pos.y += (vel.y * dt);
+		// TODO: MAJOR: window size and player size is currently hardwired, fix
+		if ((deltaPosY + pos.pos.y + 32) < 300 && (deltaPosY + pos.pos.y -32) > -300)
+		{
+			pos.pos.y += deltaPosY;
+			kk::log(std::to_string(pos.pos.y));
+		}
+		pos.pos.x += deltaPosX;
 		render.box->setPosition(pos.pos);
 		// maybe use .move() instead of setPosition() and ditch position component?
 	});
