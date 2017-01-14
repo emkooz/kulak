@@ -15,7 +15,17 @@ void cameraSystem::update(entityx::EntityManager &entities, entityx::EventManage
 {
 	if (pEntity.valid())
 	{
-		cameraView.setCenter(sf::Vector2f(pEntity.component<cRenderable>()->box->getPosition().x, 0));
+		sf::Vector2f pos = pEntity.component<cRenderable>()->box->getPosition();
+
+		if ((cameraView.getCenter().x + deadzone) < pos.x) // right of deadzone
+		{
+			cameraView.setCenter({ pos.x - deadzone, 0 });
+		}
+		else if ((cameraView.getCenter().x - deadzone) > pos.x) // left of deadzone
+		{
+			cameraView.setCenter({ pos.x + deadzone, 0 });
+		}
+
 		window->setView(cameraView);
 	}
 }
@@ -25,4 +35,6 @@ void cameraSystem::receive(const entityx::ComponentAddedEvent<cPlayerID> &event)
 	pEntity = event.entity;
 	cameraView.setSize(sf::Vector2f(window->getSize()));
 	window->setView(cameraView);
+
+	deadzone = window->getSize().x * 0.05; // deadzone is 5% (x and -x) of width
 }

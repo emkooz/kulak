@@ -15,4 +15,5 @@ private:
 	entityx::Entity pEntity;
 	sf::RenderWindow* window;
 	sf::View cameraView;
+	float deadzone; // distance from center, only on x axis
 };
