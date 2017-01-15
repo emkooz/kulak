@@ -40,7 +40,7 @@ void weaponSystem::receive(const evFireRail& _rail)
 				rect->setFillColor(sf::Color::Yellow);
 				railHit.assign<cBasicRail>(
 					std::move(rect),
-					0,
+					3,
 					true);
 			}
 		}
@@ -61,7 +61,7 @@ void weaponSystem::receive(const evFireRail& _rail)
 				rect->setFillColor(sf::Color::Blue);
 				railHit.assign<cBasicRail>(
 					std::move(rect),
-					0,
+					3,
 					true);
 			}
 		}

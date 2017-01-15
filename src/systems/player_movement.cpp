@@ -7,10 +7,7 @@ movementSystem::movementSystem(entityx::EntityManager& _entityManager) :
 
 void movementSystem::configure(entityx::EventManager& eventManager)
 {
-	/*eventManager.subscribe<evUp>(*this);
-	eventManager.subscribe<evDown>(*this);
-	eventManager.subscribe<evLeft>(*this);
-	eventManager.subscribe<evRight>(*this);*/
+	eventManager.subscribe<evBackgroundCreated>(*this);
 }
 
 void movementSystem::update(entityx::EntityManager &entities, entityx::EventManager &events, entityx::TimeDelta dt)
@@ -26,7 +23,7 @@ void movementSystem::update(entityx::EntityManager &entities, entityx::EventMana
 	if (kk::getPressed(sf::Keyboard::D))
 		moveRight = true;
 
-	entities.each<cPlayerID, cPosition, cVelocity, cRenderable, cDirection>([dt, &events, moveUp, moveDown, moveLeft, moveRight](entityx::Entity entity, cPlayerID &player, cPosition &pos, cVelocity &vel, cRenderable &render, cDirection &direction)
+	entities.each<cPlayerID, cPosition, cVelocity, cRenderable, cDirection>([dt, &events, moveUp, moveDown, moveLeft, moveRight, this](entityx::Entity entity, cPlayerID &player, cPosition &pos, cVelocity &vel, cRenderable &render, cDirection &direction)
 	{
 		// temporary solution, extremely basic
 		if (moveUp)
@@ -92,59 +89,33 @@ void movementSystem::update(entityx::EntityManager &entities, entityx::EventMana
 		float deltaPosY = vel.y * dt;
 
 		// TODO: MAJOR: window size and player size is currently hardwired, fix
-		if ((deltaPosY + pos.pos.y + 32) < 300 && (deltaPosY + pos.pos.y -32) > -300)
-		{
+		if ((deltaPosY + pos.pos.y - 32) > (bg->getBounds().top + 150) &&
+			(deltaPosY + pos.pos.y + 32) < 300)
 			pos.pos.y += deltaPosY;
-		}
-		pos.pos.x += deltaPosX;
+		else if ((deltaPosY + pos.pos.y - 32) < (bg->getBounds().top + 150) ) // hit top
+			pos.pos.y = bg->getBounds().top + 150 + 32 + 1;
+		else // hit bottom
+			pos.pos.y = 300 - 32 - 1;
+
+		sf::FloatRect bounds = bg->getBounds();
+		if ((deltaPosX + pos.pos.x + 32) < (bounds.left + bounds.width) &&
+			(deltaPosX + pos.pos.x - 32) > bounds.left)
+			pos.pos.x += deltaPosX;
+		else if ((deltaPosX + pos.pos.x + 32) > (bounds.left + bounds.width)) // hit right
+			pos.pos.x = (bounds.left + bounds.width) - 32 - 1;
+		else // hit left
+			pos.pos.x = bounds.left + 32 + 1;
+
 		render.box->setPosition(pos.pos);
 		// maybe use .move() instead of setPosition() and ditch position component?
 	});
 }
 
-// maybe it's better to store a pointer to the player entity? instead of searching
+void movementSystem::receive(const evBackgroundCreated &event)
+{
+	bg = event.bg;
+}
+
+// TODO: maybe it's better to store a pointer to the player entity? instead of searching
 // TODO SOON: check if vely is 320, if so make it 0, else make it -320, final else make it 0
 // probably just better to do bool set on key down/key up and manage from there
-/*void movementSystem::receive(const evUp& _evUp)
-{
-	entityManager.each<playerID, velocity>([_evUp](entityx::Entity entity, playerID &player, velocity &vel)
-	{
-		if (_evUp.pressed)
-			vel.y = -320.f;
-		else
-			vel.y = 0.f;
-	});
-}
-
-void movementSystem::receive(const evDown& _evDown)
-{
-	entityManager.each<playerID, velocity>([_evDown](entityx::Entity entity, playerID &player, velocity &vel)
-	{
-		if (_evDown.pressed)
-			vel.y = 320.f;
-		else
-			vel.y = 0.f;
-	});
-}
-
-void movementSystem::receive(const evLeft& _evLeft)
-{
-	entityManager.each<playerID, velocity>([_evLeft](entityx::Entity entity, playerID &player, velocity &vel)
-	{
-		if (_evLeft.pressed)
-			vel.x = -320.f;
-		else
-			vel.x = 0.f;
-	});
-}
-
-void movementSystem::receive(const evRight& _evRight)
-{
-	entityManager.each<playerID, velocity>([_evRight](entityx::Entity entity, playerID &player, velocity &vel)
-	{
-		if (_evRight.pressed)
-			vel.x = 320.f;
-		else
-			vel.x = 0.f;
-	});
-}*/

@@ -43,7 +43,7 @@ void enemySpawnSystem::spawnEnemy(int type, sf::Vector2f position)
 	sprite->setPosition(position);
 	enemy.assign<cRenderable>(
 		std::move(sprite),
-		0,
+		1,
 		true);
 	enemy.assign<cAnimation>(
 		kk::getTexture("player"),

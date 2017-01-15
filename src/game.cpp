@@ -20,6 +20,7 @@ void Game::loadTextures()
 	kk::loadTexture("rtz", "rtzw.jpg");
 	kk::loadTexture("player", "player_sheet_fix.png");
 	kk::loadTexture("ak", "ak47.png");
+	kk::loadTexture("bg", "bg.png");
 }
 
 void Game::update(sf::Time deltaTime)
@@ -30,8 +31,11 @@ void Game::update(sf::Time deltaTime)
 
 void Game::render()
 {
+	std::vector<std::vector<entityx::Entity>> renderList;
+	renderList.resize(5); // 5 render layers
+
 	// loop through render layer, render layer should probably be outside of renderable component
-	world.entities.each<cRenderable>([this](entityx::Entity entity, cRenderable &sprite)
+	world.entities.each<cRenderable>([this, &renderList](entityx::Entity entity, cRenderable &sprite)
 	{
 		if (sprite.render) // set to its own component?? as a flag kinda, so this if isn't required, less traversal through entities
 		{
@@ -43,10 +47,18 @@ void Game::render()
 			debug.setOutlineThickness(2);
 			debug.setOutlineColor(sf::Color::White);
 			window.draw(debug);*/
-			window.draw(*sprite.box);
-			
+			//window.draw(*sprite.box);
+			renderList[sprite.renderLayer].push_back(entity);
 		}
 	});
+
+	for (int x = 0; x < renderList.size(); x++) // loop through each layer
+	{
+		for (int y = 0; y < renderList[x].size(); y++) // loop through each item in layer
+		{
+			window.draw(*renderList[x][y].component<cRenderable>()->box);
+		}
+	}
 
 	// temporary, later will be a cRenderable
 	world.entities.each<cBasicRail>([this](entityx::Entity entity, cBasicRail& rail)

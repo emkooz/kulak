@@ -5,6 +5,7 @@
 #include "log.hpp"
 #include "resource.hpp"
 #include "world.hpp"
+#include <vector>
 
 class Game
 {

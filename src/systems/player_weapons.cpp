@@ -91,7 +91,7 @@ void playerWeaponSystem::receive(const evAddWeapon &event)
 	railSprite->setScale(0.2, 0.2);
 	weaponInventory[currentWeapon].assign<cRenderable>(
 		std::move(railSprite),
-		0,
+		3,
 		true);
 	weaponInventory[currentWeapon].assign<cAnimation>(
 		kk::getTexture("ak"),

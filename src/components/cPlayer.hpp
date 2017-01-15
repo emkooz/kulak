@@ -49,6 +49,7 @@ struct cVelocity
 	float x, y;
 };
 
+// TODO SOON: move this to its own component header, probably cRender.hpp
 //Render
 struct cRenderable
 {

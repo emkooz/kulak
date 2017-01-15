@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include "resource.hpp"
 #include "log.hpp"
+#include "background.hpp"
 #include "systems/state.hpp"
 #include "systems/input.hpp"
 #include "systems/player_movement.hpp"
@@ -32,4 +33,5 @@ public:
 private:
 
 	sf::RenderWindow* window;
+	background bg;
 };

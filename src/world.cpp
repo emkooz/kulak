@@ -31,6 +31,8 @@ void World::update(sf::Time deltaTime)
 
 void World::createEntities(entityx::EventManager& event_manager)
 {
+	bg.load(entities, events);
+
 	ePlayer = entities.create(); // does scope matter? could declare it in this function instead of class?
 	ePlayer.assign<cHealth>(100);
 	ePlayer.assign<cPlayerID>(0);
@@ -42,7 +44,7 @@ void World::createEntities(entityx::EventManager& event_manager)
 	pSprite->setTextureRect(sf::IntRect(0, 0, 0, 0));
 	ePlayer.assign<cRenderable>(
 		std::move(pSprite), // sf::Sprite
-		0, // renderLayer
+		2, // renderLayer
 		true // render
 		);
 	ePlayer.assign<cAnimation>(
