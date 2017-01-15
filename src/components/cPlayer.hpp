@@ -73,4 +73,5 @@ struct cBasicRail
 	std::unique_ptr<sf::RectangleShape> box;
 	int renderLayer;
 	bool render;
+	sf::Clock timeAlive;
 };

@@ -11,41 +11,52 @@ void playerWeaponSystem::configure(entityx::EventManager& eventManager)
 	eventManager.subscribe<entityx::ComponentAddedEvent<cPlayerID>>(*this);
 }
 
+// TODO: this system needs a whole rewrite
 void playerWeaponSystem::update(entityx::EntityManager &entities, entityx::EventManager &events, entityx::TimeDelta dt)
 {
 
 	if (kk::getPressed(sf::Keyboard::Left))
 	{
-		weaponInventory[currentWeapon].component<cDirection>()->right = false;
-		sf::Sprite* box = weaponInventory[currentWeapon].component<cRenderable>()->box.get();
-		weaponInventory[currentWeapon].component<cAnimation>()->animations.setReversed(box, true);
-		currentDirection = "left";
-
-		if (currentWeapon == 0)
+		if (weaponInventory[currentWeapon].component<cRail>()->cooldownTimer.getElapsedTime().asSeconds() > weaponInventory[currentWeapon].component<cRail>()->cooldown)
 		{
-			cRail rail(sf::Vector2f(weaponInventory[currentWeapon].component<cPosition>()->pos));
-			cPlayerID pID(0);
-			cPosition pos(sf::Vector2f(weaponInventory[currentWeapon].component<cPosition>()->pos));
-			cDirection dir(weaponInventory[currentWeapon].component<cDirection>()->right);
-			// temporary. just to get something testable right now
-			eventManager.emit<evFireRail>(rail, pID, pos, dir);
+			weaponInventory[currentWeapon].component<cDirection>()->right = false;
+			sf::Sprite* box = weaponInventory[currentWeapon].component<cRenderable>()->box.get();
+			weaponInventory[currentWeapon].component<cAnimation>()->animations.setReversed(box, true);
+			currentDirection = "left";
+
+			if (currentWeapon == 0)
+			{
+				cRail rail(sf::Vector2f(weaponInventory[currentWeapon].component<cPosition>()->pos), 0.1);
+				cPlayerID pID(0);
+				cPosition pos(sf::Vector2f(weaponInventory[currentWeapon].component<cPosition>()->pos));
+				cDirection dir(weaponInventory[currentWeapon].component<cDirection>()->right);
+				// temporary. just to get something testable right now
+				eventManager.emit<evFireRail>(rail, pID, pos, dir);
+			}
+
+			weaponInventory[currentWeapon].component<cRail>()->cooldownTimer.restart();
 		}
 	}
 	else if (kk::getPressed(sf::Keyboard::Right))
 	{
-		weaponInventory[currentWeapon].component<cDirection>()->right = true;
-		sf::Sprite* box = weaponInventory[currentWeapon].component<cRenderable>()->box.get();
-		weaponInventory[currentWeapon].component<cAnimation>()->animations.setReversed(box, false);
-		currentDirection = "right";
-
-		if (currentWeapon == 0)
+		if (weaponInventory[currentWeapon].component<cRail>()->cooldownTimer.getElapsedTime().asSeconds() > weaponInventory[currentWeapon].component<cRail>()->cooldown)
 		{
-			cRail rail(sf::Vector2f(weaponInventory[currentWeapon].component<cPosition>()->pos));
-			cPlayerID pID(0);
-			cPosition pos(sf::Vector2f(weaponInventory[currentWeapon].component<cPosition>()->pos));
-			cDirection dir(weaponInventory[currentWeapon].component<cDirection>()->right);
-			// temporary. just to get something testable right now
-			eventManager.emit<evFireRail>(rail, pID, pos, dir);
+			weaponInventory[currentWeapon].component<cDirection>()->right = true;
+			sf::Sprite* box = weaponInventory[currentWeapon].component<cRenderable>()->box.get();
+			weaponInventory[currentWeapon].component<cAnimation>()->animations.setReversed(box, false);
+			currentDirection = "right";
+
+			if (currentWeapon == 0)
+			{
+				cRail rail(sf::Vector2f(weaponInventory[currentWeapon].component<cPosition>()->pos), 0.1);
+				cPlayerID pID(0);
+				cPosition pos(sf::Vector2f(weaponInventory[currentWeapon].component<cPosition>()->pos));
+				cDirection dir(weaponInventory[currentWeapon].component<cDirection>()->right);
+				// temporary. just to get something testable right now
+				eventManager.emit<evFireRail>(rail, pID, pos, dir);
+			}
+
+			weaponInventory[currentWeapon].component<cRail>()->cooldownTimer.restart();
 		}
 	}
 
@@ -84,7 +95,7 @@ void playerWeaponSystem::receive(const evAddWeapon &event)
 	currentWeapon = weaponInventory.size() - 1;
 	weaponInventory[currentWeapon] = entityManager.create();
 	weaponInventory[currentWeapon].assign<cPosition>(sf::Vector2f(0.f, 0.f));
-	weaponInventory[currentWeapon].assign<cRail>(sf::Vector2f(0.f, 0.f));
+	weaponInventory[currentWeapon].assign<cRail>(sf::Vector2f(0.f, 0.f), 0.1);
 	weaponInventory[currentWeapon].assign<cDirection>(true);
 	std::unique_ptr<sf::Sprite> railSprite(new sf::Sprite());
 	railSprite->setTexture(*kk::getTexture("ak"));

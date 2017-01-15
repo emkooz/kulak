@@ -65,6 +65,9 @@ void Game::render()
 	{
 		if (rail.render)
 			window.draw(*rail.box);
+
+		if (rail.timeAlive.getElapsedTime().asSeconds() > 1)
+			entity.destroy();
 	});
 }
 
