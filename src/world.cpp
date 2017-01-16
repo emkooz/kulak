@@ -10,7 +10,7 @@ World::World(sf::RenderWindow* _window)
 	systems.add<animationSystem>(entities);
 	systems.add<enemySpawnSystem>(entities, window);
 	systems.add<enemyAISystem>(entities);
-	systems.add<weaponSystem>(entities);
+	systems.add<weaponSystem>(entities, events);
 	systems.add<playerWeaponSystem>(entities, events);
 	systems.add<cameraSystem>(entities, window);
 	systems.configure();

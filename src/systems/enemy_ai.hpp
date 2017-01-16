@@ -4,6 +4,7 @@
 #include <components/cAnimation.hpp>
 #include <components/cPlayer.hpp>
 #include <components/cEnemy.hpp>
+#include <systems/weapons.hpp>
 
 class enemyAISystem : public entityx::System<enemyAISystem>, public entityx::Receiver<enemyAISystem>
 {
@@ -11,7 +12,9 @@ public:
 	enemyAISystem(entityx::EntityManager& entityManager);
 	void configure(entityx::EventManager& eventManager);
 	void update(entityx::EntityManager &entities, entityx::EventManager &events, entityx::TimeDelta dt);
+	void receive(const evHitEnemy &event);
 
 private:
 	entityx::EntityManager& entityManager;
+	void takeDamage(entityx::Entity entity, int damage);
 };

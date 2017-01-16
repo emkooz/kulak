@@ -89,11 +89,11 @@ void movementSystem::update(entityx::EntityManager &entities, entityx::EventMana
 		float deltaPosY = vel.y * dt;
 
 		// TODO: MAJOR: window size and player size is currently hardwired, fix
-		if ((deltaPosY + pos.pos.y - 32) > (bg->getBounds().top + 150) &&
+		if ((deltaPosY + pos.pos.y - 32) > (bg->getBounds().top + 50) &&
 			(deltaPosY + pos.pos.y + 32) < 300)
 			pos.pos.y += deltaPosY;
-		else if ((deltaPosY + pos.pos.y - 32) < (bg->getBounds().top + 150) ) // hit top
-			pos.pos.y = bg->getBounds().top + 150 + 32 + 1;
+		else if ((deltaPosY + pos.pos.y - 32) < (bg->getBounds().top + 50) ) // hit top
+			pos.pos.y = bg->getBounds().top + 50 + 32 + 1;
 		else // hit bottom
 			pos.pos.y = 300 - 32 - 1;
 

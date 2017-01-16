@@ -1,7 +1,7 @@
 #include "weapons.hpp"
 
-weaponSystem::weaponSystem(entityx::EntityManager& _entityManager) :
-	entityManager(_entityManager)
+weaponSystem::weaponSystem(entityx::EntityManager& _entityManager, entityx::EventManager& _eventManager) :
+	entityManager(_entityManager), eventManager(_eventManager)
 {};
 
 void weaponSystem::configure(entityx::EventManager& eventManager)
@@ -31,17 +31,19 @@ void weaponSystem::receive(const evFireRail& _rail)
 				line_intersects({ _rail.pos.pos.x, _rail.pos.pos.y }, { _rail.pos.pos.x + 4000, _rail.pos.pos.y }, { render.box->getGlobalBounds().left, render.box->getGlobalBounds().top }, { render.box->getGlobalBounds().left, render.box->getGlobalBounds().top + render.box->getLocalBounds().height }, result) || // left of box
 				line_intersects({ _rail.pos.pos.x, _rail.pos.pos.y }, { _rail.pos.pos.x + 4000, _rail.pos.pos.y }, { render.box->getGlobalBounds().left, render.box->getGlobalBounds().top + render.box->getLocalBounds().height }, { render.box->getGlobalBounds().left + render.box->getLocalBounds().width, render.box->getGlobalBounds().top + render.box->getLocalBounds().height }, result)) // bottom of box
 			{
-				render.box->setColor(sf::Color::Yellow);
+				// create rail to draw
 				rails.push_back({});
 				entityx::Entity railHit = entityManager.create();
 				std::unique_ptr<sf::RectangleShape> rect(new sf::RectangleShape());
 				rect->setSize({ result.x - _rail.pos.pos.x, 5.f });
 				rect->setPosition(_rail.pos.pos);
-				rect->setFillColor(sf::Color::Yellow);
+				rect->setFillColor(sf::Color::White);
 				railHit.assign<cBasicRail>(
 					std::move(rect),
 					3,
 					true);
+
+				eventManager.emit<evHitEnemy>(entity, 20);
 			}
 		}
 		// if the player is on the right side of the enemy and shooting left (same warning applies)
@@ -52,17 +54,18 @@ void weaponSystem::receive(const evFireRail& _rail)
 				line_intersects({ _rail.pos.pos.x, _rail.pos.pos.y }, { _rail.pos.pos.x - 4000, _rail.pos.pos.y }, { render.box->getGlobalBounds().left + render.box->getLocalBounds().width, render.box->getGlobalBounds().top }, { render.box->getGlobalBounds().left + render.box->getLocalBounds().width, render.box->getGlobalBounds().top + render.box->getLocalBounds().height }, result) || // right of box
 				line_intersects({ _rail.pos.pos.x, _rail.pos.pos.y }, { _rail.pos.pos.x - 4000, _rail.pos.pos.y }, { render.box->getGlobalBounds().left, render.box->getGlobalBounds().top + render.box->getLocalBounds().height }, { render.box->getGlobalBounds().left + render.box->getLocalBounds().width, render.box->getGlobalBounds().top + render.box->getLocalBounds().height }, result)) // bottom of box
 			{
-				render.box->setColor(sf::Color::Blue);
 				rails.push_back({});
 				entityx::Entity railHit = entityManager.create();
 				std::unique_ptr<sf::RectangleShape> rect(new sf::RectangleShape());
 				rect->setSize({ result.x - _rail.pos.pos.x, 5.f });
 				rect->setPosition(_rail.pos.pos);
-				rect->setFillColor(sf::Color::Blue);
+				rect->setFillColor(sf::Color::White);
 				railHit.assign<cBasicRail>(
 					std::move(rect),
 					3,
 					true);
+
+				eventManager.emit<evHitEnemy>(entity, 20);
 			}
 		}
 	});

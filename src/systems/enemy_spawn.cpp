@@ -31,7 +31,7 @@ void enemySpawnSystem::spawnEnemy(int type, sf::Vector2f position)
 {
 	entityx::Entity enemy = entityManager.create();
 	enemy.assign<cEnemyType>(0);
-	enemy.assign<cHealth>(10);
+	enemy.assign<cHealth>(100);
 	//sf::Vector2f position((800 / 2) + offset(rand), (600 / 2) + offset(rand));
 	//kk::log("position: " + std::to_string(position.x) + "   " + std::to_string(position.y));
 	enemy.assign<cPosition>(position);
