@@ -60,7 +60,7 @@ public:
 	void setReversed(bool reversed);
 	void setReversed(sf::Sprite* box, bool reversed);
 	bool getReversed();
-	sf::Vector2i getSize();
+	sf::Vector2f getSize();
 	void update ();
 
 	std::string getCurrentAnimation();

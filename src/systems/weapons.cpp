@@ -7,14 +7,15 @@ weaponSystem::weaponSystem(entityx::EntityManager& _entityManager, entityx::Even
 void weaponSystem::configure(entityx::EventManager& eventManager)
 {
 	eventManager.subscribe<evFireRail>(*this);
+	eventManager.subscribe<evFireMelee>(*this);
 }
 
 void weaponSystem::update(entityx::EntityManager &entities, entityx::EventManager &events, entityx::TimeDelta dt)
 {
-	entities.each<cRail, cPlayerID, cRenderable>([](entityx::Entity entity, cRail &rail, cPlayerID &id, cRenderable &render)
+	/*entities.each<cRail, cPlayerID, cRenderable>([](entityx::Entity entity, cRail &rail, cPlayerID &id, cRenderable &render)
 	{
 		rail.pos = { render.box->getPosition().x + render.box->getLocalBounds().width, (render.box->getPosition().y + render.box->getLocalBounds().height) / 2 };
-	});
+	});*/
 }
 
 void weaponSystem::receive(const evFireRail& _rail)
@@ -65,12 +66,42 @@ void weaponSystem::receive(const evFireRail& _rail)
 					3,
 					true);
 
-				eventManager.emit<evHitEnemy>(entity, 20);
+				eventManager.emit<evHitEnemy>(entity, _rail.rail->damage);
 			}
 		}
 	});
 }
 
+void weaponSystem::receive(const evFireMelee& melee)
+{
+	// loop through each enemy checking for a collision
+	// later on use quadtrees
+	entityManager.each<cEnemyType, cPosition, cRenderable, cAnimation>([this, melee](entityx::Entity entity, cEnemyType &type, cPosition &pos, cRenderable &render, cAnimation &animation)
+	{
+		// if the player is on the left side of the enemy and we are shooting right (this is kinda assuming its only shooting straight forward)
+		if (melee.pos.pos.x <= pos.pos.x && melee.dir.right)
+		{
+			sf::RectangleShape hitbox;
+			hitbox.setSize(sf::Vector2f(melee.sprite->box->getLocalBounds().width * melee.sprite->box->getScale().x, melee.sprite->box->getLocalBounds().height * melee.sprite->box->getScale().y));
+			hitbox.setOrigin(sf::Vector2f(hitbox.getSize().x / 2, hitbox.getSize().y / 2));
+			hitbox.setPosition(sf::Vector2f(melee.sprite->box->getGlobalBounds().left + ((melee.sprite->box->getLocalBounds().width * fabs(melee.sprite->box->getScale().x)) / 2), melee.sprite->box->getGlobalBounds().top + ((melee.sprite->box->getLocalBounds().height * fabs(melee.sprite->box->getScale().y)) / 2)));
+
+			if (hitbox.getGlobalBounds().intersects(render.box->getGlobalBounds()))
+				eventManager.emit<evHitEnemy>(entity, melee.melee->damage);
+		}
+		// if the player is on the right side of the enemy and shooting left (same warning applies)
+		else if (melee.pos.pos.x > pos.pos.x && !melee.dir.right)
+		{
+			sf::RectangleShape hitbox;
+			hitbox.setSize(sf::Vector2f(melee.sprite->box->getLocalBounds().width * melee.sprite->box->getScale().x, melee.sprite->box->getLocalBounds().height * melee.sprite->box->getScale().y));
+			hitbox.setOrigin(sf::Vector2f(hitbox.getSize().x / 2, hitbox.getSize().y / 2));
+			hitbox.setPosition(sf::Vector2f(melee.sprite->box->getGlobalBounds().left + ((melee.sprite->box->getLocalBounds().width * fabs(melee.sprite->box->getScale().x)) / 2), melee.sprite->box->getGlobalBounds().top + ((melee.sprite->box->getLocalBounds().height * fabs(melee.sprite->box->getScale().y)) / 2)));
+
+			if (hitbox.getGlobalBounds().intersects(render.box->getGlobalBounds()))
+				eventManager.emit<evHitEnemy>(entity, melee.melee->damage);
+		} // the code above is the same code from the if statement above it, maybe make it a function?
+	});
+}
 
 // Taken from Graphics Gems 2, original author of lines_intersect: Mukesh Prasad. Link: http://www.realtimerendering.com/resources/GraphicsGems/gemsii/xlines.c 
 bool weaponSystem::same_sign(float a, float b)

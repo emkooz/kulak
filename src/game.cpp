@@ -20,6 +20,7 @@ void Game::loadTextures()
 	kk::loadTexture("rtz", "rtzw.jpg");
 	kk::loadTexture("player", "player_sheet_fix.png");
 	kk::loadTexture("ak", "ak47.png");
+	kk::loadTexture("knife", "knife.png");
 	kk::loadTexture("bg", "bg.png");
 }
 
@@ -46,8 +47,8 @@ void Game::render()
 			debug.setPosition(sf::Vector2f(sprite.box->getGlobalBounds().left + ((sprite.box->getLocalBounds().width * fabs(sprite.box->getScale().x)) / 2), sprite.box->getGlobalBounds().top + ((sprite.box->getLocalBounds().height * fabs(sprite.box->getScale().y)) / 2)));
 			debug.setOutlineThickness(2);
 			debug.setOutlineColor(sf::Color::White);
-			window.draw(debug);*/
-			//window.draw(*sprite.box);
+			window.draw(debug);
+			window.draw(*sprite.box);*/
 			renderList[sprite.renderLayer].push_back(entity);
 		}
 	});

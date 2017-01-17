@@ -145,7 +145,7 @@ bool animationSheet::getReversed()
 	return reversed;
 }
 
-sf::Vector2i animationSheet::getSize()
+sf::Vector2f animationSheet::getSize()
 {
-	return sizePerFrame;
+	return sf::Vector2f(sizePerFrame);
 }

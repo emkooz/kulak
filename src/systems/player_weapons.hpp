@@ -21,8 +21,14 @@ struct evFire
 
 struct evAddWeapon
 {
-	evAddWeapon(std::string name) : weapon(name) {}
-	std::string weapon;
+	evAddWeapon(kk::weaponType type, std::string name, std::string texture, int damage, float cooldown, float range, sf::Vector2f size) : weapon(type), name(name), texture(texture), damage(damage), cooldown(cooldown), range(range), size(size) {}
+	kk::weaponType weapon;
+	std::string name;
+	std::string texture;
+	int damage;
+	float cooldown;
+	float range;
+	sf::Vector2f size;
 };
 
 class playerWeaponSystem : public entityx::System<playerWeaponSystem>, public entityx::Receiver<playerWeaponSystem>
@@ -42,4 +48,8 @@ private:
 	std::vector<entityx::Entity> weaponInventory;
 	int currentWeapon;
 	std::string currentDirection;
+	//bool swappingWeapons;
+
+	void pollWeaponSwap();
+	void swapWeapons(int index);
 };

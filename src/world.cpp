@@ -58,7 +58,9 @@ void World::createEntities(entityx::EventManager& event_manager)
 	ePlayer.component<cAnimation>()->animations.setAnimation("idle", false);
 	//ePlayer.assign<cRail>(sf::Vector2f(0.f, 0.f));
 
-	event_manager.emit<evAddWeapon>("rail");
+	//                              weapon type,     name,     tex,   dmg, cd,    range,  size
+	event_manager.emit<evAddWeapon>(kk::WEAPON_RAIL, "rail",   "ak",   20, 0.1f,  4000.f, sf::Vector2f(256, 256));
+	event_manager.emit<evAddWeapon>(kk::WEAPON_MELEE, "knife", "knife", 5, 0.15f, 32.f,   sf::Vector2f(256, 256));
 }
 
 void World::configure(entityx::EventManager &event_manager)

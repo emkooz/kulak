@@ -4,6 +4,7 @@
 #include <components/cWeapon.hpp>
 #include <components/cPlayer.hpp>
 #include <components/cEnemy.hpp>
+#include <components/cAnimation.hpp>
 #include "log.hpp"
 #include <vector>
 
@@ -11,11 +12,26 @@
 
 struct evFireRail
 {
-	evFireRail(cRail rail, cPlayerID pID, cPosition pos, cDirection dir) : rail(rail), pID(pID), pos(pos), dir(dir) {}
-	cRail rail;
+	evFireRail(entityx::ComponentHandle<cWeaponBase> rail, cPlayerID pID, cPosition pos, cDirection dir) : rail(rail), pID(pID), pos(pos), dir(dir) {}
+	entityx::ComponentHandle<cWeaponBase> rail;
 	cPlayerID pID;
 	cPosition pos;
 	cDirection dir;
+};
+
+struct evFireMelee
+{
+	evFireMelee(entityx::ComponentHandle<cWeaponBase> melee, cPlayerID pID, cPosition pos, cDirection dir, entityx::ComponentHandle<cRenderable> sprite) : melee(melee), pID(pID), pos(pos), dir(dir), sprite(sprite) {}
+	entityx::ComponentHandle<cWeaponBase> melee;
+	cPlayerID pID;
+	cPosition pos;
+	cDirection dir;
+	entityx::ComponentHandle<cRenderable> sprite;
+};
+
+struct evFireProjectile
+{
+
 };
 
 struct evHitEnemy
@@ -32,6 +48,7 @@ public:
 	void configure(entityx::EventManager& eventManager);
 	void update(entityx::EntityManager &entities, entityx::EventManager &events, entityx::TimeDelta dt);
 	void receive(const evFireRail& rail);
+	void receive(const evFireMelee& melee);
 
 private:
 	entityx::EntityManager& entityManager;

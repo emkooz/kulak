@@ -8,6 +8,7 @@ void background::load(entityx::EntityManager& entityManager, entityx::EventManag
 	bgSprite->setTexture(*kk::getTexture("bg"));
 	bgSprite->setOrigin(bgSprite->getTexture()->getSize().x / 2, bgSprite->getTexture()->getSize().y / 2);
 	bgSprite->setPosition(0.f, 0.f);
+	//bgSprite->setColor(sf::Color::Transparent);
 	bounds = bgSprite->getGlobalBounds();
 	eBG.assign<cRenderable>(
 		std::move(bgSprite),
