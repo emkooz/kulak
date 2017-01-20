@@ -22,21 +22,25 @@ void weaponSystem::receive(const evFireRail& _rail)
 {
 	// loop through each enemy checking for a collision
 	// later on use quadtrees
+	// TODO: set tracer to an actual texture/animation
 	entityManager.each<cEnemyType, cPosition, cRenderable>([this, _rail](entityx::Entity entity, cEnemyType &type, cPosition &pos, cRenderable &render)
 	{
+		float railX = _rail.pos.pos.x, railY = _rail.pos.pos.y;
+		sf::FloatRect enemyGlobal = render.box->getGlobalBounds(), enemyLocal = render.box->getLocalBounds();
 		// if the player is on the left side of the enemy and we are shooting right (this is kinda assuming its only shooting straight forward)
-		if (_rail.pos.pos.x <= pos.pos.x && _rail.dir.right)
+		if (railX <= pos.pos.x && _rail.dir.right)
 		{
 			sf::Vector2f result;
-			if (line_intersects({ _rail.pos.pos.x, _rail.pos.pos.y }, { _rail.pos.pos.x + 4000, _rail.pos.pos.y }, { render.box->getGlobalBounds().left, render.box->getGlobalBounds().top }, { render.box->getGlobalBounds().left + render.box->getLocalBounds().width, render.box->getGlobalBounds().top }, result) || // top of box
-				line_intersects({ _rail.pos.pos.x, _rail.pos.pos.y }, { _rail.pos.pos.x + 4000, _rail.pos.pos.y }, { render.box->getGlobalBounds().left, render.box->getGlobalBounds().top }, { render.box->getGlobalBounds().left, render.box->getGlobalBounds().top + render.box->getLocalBounds().height }, result) || // left of box
-				line_intersects({ _rail.pos.pos.x, _rail.pos.pos.y }, { _rail.pos.pos.x + 4000, _rail.pos.pos.y }, { render.box->getGlobalBounds().left, render.box->getGlobalBounds().top + render.box->getLocalBounds().height }, { render.box->getGlobalBounds().left + render.box->getLocalBounds().width, render.box->getGlobalBounds().top + render.box->getLocalBounds().height }, result)) // bottom of box
+			// TODO: replace "4000" with the actual distance
+			if (line_intersects({ railX, railY }, { railX + 4000, railY }, { enemyGlobal.left, enemyGlobal.top }, { enemyGlobal.left + enemyLocal.width, enemyGlobal.top }, result) || // top of box
+				line_intersects({ railX, railY }, { railX + 4000, railY }, { enemyGlobal.left, enemyGlobal.top }, { enemyGlobal.left, enemyGlobal.top + enemyLocal.height }, result) || // left of box
+				line_intersects({ railX, railY }, { railX + 4000, railY }, { enemyGlobal.left, enemyGlobal.top + enemyLocal.height }, { enemyGlobal.left + enemyLocal.width, enemyGlobal.top + enemyLocal.height }, result)) // bottom of box
 			{
 				// create rail to draw
 				rails.push_back({});
 				entityx::Entity railHit = entityManager.create();
 				std::unique_ptr<sf::RectangleShape> rect(new sf::RectangleShape());
-				rect->setSize({ result.x - _rail.pos.pos.x, 5.f });
+				rect->setSize({ result.x - railX, 5.f });
 				rect->setPosition(_rail.pos.pos);
 				rect->setFillColor(sf::Color::White);
 				railHit.assign<cBasicRail>(
@@ -48,17 +52,17 @@ void weaponSystem::receive(const evFireRail& _rail)
 			}
 		}
 		// if the player is on the right side of the enemy and shooting left (same warning applies)
-		else if (_rail.pos.pos.x > pos.pos.x && !_rail.dir.right)
+		else if (railX > pos.pos.x && !_rail.dir.right)
 		{
 			sf::Vector2f result;
-			if (line_intersects({ _rail.pos.pos.x, _rail.pos.pos.y }, { _rail.pos.pos.x - 4000, _rail.pos.pos.y }, { render.box->getGlobalBounds().left, render.box->getGlobalBounds().top }, { render.box->getGlobalBounds().left + render.box->getLocalBounds().width, render.box->getGlobalBounds().top }, result) || // top of box
-				line_intersects({ _rail.pos.pos.x, _rail.pos.pos.y }, { _rail.pos.pos.x - 4000, _rail.pos.pos.y }, { render.box->getGlobalBounds().left + render.box->getLocalBounds().width, render.box->getGlobalBounds().top }, { render.box->getGlobalBounds().left + render.box->getLocalBounds().width, render.box->getGlobalBounds().top + render.box->getLocalBounds().height }, result) || // right of box
-				line_intersects({ _rail.pos.pos.x, _rail.pos.pos.y }, { _rail.pos.pos.x - 4000, _rail.pos.pos.y }, { render.box->getGlobalBounds().left, render.box->getGlobalBounds().top + render.box->getLocalBounds().height }, { render.box->getGlobalBounds().left + render.box->getLocalBounds().width, render.box->getGlobalBounds().top + render.box->getLocalBounds().height }, result)) // bottom of box
+			if (line_intersects({ railX, railY }, { railX - 4000, railY }, { enemyGlobal.left, enemyGlobal.top }, { enemyGlobal.left + enemyLocal.width, enemyGlobal.top }, result) || // top of box
+				line_intersects({ railX, railY }, { railX - 4000, railY }, { enemyGlobal.left + enemyLocal.width, enemyGlobal.top }, { enemyGlobal.left + enemyLocal.width, enemyGlobal.top + enemyLocal.height }, result) || // right of box
+				line_intersects({ railX, railY }, { railX - 4000, railY }, { enemyGlobal.left, enemyGlobal.top + enemyLocal.height }, { enemyGlobal.left + enemyLocal.width, enemyGlobal.top + enemyLocal.height }, result)) // bottom of box
 			{
 				rails.push_back({});
 				entityx::Entity railHit = entityManager.create();
 				std::unique_ptr<sf::RectangleShape> rect(new sf::RectangleShape());
-				rect->setSize({ result.x - _rail.pos.pos.x, 5.f });
+				rect->setSize({ result.x - railX, 5.f });
 				rect->setPosition(_rail.pos.pos);
 				rect->setFillColor(sf::Color::White);
 				railHit.assign<cBasicRail>(
@@ -78,14 +82,17 @@ void weaponSystem::receive(const evFireMelee& melee)
 	// later on use quadtrees
 	entityManager.each<cEnemyType, cPosition, cRenderable, cAnimation>([this, melee](entityx::Entity entity, cEnemyType &type, cPosition &pos, cRenderable &render, cAnimation &animation)
 	{
+		sf::FloatRect mLocalBounds = melee.sprite->box->getLocalBounds();
+		sf::FloatRect mGlobalBounds = melee.sprite->box->getGlobalBounds();
+		sf::Vector2f mScale = melee.sprite->box->getScale();
 		// if the player is on the left side of the enemy and we are shooting right (this is kinda assuming its only shooting straight forward)
 		if (melee.pos.pos.x <= pos.pos.x && melee.dir.right)
 		{
 			sf::RectangleShape hitbox;
-			hitbox.setSize(sf::Vector2f(melee.sprite->box->getLocalBounds().width * melee.sprite->box->getScale().x, melee.sprite->box->getLocalBounds().height * melee.sprite->box->getScale().y));
+			hitbox.setSize(sf::Vector2f(mLocalBounds.width * mScale.x, mLocalBounds.height * mScale.y));
 			hitbox.setOrigin(sf::Vector2f(hitbox.getSize().x / 2, hitbox.getSize().y / 2));
-			hitbox.setPosition(sf::Vector2f(melee.sprite->box->getGlobalBounds().left + ((melee.sprite->box->getLocalBounds().width * fabs(melee.sprite->box->getScale().x)) / 2), melee.sprite->box->getGlobalBounds().top + ((melee.sprite->box->getLocalBounds().height * fabs(melee.sprite->box->getScale().y)) / 2)));
-
+			hitbox.setPosition(sf::Vector2f(mGlobalBounds.left + ((mLocalBounds.width * fabs(mScale.x)) / 2), mGlobalBounds.top + ((mLocalBounds.height * fabs(mScale.y)) / 2)));
+		
 			if (hitbox.getGlobalBounds().intersects(render.box->getGlobalBounds()))
 				eventManager.emit<evHitEnemy>(entity, melee.melee->damage);
 		}
@@ -93,9 +100,9 @@ void weaponSystem::receive(const evFireMelee& melee)
 		else if (melee.pos.pos.x > pos.pos.x && !melee.dir.right)
 		{
 			sf::RectangleShape hitbox;
-			hitbox.setSize(sf::Vector2f(melee.sprite->box->getLocalBounds().width * melee.sprite->box->getScale().x, melee.sprite->box->getLocalBounds().height * melee.sprite->box->getScale().y));
+			hitbox.setSize(sf::Vector2f(mLocalBounds.width * mScale.x, mLocalBounds.height * mScale.y));
 			hitbox.setOrigin(sf::Vector2f(hitbox.getSize().x / 2, hitbox.getSize().y / 2));
-			hitbox.setPosition(sf::Vector2f(melee.sprite->box->getGlobalBounds().left + ((melee.sprite->box->getLocalBounds().width * fabs(melee.sprite->box->getScale().x)) / 2), melee.sprite->box->getGlobalBounds().top + ((melee.sprite->box->getLocalBounds().height * fabs(melee.sprite->box->getScale().y)) / 2)));
+			hitbox.setPosition(sf::Vector2f(mGlobalBounds.left + ((mLocalBounds.width * fabs(mScale.x)) / 2), mGlobalBounds.top + ((mLocalBounds.height * fabs(mScale.y)) / 2)));
 
 			if (hitbox.getGlobalBounds().intersects(render.box->getGlobalBounds()))
 				eventManager.emit<evHitEnemy>(entity, melee.melee->damage);

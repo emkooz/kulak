@@ -25,7 +25,9 @@ void playerWeaponSystem::update(entityx::EntityManager &entities, entityx::Event
 		weaponInventory[currentWeapon].component<cAnimation>()->animations.setReversed(box, true);
 		currentDirection = "left";
 
-		if (weaponInventory[currentWeapon].component<cWeaponBase>()->cooldownTimer.getElapsedTime().asSeconds() > weaponInventory[currentWeapon].component<cWeaponBase>()->cooldown)
+		entityx::ComponentHandle<cWeaponBase> base = weaponInventory[currentWeapon].component<cWeaponBase>();
+
+		if (base->cooldownTimer.getElapsedTime().asSeconds() > base->cooldown)
 		{
 			if (weaponInventory[currentWeapon].has_component<cRailWeapon>())
 			{
@@ -33,17 +35,17 @@ void playerWeaponSystem::update(entityx::EntityManager &entities, entityx::Event
 				cPosition pos(sf::Vector2f(weaponInventory[currentWeapon].component<cPosition>()->pos));
 				cDirection dir(weaponInventory[currentWeapon].component<cDirection>()->right);
 				// temporary. just to get something testable right now
-				eventManager.emit<evFireRail>(weaponInventory[currentWeapon].component<cWeaponBase>(), pID, pos, dir);
+				eventManager.emit<evFireRail>(base, pID, pos, dir);
 			}
 			else if (weaponInventory[currentWeapon].has_component<cMeleeWeapon>())
 			{
 				cPlayerID pID(0);
 				cPosition pos(sf::Vector2f(weaponInventory[currentWeapon].component<cPosition>()->pos));
 				cDirection dir(weaponInventory[currentWeapon].component<cDirection>()->right);
-				eventManager.emit<evFireMelee>(weaponInventory[currentWeapon].component<cWeaponBase>(), pID, pos, dir, weaponInventory[currentWeapon].component<cRenderable>());
+				eventManager.emit<evFireMelee>(base, pID, pos, dir, weaponInventory[currentWeapon].component<cRenderable>());
 			}
 
-			weaponInventory[currentWeapon].component<cWeaponBase>()->cooldownTimer.restart();
+			base->cooldownTimer.restart();
 		}
 	}
 	else if (kk::getPressed(sf::Keyboard::Right))
@@ -53,7 +55,9 @@ void playerWeaponSystem::update(entityx::EntityManager &entities, entityx::Event
 		weaponInventory[currentWeapon].component<cAnimation>()->animations.setReversed(box, false);
 		currentDirection = "right";
 
-		if (weaponInventory[currentWeapon].component<cWeaponBase>()->cooldownTimer.getElapsedTime().asSeconds() > weaponInventory[currentWeapon].component<cWeaponBase>()->cooldown)
+		entityx::ComponentHandle<cWeaponBase> base = weaponInventory[currentWeapon].component<cWeaponBase>();
+
+		if (base->cooldownTimer.getElapsedTime().asSeconds() > base->cooldown)
 		{
 			if (weaponInventory[currentWeapon].has_component<cRailWeapon>())
 			{
@@ -61,20 +65,21 @@ void playerWeaponSystem::update(entityx::EntityManager &entities, entityx::Event
 				cPosition pos(sf::Vector2f(weaponInventory[currentWeapon].component<cPosition>()->pos));
 				cDirection dir(weaponInventory[currentWeapon].component<cDirection>()->right);
 				// temporary. just to get something testable right now
-				eventManager.emit<evFireRail>(weaponInventory[currentWeapon].component<cWeaponBase>(), pID, pos, dir);
+				eventManager.emit<evFireRail>(base, pID, pos, dir);
 			}
 			else if (weaponInventory[currentWeapon].has_component<cMeleeWeapon>())
 			{
 				cPlayerID pID(0);
 				cPosition pos(sf::Vector2f(weaponInventory[currentWeapon].component<cPosition>()->pos));
 				cDirection dir(weaponInventory[currentWeapon].component<cDirection>()->right);
-				eventManager.emit<evFireMelee>(weaponInventory[currentWeapon].component<cWeaponBase>(), pID, pos, dir, weaponInventory[currentWeapon].component<cRenderable>());
+				eventManager.emit<evFireMelee>(base, pID, pos, dir, weaponInventory[currentWeapon].component<cRenderable>());
 			}
 
-			weaponInventory[currentWeapon].component<cWeaponBase>()->cooldownTimer.restart();
+			base->cooldownTimer.restart();
 		}
 	}
 
+	// update the position of the weapon relative to the player. 
 	entities.each<cPlayerID, cPosition>([this](entityx::Entity entity, cPlayerID& id, cPosition& pos)
 	{
 		for (int x = 0; x < weaponInventory.size(); x++)
@@ -92,7 +97,7 @@ void playerWeaponSystem::update(entityx::EntityManager &entities, entityx::Event
 
 void playerWeaponSystem::pollWeaponSwap()
 {
-	// is there a better way of handling this?
+	// TODO: is there a better way of handling this?
 	if (kk::getPressed(sf::Keyboard::Num1) && currentWeapon != 0)
 		swapWeapons(0);
 	else if (kk::getPressed(sf::Keyboard::Num2) && currentWeapon != 1)
