@@ -13,6 +13,7 @@ World::World(sf::RenderWindow* _window)
 	systems.add<weaponSystem>(entities, events);
 	systems.add<playerWeaponSystem>(entities, events);
 	systems.add<cameraSystem>(entities, window);
+	systems.add<statsSystem>(entities, events);
 	systems.configure();
 }
 
@@ -27,6 +28,7 @@ void World::update(sf::Time deltaTime)
 	systems.update<weaponSystem>(deltaTime.asSeconds());
 	systems.update<playerWeaponSystem>(deltaTime.asSeconds());
 	systems.update<cameraSystem>(deltaTime.asSeconds());
+	systems.update<statsSystem>(deltaTime.asSeconds());
 }
 
 void World::createEntities(entityx::EventManager& event_manager)
@@ -35,6 +37,8 @@ void World::createEntities(entityx::EventManager& event_manager)
 
 	ePlayer = entities.create(); // does scope matter? could declare it in this function instead of class?
 	ePlayer.assign<cHealth>(100);
+	ePlayer.assign<cGold>(0);
+	ePlayer.assign<cMana>(100);
 	ePlayer.assign<cPlayerID>(0);
 	ePlayer.assign<cPosition>(sf::Vector2f(0.f, 0.f));
 	ePlayer.assign<cDirection>(true); // true = right, make enum for DIR_LEFT and DIR_RIGHT later
@@ -56,11 +60,12 @@ void World::createEntities(entityx::EventManager& event_manager)
 	ePlayer.component<cAnimation>()->animations.addAnimation("running", 5, 12);
 	ePlayer.component<cAnimation>()->animations.addAnimation("idle", 65, 65);
 	ePlayer.component<cAnimation>()->animations.setAnimation("idle", false);
-	//ePlayer.assign<cRail>(sf::Vector2f(0.f, 0.f));
 
 	//                              weapon type,     name,     tex,   dmg, cd,    range,  size
 	event_manager.emit<evAddWeapon>(kk::WEAPON_RAIL, "rail",   "ak",   20, 0.1f,  4000.f, sf::Vector2f(256, 256));
 	event_manager.emit<evAddWeapon>(kk::WEAPON_MELEE, "knife", "knife", 5, 0.15f, 32.f,   sf::Vector2f(256, 256));
+
+	event_manager.emit<evPlayerCreated>(ePlayer);
 }
 
 void World::configure(entityx::EventManager &event_manager)

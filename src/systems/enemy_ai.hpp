@@ -6,6 +6,12 @@
 #include <components/cEnemy.hpp>
 #include <systems/weapons.hpp>
 
+struct evEnemyDead
+{
+	evEnemyDead(cEnemyType type) : type(type) {}
+	cEnemyType type;
+};
+
 class enemyAISystem : public entityx::System<enemyAISystem>, public entityx::Receiver<enemyAISystem>
 {
 public:

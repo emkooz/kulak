@@ -11,7 +11,7 @@ void enemyAISystem::configure(entityx::EventManager& eventManager)
 
 void enemyAISystem::update(entityx::EntityManager &entities, entityx::EventManager &events, entityx::TimeDelta dt)
 {
-	entities.each<cEnemyType, cPosition, cRenderable, cVelocity, cDirection, cAnimation>([dt, &entities, this](entityx::Entity enemy, cEnemyType &type, cPosition &position, cRenderable &render, cVelocity &vel, cDirection &direction, cAnimation &anim)
+	entities.each<cEnemyType, cPosition, cRenderable, cVelocity, cDirection, cAnimation>([dt, &entities, &events, this](entityx::Entity enemy, cEnemyType &type, cPosition &position, cRenderable &render, cVelocity &vel, cDirection &direction, cAnimation &anim)
 	{
 		// no other way to fill the componenthandle using only a single entity, I guess...
 		// TODO: WARNING: this would break for multiplayer, create different solution
@@ -49,7 +49,10 @@ void enemyAISystem::update(entityx::EntityManager &entities, entityx::EventManag
 			render.box->setColor(sf::Color::White);
 
 		if (enemy.component<cHealth>()->hp <= 0)
+		{
+			events.emit<evEnemyDead>(cEnemyType(enemy.component<cEnemyType>()->type));
 			enemy.destroy();
+		}
 	});
 }
 

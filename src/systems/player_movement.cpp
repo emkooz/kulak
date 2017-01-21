@@ -10,6 +10,7 @@ void movementSystem::configure(entityx::EventManager& eventManager)
 	eventManager.subscribe<evBackgroundCreated>(*this);
 }
 
+// TODO: major rewrite of movement system for player
 void movementSystem::update(entityx::EntityManager &entities, entityx::EventManager &events, entityx::TimeDelta dt)
 {
 	bool moveLeft = false, moveRight = false, moveDown = false, moveUp = false;

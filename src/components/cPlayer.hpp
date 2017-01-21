@@ -22,6 +22,18 @@ struct cHealth
 	int hp;
 };
 
+struct cMana
+{
+	cMana(int mana = 100) : mana(mana) {}
+	int mana;
+};
+
+struct cGold
+{
+	cGold(int gold = 0) : gold(gold) {}
+	int gold;
+};
+
 struct cPlayerID
 {
 	cPlayerID(int id = 0) : id(id) {}

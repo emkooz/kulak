@@ -11,7 +11,7 @@ void playerWeaponSystem::configure(entityx::EventManager& eventManager)
 	eventManager.subscribe<entityx::ComponentAddedEvent<cPlayerID>>(*this);
 }
 
-// TODO: this system needs a whole rewrite
+// TODO: this whole thing needs a rewrite
 void playerWeaponSystem::update(entityx::EntityManager &entities, entityx::EventManager &events, entityx::TimeDelta dt)
 {
 	// handle swapping weapons
