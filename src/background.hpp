@@ -2,7 +2,9 @@
 #include <entityx/entityx.h>
 #include <SFML/Graphics.hpp>
 #include "components/cPlayer.hpp"
+#include "components/cRender.hpp"
 #include "resource.hpp"
+#include "components/events.hpp"
 
 
 class background
@@ -15,8 +17,3 @@ private:
 	sf::FloatRect bounds;
 };
 
-struct evBackgroundCreated
-{
-	evBackgroundCreated(background* bg) : bg(bg) {}
-	background* bg;
-};

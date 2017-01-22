@@ -8,6 +8,7 @@
 #include "log.hpp"
 #include "resource.hpp"
 #include "components/cPlayer.hpp"
+#include "components/cRender.hpp"
 
 /*
 Intended usage:

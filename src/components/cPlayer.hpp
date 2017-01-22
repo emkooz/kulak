@@ -61,29 +61,3 @@ struct cVelocity
 	float x, y;
 };
 
-// TODO SOON: move this to its own component header, probably cRender.hpp
-//Render
-struct cRenderable
-{
-	cRenderable(
-		std::unique_ptr<sf::Sprite> box,
-		int renderLayer = 0,
-		bool render = true
-	) : box(std::move(box)), renderLayer(renderLayer), render(render) {}
-	std::unique_ptr<sf::Sprite> box;
-	int renderLayer; // change to enum later
-	bool render;
-};
-
-struct cBasicRail
-{
-	cBasicRail(
-		std::unique_ptr<sf::RectangleShape> box,
-		int renderLayer = 0,
-		bool render = true
-	) : box(std::move(box)), renderLayer(renderLayer), render(render){}
-	std::unique_ptr<sf::RectangleShape> box;
-	int renderLayer;
-	bool render;
-	sf::Clock timeAlive;
-};

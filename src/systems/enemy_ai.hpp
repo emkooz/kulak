@@ -4,13 +4,9 @@
 #include <components/cAnimation.hpp>
 #include <components/cPlayer.hpp>
 #include <components/cEnemy.hpp>
+#include "components/cRender.hpp"
 #include <systems/weapons.hpp>
-
-struct evEnemyDead
-{
-	evEnemyDead(cEnemyType type) : type(type) {}
-	cEnemyType type;
-};
+#include <components/events.hpp>
 
 class enemyAISystem : public entityx::System<enemyAISystem>, public entityx::Receiver<enemyAISystem>
 {

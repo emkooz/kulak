@@ -5,17 +5,7 @@
 #include <SFML/Window/Keyboard.hpp>
 #include "log.hpp"
 #include "state.hpp"
-
-struct evKeyboard
-{
-	evKeyboard(sf::Keyboard::Key _key, bool _pressed) :
-		key(_key),
-		pressed(_pressed)
-	{}
-
-	sf::Keyboard::Key key;
-	bool pressed;
-};
+#include "components/events.hpp"
 
 class inputSystem : public entityx::System<inputSystem>, public entityx::Receiver<inputSystem>
 {
@@ -36,8 +26,3 @@ namespace kk
 	void setPressed (const evKeyboard& keyboard);
 	bool getPressed (sf::Keyboard::Key key);
 }
-
-struct evLeft { evLeft(bool pressed) : pressed(pressed) {} bool pressed; };
-struct evRight { evRight(bool pressed) : pressed(pressed) {} bool pressed; };
-struct evUp { evUp(bool pressed) : pressed(pressed) {} bool pressed; };
-struct evDown { evDown(bool pressed) : pressed(pressed) {} bool pressed; };

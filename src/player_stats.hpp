@@ -1,6 +1,7 @@
 #pragma once
 #include <entityx/entityx.h>
-#include <components/cPlayer.hpp>
+#include "components/cPlayer.hpp"
+#include "components/cRender.hpp"
 
 class stats
 {

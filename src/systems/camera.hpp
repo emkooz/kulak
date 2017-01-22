@@ -2,6 +2,7 @@
 #include <entityx/entityx.h>
 #include <SFML/Graphics.hpp>
 #include "components/cPlayer.hpp"
+#include "components/cRender.hpp"
 #include "background.hpp"
 
 class cameraSystem : public entityx::System<cameraSystem>, public entityx::Receiver<cameraSystem>

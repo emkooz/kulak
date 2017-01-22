@@ -3,13 +3,7 @@
 #include "player_stats.hpp"
 #include "systems/enemy_ai.hpp"
 #include "log.hpp"
-
-// released after all components for player are added, ComponentAddedEvent only gets when pID is added
-struct evPlayerCreated
-{
-	evPlayerCreated(entityx::Entity pEntity) : pEntity(pEntity) {}
-	entityx::Entity pEntity;
-};
+#include "components/events.hpp"
 
 // handles all player stats. gold, movement, hp, mana, etc
 class statsSystem : public entityx::System<statsSystem>, public entityx::Receiver<statsSystem>
@@ -23,9 +17,9 @@ public:
 	//void receive (const evTakeDamage &event);
 	//void receive (const evGainHealth &event);
 	// movementspeed change event
+	stats pStats;
 
 private:
-	stats pStats;
 	entityx::EntityManager& entityManager;
 	entityx::EventManager& eventManager;
 	entityx::Entity pEntity;

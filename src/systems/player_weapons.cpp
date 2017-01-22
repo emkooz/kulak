@@ -132,6 +132,8 @@ void playerWeaponSystem::swapWeapons(int index)
 			else
 				weaponInventory[x].component<cRenderable>()->render = true;
 		}
+
+		eventManager.emit<evSwitchWeapon>(index);
 	}
 }
 

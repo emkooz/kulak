@@ -22,6 +22,9 @@ void Game::loadTextures()
 	kk::loadTexture("ak", "ak47.png");
 	kk::loadTexture("knife", "knife.png");
 	kk::loadTexture("bg", "bg.png");
+	kk::loadTexture("health", "health.png");
+	kk::loadTexture("coin", "coin.png");
+	kk::loadFont("font", "Verdana.ttf");
 }
 
 void Game::update(sf::Time deltaTime)
@@ -35,6 +38,7 @@ void Game::render()
 	std::vector<std::vector<entityx::Entity>> renderList;
 	renderList.resize(5); // 5 render layers
 
+	sf::View cameraView = window.getView();
 	// loop through render layer, render layer should probably be outside of renderable component
 	world.entities.each<cRenderable>([this, &renderList](entityx::Entity entity, cRenderable &sprite)
 	{
@@ -70,6 +74,25 @@ void Game::render()
 		if (rail.timeAlive.getElapsedTime().asSeconds() > 0.05)
 			entity.destroy();
 	});
+
+	// All static camera rendering (GUI, HUD)
+	window.setView(window.getDefaultView()); // reset the view to the 1:1 window view, static.
+	world.entities.each<cStaticView>([this, &renderList](entityx::Entity entity, cStaticView &layer)
+	{
+		if (entity.has_component<cRenderableHUD>())
+		{
+			window.draw(*entity.component<cRenderableHUD>()->box);
+		}
+		else if (entity.has_component<cRenderableTextHUD>())
+		{
+			window.draw(*entity.component<cRenderableTextHUD>()->text);
+		}
+		else if (entity.has_component<cRenderableRectHUD>())
+		{
+			window.draw(*entity.component<cRenderableRectHUD>()->rect);
+		}
+	});
+	window.setView(cameraView); // reset back to  normal game view
 }
 
 void Game::run()

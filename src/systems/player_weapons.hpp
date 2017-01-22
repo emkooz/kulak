@@ -4,32 +4,14 @@
 #include "components/cPlayer.hpp"
 #include "components/cWeapon.hpp"
 #include "components/cAnimation.hpp"
+#include "components/cRender.hpp"
 #include "systems/weapons.hpp"
 #include "input.hpp"
 #include "log.hpp"
 #include "resource.hpp"
+#include "components/events.hpp"
 #include <memory>
 #include <vector>
-
-// handles weapon states, current weapons, etc
-
-struct evFire
-{
-	evFire(cDirection dir) : dir(dir) {}
-	cDirection dir;
-};
-
-struct evAddWeapon
-{
-	evAddWeapon(kk::weaponType type, std::string name, std::string texture, int damage, float cooldown, float range, sf::Vector2f size) : weapon(type), name(name), texture(texture), damage(damage), cooldown(cooldown), range(range), size(size) {}
-	kk::weaponType weapon;
-	std::string name;
-	std::string texture;
-	int damage;
-	float cooldown;
-	float range;
-	sf::Vector2f size;
-};
 
 class playerWeaponSystem : public entityx::System<playerWeaponSystem>, public entityx::Receiver<playerWeaponSystem>
 {

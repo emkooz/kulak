@@ -3,20 +3,9 @@
 #include <entityx/entityx.h>
 #include "components/cAnimation.hpp"
 #include "components/cPlayer.hpp"
+#include "components/cRender.hpp"
+#include "components/events.hpp"
 
-struct evPlayerAnimationSet
-{
-	evPlayerAnimationSet(int id, bool right, std::string name) : id(id), right(right), name(name) {}
-	int id; // player id
-	bool right; // facing the right direction or left (left == reversed)
-	std::string name; // name of animation to change to
-};
-
-struct evEntityAnimationSet
-{
-	evEntityAnimationSet(entityx::Entity &ent) : ent(ent) {}
-	entityx::Entity &ent;
-};
 class animationSystem : public entityx::System<animationSystem>, public entityx::Receiver<animationSystem>
 {
 public:

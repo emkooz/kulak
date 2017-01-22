@@ -3,43 +3,14 @@
 #include <SFML/Graphics.hpp>
 #include <components/cWeapon.hpp>
 #include <components/cPlayer.hpp>
+#include "components/cRender.hpp"
 #include <components/cEnemy.hpp>
 #include <components/cAnimation.hpp>
+#include "components/events.hpp"
 #include "log.hpp"
 #include <vector>
 
 // handles gun management (ammo, state, etc), position?, all properties like damage, and hitscan collisions
-
-struct evFireRail
-{
-	evFireRail(entityx::ComponentHandle<cWeaponBase> rail, cPlayerID pID, cPosition pos, cDirection dir) : rail(rail), pID(pID), pos(pos), dir(dir) {}
-	entityx::ComponentHandle<cWeaponBase> rail;
-	cPlayerID pID;
-	cPosition pos;
-	cDirection dir;
-};
-
-struct evFireMelee
-{
-	evFireMelee(entityx::ComponentHandle<cWeaponBase> melee, cPlayerID pID, cPosition pos, cDirection dir, entityx::ComponentHandle<cRenderable> sprite) : melee(melee), pID(pID), pos(pos), dir(dir), sprite(sprite) {}
-	entityx::ComponentHandle<cWeaponBase> melee;
-	cPlayerID pID;
-	cPosition pos;
-	cDirection dir;
-	entityx::ComponentHandle<cRenderable> sprite;
-};
-
-struct evFireProjectile
-{
-
-};
-
-struct evHitEnemy
-{
-	evHitEnemy(entityx::Entity enemy, float damage) : enemy(enemy), damage(damage) {}
-	entityx::Entity enemy;
-	float damage;
-};
 
 class weaponSystem : public entityx::System<weaponSystem>, public entityx::Receiver<weaponSystem>
 {

@@ -12,19 +12,17 @@ void statsSystem::configure(entityx::EventManager& eventManager)
 
 void statsSystem::update(entityx::EntityManager &entities, entityx::EventManager &events, entityx::TimeDelta dt)
 {
-//	if (pEntity.valid())
+	if (pEntity.valid())
 	{
-		kk::log(std::to_string(pStats.getGold()));
+
 	}
 }
 
 void statsSystem::receive(const evPlayerCreated &event)
 {
-	kk::log("poop");
 	pEntity = event.pEntity;
-	kk::log("pee");
 	pStats.configure(pEntity);
-	kk::log("asddasd");
+	eventManager.emit<evStatsCreated>(&pStats);
 }
 
 void statsSystem::receive(const evEnemyDead &event)

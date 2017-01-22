@@ -6,17 +6,12 @@
 #include <SFML/System.hpp>
 #include "components/cAnimation.hpp"
 #include "components/cPlayer.hpp"
+#include "components/cRender.hpp"
 #include "components/cEnemy.hpp"
 #include "log.hpp"
 #include "resource.hpp"
 #include "systems/input.hpp"
-
-struct evSpawnEnemy
-{
-	evSpawnEnemy(int type = 0, sf::Vector2f pos = { 0.f, 0.f }) : type(type), pos(pos) {}
-	int type;
-	sf::Vector2f pos;
-};
+#include "components/events.hpp"
 
 class enemySpawnSystem : public entityx::System<enemySpawnSystem>, public entityx::Receiver<enemySpawnSystem>
 {

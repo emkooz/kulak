@@ -15,9 +15,11 @@
 #include "systems/player_weapons.hpp"
 #include "systems/camera.hpp"
 #include "systems/player_resources.hpp"
+#include "systems/hud_system.hpp"
 #include "components/cPlayer.hpp"
 #include "components/cAnimation.hpp"
 #include "components/cWeapon.hpp"
+#include "components/cRender.hpp"
 
 class World : public entityx::EntityX, public entityx::Receiver<World>
 {

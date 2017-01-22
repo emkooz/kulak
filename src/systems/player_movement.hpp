@@ -1,6 +1,7 @@
 #pragma once
 #include <entityx/entityx.h>
 #include "components/cPlayer.hpp"
+#include "components/cRender.hpp"
 #include "systems/input.hpp"
 #include "systems/animation_system.hpp"
 #include "background.hpp"

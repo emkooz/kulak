@@ -1,4 +1,5 @@
 #pragma once
+#include "components/events.hpp"
 
 namespace kk
 {
@@ -6,9 +7,3 @@ namespace kk
 	void setState(gameState state);
 	gameState getState();
 }
-
-// State change events
-
-struct evPause {};
-struct evResume {};
-struct evQuit {};

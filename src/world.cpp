@@ -14,6 +14,7 @@ World::World(sf::RenderWindow* _window)
 	systems.add<playerWeaponSystem>(entities, events);
 	systems.add<cameraSystem>(entities, window);
 	systems.add<statsSystem>(entities, events);
+	systems.add<hudSystem>(entities, events, window);
 	systems.configure();
 }
 
@@ -29,6 +30,7 @@ void World::update(sf::Time deltaTime)
 	systems.update<playerWeaponSystem>(deltaTime.asSeconds());
 	systems.update<cameraSystem>(deltaTime.asSeconds());
 	systems.update<statsSystem>(deltaTime.asSeconds());
+	systems.update<hudSystem>(deltaTime.asSeconds());
 }
 
 void World::createEntities(entityx::EventManager& event_manager)
