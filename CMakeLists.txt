@@ -29,6 +29,7 @@ if (WIN32)
 set (SFML_STATIC_LIBRARIES TRUE)
 	set (SFML_ROOT C:/lib/SFML)
 	link_directories (C:/lib/SFML/lib)
+	set (CMAKE_CXX_FLAGS "/EHsc")
 #Entityx
 link_directories (C:/lib/entityx/lib)
 endif()

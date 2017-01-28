@@ -7,10 +7,11 @@
 #include "components/events.hpp"
 
 
-class background
+class background : public entityx::Receiver<background>
 {
 public:
 	void load(entityx::EntityManager& entityManager, entityx::EventManager& event_manager);
+	void receive(const evChangeBackground &event);
 	sf::FloatRect getBounds();
 private:
 	entityx::Entity eBG; // background entity

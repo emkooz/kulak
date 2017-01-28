@@ -154,11 +154,11 @@ void playerWeaponSystem::receive(const evAddWeapon &event)
 	else if (event.weapon == kk::WEAPON_PROJECTILE)
 		weaponInventory[index].assign<cProjectileWeapon>();
 
-	std::unique_ptr<sf::Sprite> weaponSprite(new sf::Sprite());
+	std::shared_ptr<sf::Sprite> weaponSprite(new sf::Sprite());
 	weaponSprite->setTexture(*kk::getTexture(event.texture));
 	weaponSprite->setScale(0.2, 0.2); // TODO: temporary
 	weaponInventory[index].assign<cRenderable>(
-		std::move(weaponSprite),
+		weaponSprite,
 		3,
 		index == 0? true : false);
 	weaponInventory[index].assign<cAnimation>(

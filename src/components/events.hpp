@@ -10,6 +10,10 @@
 // forward declaration
 class background;
 class stats;
+namespace kk
+{
+	enum gameState;
+}
 
 // handles weapon states, current weapons, etc
 struct evFire
@@ -140,4 +144,18 @@ struct evStatsCreated
 {
 	evStatsCreated(stats* stat) : pStats(stat) {}
 	stats* pStats;
+};
+
+// game state
+struct evSetState
+{
+	evSetState(kk::gameState state) : state(state) {}
+	kk::gameState state;
+};
+
+// background management
+struct evChangeBackground
+{
+	evChangeBackground(std::string name) : name(name) {}
+	std::string name;
 };

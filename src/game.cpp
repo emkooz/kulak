@@ -6,6 +6,7 @@ Game::Game() :
 	world(&window)
 {
 	loadTextures();
+	world.createSystems();
 	world.createEntities(world.events);
 }
 
@@ -24,6 +25,7 @@ void Game::loadTextures()
 	kk::loadTexture("bg", "bg.png");
 	kk::loadTexture("health", "health.png");
 	kk::loadTexture("coin", "coin.png");
+	kk::loadTexture("menubg", "menu-bg.png");
 	kk::loadFont("font", "Verdana.ttf");
 }
 
@@ -40,58 +42,74 @@ void Game::render()
 
 	sf::View cameraView = window.getView();
 	// loop through render layer, render layer should probably be outside of renderable component
-	world.entities.each<cRenderable>([this, &renderList](entityx::Entity entity, cRenderable &sprite)
+	if (kk::getState() == kk::gameState::STATE_PLAYING) // TODO: better way of managing this?
 	{
-		if (sprite.render) // set to its own component?? as a flag kinda, so this if isn't required, less traversal through entities
+		world.entities.each<cRenderable>([this, &renderList](entityx::Entity entity, cRenderable &sprite)
 		{
-			/*sf::RectangleShape debug;
-			debug.setFillColor(sf::Color::Transparent);
-			debug.setSize(sf::Vector2f(sprite.box->getLocalBounds().width * sprite.box->getScale().x, sprite.box->getLocalBounds().height * sprite.box->getScale().y));
-			debug.setOrigin(sf::Vector2f(debug.getSize().x / 2, debug.getSize().y / 2));
-			debug.setPosition(sf::Vector2f(sprite.box->getGlobalBounds().left + ((sprite.box->getLocalBounds().width * fabs(sprite.box->getScale().x)) / 2), sprite.box->getGlobalBounds().top + ((sprite.box->getLocalBounds().height * fabs(sprite.box->getScale().y)) / 2)));
-			debug.setOutlineThickness(2);
-			debug.setOutlineColor(sf::Color::White);
-			window.draw(debug);
-			window.draw(*sprite.box);*/
-			renderList[sprite.renderLayer].push_back(entity);
-		}
-	});
+			if (sprite.render) // set to its own component?? as a flag kinda, so this if isn't required, less traversal through entities
+			{
+				/*sf::RectangleShape debug;
+				debug.setFillColor(sf::Color::Transparent);
+				debug.setSize(sf::Vector2f(sprite.box->getLocalBounds().width * sprite.box->getScale().x, sprite.box->getLocalBounds().height * sprite.box->getScale().y));
+				debug.setOrigin(sf::Vector2f(debug.getSize().x / 2, debug.getSize().y / 2));
+				debug.setPosition(sf::Vector2f(sprite.box->getGlobalBounds().left + ((sprite.box->getLocalBounds().width * fabs(sprite.box->getScale().x)) / 2), sprite.box->getGlobalBounds().top + ((sprite.box->getLocalBounds().height * fabs(sprite.box->getScale().y)) / 2)));
+				debug.setOutlineThickness(2);
+				debug.setOutlineColor(sf::Color::White);
+				window.draw(debug);
+				window.draw(*sprite.box);*/
+				renderList[sprite.renderLayer].push_back(entity);
+			}
+		});
 
-	for (int x = 0; x < renderList.size(); x++) // loop through each layer
-	{
-		for (int y = 0; y < renderList[x].size(); y++) // loop through each item in layer
+		for (int x = 0; x < renderList.size(); x++) // loop through each layer
 		{
-			window.draw(*renderList[x][y].component<cRenderable>()->box);
+			for (int y = 0; y < renderList[x].size(); y++) // loop through each item in layer
+			{
+				window.draw(*renderList[x][y].component<cRenderable>()->box);
+			}
 		}
+
+		// temporary, later will be a cRenderable
+		world.entities.each<cBasicRail>([this](entityx::Entity entity, cBasicRail& rail)
+		{
+			if (rail.render)
+				window.draw(*rail.box);
+
+			if (rail.timeAlive.getElapsedTime().asSeconds() > 0.05)
+				entity.destroy();
+		});
+
+		// All static camera rendering (GUI, HUD)
+		window.setView(window.getDefaultView()); // reset the view to the 1:1 window view, static.
+		world.entities.each<cStaticView>([this, &renderList](entityx::Entity entity, cStaticView &layer)
+		{
+			if (entity.has_component<cRenderableHUD>())
+			{
+				window.draw(*entity.component<cRenderableHUD>()->box);
+			}
+			else if (entity.has_component<cRenderableTextHUD>())
+			{
+				window.draw(*entity.component<cRenderableTextHUD>()->text);
+			}
+			else if (entity.has_component<cRenderableRectHUD>())
+			{
+				window.draw(*entity.component<cRenderableRectHUD>()->rect);
+			}
+		});
 	}
-
-	// temporary, later will be a cRenderable
-	world.entities.each<cBasicRail>([this](entityx::Entity entity, cBasicRail& rail)
+	window.setView(window.getDefaultView());
+	// menu render
+	if (kk::getState() == kk::gameState::STATE_MENU)
 	{
-		if (rail.render)
-			window.draw(*rail.box);
-
-		if (rail.timeAlive.getElapsedTime().asSeconds() > 0.05)
-			entity.destroy();
-	});
-
-	// All static camera rendering (GUI, HUD)
-	window.setView(window.getDefaultView()); // reset the view to the 1:1 window view, static.
-	world.entities.each<cStaticView>([this, &renderList](entityx::Entity entity, cStaticView &layer)
-	{
-		if (entity.has_component<cRenderableHUD>())
+		world.entities.each<cBackground>([this](entityx::Entity entity, cBackground &bg)
 		{
-			window.draw(*entity.component<cRenderableHUD>()->box);
-		}
-		else if (entity.has_component<cRenderableTextHUD>())
+			window.draw(*entity.component<cRenderable>()->box);
+		});
+		world.entities.each<cStaticView, cRenderableMenuText>([this](entityx::Entity entity, cStaticView &layer, cRenderableMenuText &text)
 		{
-			window.draw(*entity.component<cRenderableTextHUD>()->text);
-		}
-		else if (entity.has_component<cRenderableRectHUD>())
-		{
-			window.draw(*entity.component<cRenderableRectHUD>()->rect);
-		}
-	});
+			window.draw(*text.text);
+		});
+	}
 	window.setView(cameraView); // reset back to  normal game view
 }
 

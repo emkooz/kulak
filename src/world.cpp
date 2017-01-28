@@ -4,6 +4,33 @@ World::World(sf::RenderWindow* _window)
 {
 	window = _window;
 	configure(events); // configure base before all else
+}
+
+void World::update(sf::Time deltaTime)
+{
+	// send updates to all systems eg. systems.update<movementsystem>(deltaTime);
+	systems.update<inputSystem>(deltaTime.asSeconds());
+	if (kk::getState() == kk::gameState::STATE_PLAYING)
+	{
+		systems.update<movementSystem>(deltaTime.asSeconds());
+		systems.update<animationSystem>(deltaTime.asSeconds());
+		systems.update<enemySpawnSystem>(deltaTime.asSeconds());
+		systems.update<enemyAISystem>(deltaTime.asSeconds());
+		systems.update<weaponSystem>(deltaTime.asSeconds());
+		systems.update<playerWeaponSystem>(deltaTime.asSeconds());
+		systems.update<cameraSystem>(deltaTime.asSeconds());
+		systems.update<statsSystem>(deltaTime.asSeconds());
+		systems.update<hudSystem>(deltaTime.asSeconds());
+	}
+	if (kk::getState() == kk::gameState::STATE_MENU)
+	{
+		systems.update<menuSystem>(deltaTime.asSeconds());
+	}
+	//systems.update<stateSystem>(deltaTime.asSeconds());
+}
+
+void World::createSystems()
+{
 	// generate all systems
 	systems.add<inputSystem>(events);
 	systems.add<movementSystem>(entities);
@@ -15,22 +42,9 @@ World::World(sf::RenderWindow* _window)
 	systems.add<cameraSystem>(entities, window);
 	systems.add<statsSystem>(entities, events);
 	systems.add<hudSystem>(entities, events, window);
+	systems.add<stateSystem>();
+	systems.add<menuSystem>(entities, events, window);
 	systems.configure();
-}
-
-void World::update(sf::Time deltaTime)
-{
-	// send updates to all systems eg. systems.update<movementsystem>(deltaTime);
-	systems.update<inputSystem>(deltaTime.asSeconds());
-	systems.update<movementSystem>(deltaTime.asSeconds());
-	systems.update<animationSystem>(deltaTime.asSeconds());
-	systems.update<enemySpawnSystem>(deltaTime.asSeconds());
-	systems.update<enemyAISystem>(deltaTime.asSeconds());
-	systems.update<weaponSystem>(deltaTime.asSeconds());
-	systems.update<playerWeaponSystem>(deltaTime.asSeconds());
-	systems.update<cameraSystem>(deltaTime.asSeconds());
-	systems.update<statsSystem>(deltaTime.asSeconds());
-	systems.update<hudSystem>(deltaTime.asSeconds());
 }
 
 void World::createEntities(entityx::EventManager& event_manager)
@@ -45,11 +59,11 @@ void World::createEntities(entityx::EventManager& event_manager)
 	ePlayer.assign<cPosition>(sf::Vector2f(0.f, 0.f));
 	ePlayer.assign<cDirection>(true); // true = right, make enum for DIR_LEFT and DIR_RIGHT later
 	ePlayer.assign<cVelocity>(0.f, 0.f);
-	std::unique_ptr<sf::Sprite> pSprite(new sf::Sprite());
+	std::shared_ptr<sf::Sprite> pSprite(new sf::Sprite());
 	pSprite->setTexture(*kk::getTexture("player"));
 	pSprite->setTextureRect(sf::IntRect(0, 0, 0, 0));
 	ePlayer.assign<cRenderable>(
-		std::move(pSprite), // sf::Sprite
+		pSprite, // sf::Sprite
 		2, // renderLayer
 		true // render
 		);

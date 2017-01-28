@@ -37,12 +37,12 @@ void enemySpawnSystem::spawnEnemy(int type, sf::Vector2f position)
 	enemy.assign<cPosition>(position);
 	enemy.assign<cDirection>(true);
 	enemy.assign<cVelocity>(130.f, 130.f);
-	std::unique_ptr<sf::Sprite> sprite(new sf::Sprite());
+	std::shared_ptr<sf::Sprite> sprite(new sf::Sprite());
 	sprite->setTexture(*kk::getTexture("player"));
 	sprite->setTextureRect({ 0,0,0,0 });
 	sprite->setPosition(position);
 	enemy.assign<cRenderable>(
-		std::move(sprite),
+		sprite,
 		1,
 		true);
 	enemy.assign<cAnimation>(

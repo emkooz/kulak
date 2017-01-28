@@ -6,11 +6,11 @@
 struct cRenderable
 {
 	cRenderable(
-		std::unique_ptr<sf::Sprite> box,
+		std::shared_ptr<sf::Sprite> box,
 		int renderLayer = 0,
 		bool render = true
-	) : box(std::move(box)), renderLayer(renderLayer), render(render) {}
-	std::unique_ptr<sf::Sprite> box;
+	) : box(box), renderLayer(renderLayer), render(render) {}
+	std::shared_ptr<sf::Sprite> box;
 	int renderLayer; // change to enum later
 	bool render;
 };
@@ -63,6 +63,19 @@ struct cRenderableRectHUD
 	bool render;
 };
 
+struct cRenderableMenuText
+{
+	cRenderableMenuText(
+		std::shared_ptr<sf::Text> text,
+		int renderLayer = 0,
+		bool render = true
+	) : text(text), renderLayer(renderLayer), render(render), selected(false) {}
+	std::shared_ptr<sf::Text> text;
+	int renderLayer;
+	bool render;
+	bool selected;
+};
+
 // this is used for HUD/GUI elements, which arent affected by world position
 struct cStaticView
 {
@@ -70,14 +83,17 @@ struct cStaticView
 	int renderLayer;
 };
 
+// specifically to distinguish the background. allows for render cross states
+struct cBackground {};
+
 struct cBasicRail
 {
 	cBasicRail(
-		std::unique_ptr<sf::RectangleShape> box,
+		std::shared_ptr<sf::RectangleShape> box,
 		int renderLayer = 0,
 		bool render = true
-	) : box(std::move(box)), renderLayer(renderLayer), render(render) {}
-	std::unique_ptr<sf::RectangleShape> box;
+	) : box(box), renderLayer(renderLayer), render(render) {}
+	std::shared_ptr<sf::RectangleShape> box;
 	int renderLayer;
 	bool render;
 	sf::Clock timeAlive;

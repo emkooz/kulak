@@ -4,18 +4,27 @@ void background::load(entityx::EntityManager& entityManager, entityx::EventManag
 {
 	eBG = entityManager.create();
 	eBG.assign<cPosition>(sf::Vector2f(0.f, 0.f));
-	std::unique_ptr<sf::Sprite> bgSprite(new sf::Sprite);
-	bgSprite->setTexture(*kk::getTexture("bg"));
+	eBG.assign<cBackground>();
+	std::shared_ptr<sf::Sprite> bgSprite(new sf::Sprite);
+	bgSprite->setTexture(*kk::getTexture("menubg"));
 	bgSprite->setOrigin(bgSprite->getTexture()->getSize().x / 2, bgSprite->getTexture()->getSize().y / 2);
 	bgSprite->setPosition(0.f, 0.f);
 	//bgSprite->setColor(sf::Color::Transparent);
 	bounds = bgSprite->getGlobalBounds();
 	eBG.assign<cRenderable>(
-		std::move(bgSprite),
+		bgSprite,
 		0, // renderlayer is always 0 for bg
 		true);
 
+	eventManager.subscribe<evChangeBackground>(*this);
 	eventManager.emit<evBackgroundCreated>(this);
+}
+
+void background::receive(const evChangeBackground &event)
+{
+	entityx::ComponentHandle<cRenderable> bg = eBG.component<cRenderable>();
+	bg->box->setTexture(*kk::getTexture(event.name));
+	bg->box->setOrigin(bg->box->getTexture()->getSize().x / 2, bg->box->getTexture()->getSize().y / 2);
 }
 
 sf::FloatRect background::getBounds()

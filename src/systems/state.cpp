@@ -2,7 +2,7 @@
 
 namespace kk
 {
-	static gameState currentState = STATE_PLAYING;
+	static gameState currentState = STATE_MENU;
 
 	void setState(gameState state)
 	{
@@ -13,4 +13,24 @@ namespace kk
 	{
 		return currentState;
 	}
+}
+
+stateSystem::stateSystem()
+{
+};
+
+void stateSystem::configure(entityx::EventManager& eventManager)
+{
+	eventManager.subscribe<evSetState>(*this);
+	kk::setState(kk::gameState::STATE_MENU);
+}
+
+void stateSystem::update(entityx::EntityManager &entities, entityx::EventManager &events, entityx::TimeDelta dt)
+{
+}
+
+void stateSystem::receive(const evSetState &event)
+{
+	if (event.state != kk::getState())
+		kk::setState(event.state);
 }

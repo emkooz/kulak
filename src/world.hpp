@@ -16,6 +16,8 @@
 #include "systems/camera.hpp"
 #include "systems/player_resources.hpp"
 #include "systems/hud_system.hpp"
+#include "systems/state.hpp"
+#include "systems/menu.hpp"
 #include "components/cPlayer.hpp"
 #include "components/cAnimation.hpp"
 #include "components/cWeapon.hpp"
@@ -31,6 +33,7 @@ public:
 	void receive(const evResume& resume);
 	void receive(const evQuit& quit);
 	void createEntities(entityx::EventManager& event_manager);
+	void createSystems();
 
 	entityx::Entity ePlayer; // temporary
 private:
