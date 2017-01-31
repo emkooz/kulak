@@ -12,7 +12,7 @@ class background;
 class stats;
 namespace kk
 {
-	enum gameState;
+	enum gameState : unsigned int;
 }
 
 // handles weapon states, current weapons, etc
