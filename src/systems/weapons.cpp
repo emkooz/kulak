@@ -40,9 +40,9 @@ void weaponSystem::receive(const evFireRail& _rail)
 				rails.push_back({});
 				entityx::Entity railHit = entityManager.create();
 				std::shared_ptr<sf::RectangleShape> rect(new sf::RectangleShape());
-				rect->setSize({ result.x - railX, 5.f });
+				rect->setSize({ result.x - railX, 1.f });
 				rect->setPosition(_rail.pos.pos);
-				rect->setFillColor(sf::Color::White);
+				rect->setFillColor(sf::Color::Yellow);
 				railHit.assign<cBasicRail>(
 					rect,
 					3,
@@ -62,9 +62,9 @@ void weaponSystem::receive(const evFireRail& _rail)
 				rails.push_back({});
 				entityx::Entity railHit = entityManager.create();
 				std::shared_ptr<sf::RectangleShape> rect(new sf::RectangleShape());
-				rect->setSize({ result.x - railX, 5.f });
+				rect->setSize({ result.x - railX, 1.f });
 				rect->setPosition(_rail.pos.pos);
-				rect->setFillColor(sf::Color::White);
+				rect->setFillColor(sf::Color::Yellow);
 				railHit.assign<cBasicRail>(
 					rect,
 					3,

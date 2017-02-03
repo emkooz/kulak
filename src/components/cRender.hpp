@@ -15,6 +15,16 @@ struct cRenderable
 	bool render;
 };
 
+struct cShader
+{
+	cShader(
+		std::shared_ptr<sf::Shader> shader,
+		bool enabled = true) :
+	shader(shader), enabled(enabled) {}
+	std::shared_ptr<sf::Shader> shader;
+	bool enabled;
+};
+
 struct cRenderableHUD
 {
 	cRenderableHUD(

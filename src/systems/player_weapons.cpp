@@ -32,7 +32,8 @@ void playerWeaponSystem::update(entityx::EntityManager &entities, entityx::Event
 			if (weaponInventory[currentWeapon].has_component<cRailWeapon>())
 			{
 				cPlayerID pID(0);
-				cPosition pos(sf::Vector2f(weaponInventory[currentWeapon].component<cPosition>()->pos));
+				// come from tip of weapon
+				cPosition pos(sf::Vector2f(weaponInventory[currentWeapon].component<cPosition>()->pos + sf::Vector2f(((base->size.x * weaponInventory[currentWeapon].component<cRenderable>()->box->getScale().x) / 2), 0)));
 				cDirection dir(weaponInventory[currentWeapon].component<cDirection>()->right);
 				// temporary. just to get something testable right now
 				eventManager.emit<evFireRail>(base, pID, pos, dir);
@@ -62,7 +63,7 @@ void playerWeaponSystem::update(entityx::EntityManager &entities, entityx::Event
 			if (weaponInventory[currentWeapon].has_component<cRailWeapon>())
 			{
 				cPlayerID pID(0);
-				cPosition pos(sf::Vector2f(weaponInventory[currentWeapon].component<cPosition>()->pos));
+				cPosition pos(sf::Vector2f(weaponInventory[currentWeapon].component<cPosition>()->pos + sf::Vector2f(((base->size.x * weaponInventory[currentWeapon].component<cRenderable>()->box->getScale().x) / 2), 0)));
 				cDirection dir(weaponInventory[currentWeapon].component<cDirection>()->right);
 				// temporary. just to get something testable right now
 				eventManager.emit<evFireRail>(base, pID, pos, dir);
