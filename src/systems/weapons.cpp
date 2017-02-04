@@ -23,7 +23,10 @@ void weaponSystem::receive(const evFireRail& _rail)
 	// loop through each enemy checking for a collision
 	// later on use quadtrees
 	// TODO: set tracer to an actual texture/animation
-	entityManager.each<cEnemyType, cPosition, cRenderable>([this, _rail](entityx::Entity entity, cEnemyType &type, cPosition &pos, cRenderable &render)
+	entityx::Entity closestEnemyHit;
+	sf::Vector2f hitLocation;
+
+	entityManager.each<cEnemyType, cPosition, cRenderable>([this, _rail, &closestEnemyHit, &hitLocation](entityx::Entity entity, cEnemyType &type, cPosition &pos, cRenderable &render)
 	{
 		float railX = _rail.pos.pos.x, railY = _rail.pos.pos.y;
 		sf::FloatRect enemyGlobal = render.box->getGlobalBounds(), enemyLocal = render.box->getLocalBounds();
@@ -36,19 +39,17 @@ void weaponSystem::receive(const evFireRail& _rail)
 				line_intersects({ railX, railY }, { railX + 4000, railY }, { enemyGlobal.left, enemyGlobal.top }, { enemyGlobal.left, enemyGlobal.top + enemyLocal.height }, result) || // left of box
 				line_intersects({ railX, railY }, { railX + 4000, railY }, { enemyGlobal.left, enemyGlobal.top + enemyLocal.height }, { enemyGlobal.left + enemyLocal.width, enemyGlobal.top + enemyLocal.height }, result)) // bottom of box
 			{
-				// create rail to draw
-				rails.push_back({});
-				entityx::Entity railHit = entityManager.create();
-				std::shared_ptr<sf::RectangleShape> rect(new sf::RectangleShape());
-				rect->setSize({ result.x - railX, 1.f });
-				rect->setPosition(_rail.pos.pos);
-				rect->setFillColor(sf::Color::Yellow);
-				railHit.assign<cBasicRail>(
-					rect,
-					3,
-					true);
+				if (closestEnemyHit == NULL)
+				{
+					closestEnemyHit = entity; 
+					hitLocation = result;
+				}
+				else if (std::abs(closestEnemyHit.component<cPosition>()->pos.x - railX) > std::abs(pos.pos.x - railX)) // if the current enemy is closer to the player than the last closest enemy
+				{
+					closestEnemyHit = entity; 
+					hitLocation = result;
+				}
 
-				eventManager.emit<evHitEnemy>(entity, 20);
 			}
 		}
 		// if the player is on the right side of the enemy and shooting left (same warning applies)
@@ -59,21 +60,35 @@ void weaponSystem::receive(const evFireRail& _rail)
 				line_intersects({ railX, railY }, { railX - 4000, railY }, { enemyGlobal.left + enemyLocal.width, enemyGlobal.top }, { enemyGlobal.left + enemyLocal.width, enemyGlobal.top + enemyLocal.height }, result) || // right of box
 				line_intersects({ railX, railY }, { railX - 4000, railY }, { enemyGlobal.left, enemyGlobal.top + enemyLocal.height }, { enemyGlobal.left + enemyLocal.width, enemyGlobal.top + enemyLocal.height }, result)) // bottom of box
 			{
-				rails.push_back({});
-				entityx::Entity railHit = entityManager.create();
-				std::shared_ptr<sf::RectangleShape> rect(new sf::RectangleShape());
-				rect->setSize({ result.x - railX, 1.f });
-				rect->setPosition(_rail.pos.pos);
-				rect->setFillColor(sf::Color::Yellow);
-				railHit.assign<cBasicRail>(
-					rect,
-					3,
-					true);
-
-				eventManager.emit<evHitEnemy>(entity, _rail.rail->damage);
+				if (closestEnemyHit == NULL)
+				{
+					closestEnemyHit = entity;
+					hitLocation = result;
+				}
+				else if (std::abs(closestEnemyHit.component<cPosition>()->pos.x - railX) > std::abs(pos.pos.x - railX)) // if the current enemy is closer to the player than the last closest enemy
+				{
+					closestEnemyHit = entity;
+					hitLocation = result;
+				}
 			}
 		}
 	});
+
+	if (closestEnemyHit != NULL) // hit an enemy, send out enemy hit event
+	{
+		rails.push_back({});
+		entityx::Entity railHit = entityManager.create();
+		std::shared_ptr<sf::RectangleShape> rect(new sf::RectangleShape());
+		rect->setSize({ hitLocation.x - _rail.pos.pos.x, 1.f });
+		rect->setPosition(_rail.pos.pos);
+		rect->setFillColor(sf::Color::Yellow);
+		railHit.assign<cBasicRail>(
+			rect,
+			3,
+			true);
+
+		eventManager.emit<evHitEnemy>(closestEnemyHit, _rail.rail->damage);
+	}
 }
 
 void weaponSystem::receive(const evFireMelee& melee)

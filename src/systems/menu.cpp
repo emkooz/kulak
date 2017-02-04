@@ -96,7 +96,7 @@ void menuSystem::update(entityx::EntityManager &entities, entityx::EventManager 
 		quit->selected = false;
 
 	}
-
+	// TODO: real options
 	if (options->text->getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(*window))))
 	{
 		if (!options->selected)
