@@ -33,9 +33,19 @@ int stats::getMana()
 	return mana->mana;
 }
 
-void stats::changeGold(int _gold)
+void stats::setGold(int _gold)
+{
+	gold->gold = _gold;
+}
+
+void stats::addGold(int _gold)
 {
 	gold->gold += _gold;
+}
+
+void stats::removeGold(int _gold)
+{
+	gold->gold -= _gold;
 }
 
 void stats::changeSpeed(float _speed)
@@ -48,9 +58,14 @@ void stats::setSpeed(float _speed)
 	movementSpeed = _speed;
 }
 
-void stats::changeHealth(int _hp)
+void stats::addHealth(int _hp)
 {
 	health->hp += _hp;
+}
+
+void stats::removeHealth(int _hp)
+{
+	health->hp -= _hp;
 }
 
 void stats::setHealth(int _hp)
@@ -58,9 +73,14 @@ void stats::setHealth(int _hp)
 	health->hp = _hp;
 }
 
-void stats::changeMana(int _mana)
+void stats::addMana(int _mana)
 {
 	mana->mana += _mana;
+}
+
+void stats::removeMana(int _mana)
+{
+	mana->mana -= _mana;
 }
 
 void stats::setMana(int _mana)

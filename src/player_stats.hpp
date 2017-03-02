@@ -14,12 +14,16 @@ public:
 	int getHealth();
 	int getMana();
 	
-	void changeGold(int gold);
+	void setGold(int gold);
+	void addGold(int gold);
+	void removeGold(int gold);
 	void changeSpeed(float speed);
 	void setSpeed(float speed);
-	void changeHealth(int hp);
+	void removeHealth(int hp);
+	void addHealth(int hp);
 	void setHealth(int hp);
-	void changeMana(int mana);
+	void addMana(int mana);
+	void removeMana(int mana);
 	void setMana(int mana);
 private:
 	entityx::ComponentHandle<cGold> gold;

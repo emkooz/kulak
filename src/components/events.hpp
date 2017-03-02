@@ -22,9 +22,34 @@ struct evFire
 	cDirection dir;
 };
 
+struct evFireEnemy
+{
+	evFireEnemy(entityx::Entity enemy, entityx::Entity player, cDirection dir, kk::weaponType type) : 
+		player(player), enemy(enemy), dir(dir), type(type) {}
+	kk::weaponType type;
+	entityx::Entity player;
+	entityx::Entity enemy;
+	cDirection dir;
+};
+
 struct evAddWeapon
 {
-	evAddWeapon(kk::weaponType type, std::string name, std::string texture, int damage, float cooldown, float range, sf::Vector2f size) : weapon(type), name(name), texture(texture), damage(damage), cooldown(cooldown), range(range), size(size) {}
+	evAddWeapon(kk::weaponType type, std::string name, std::string texture, int damage, float cooldown, float range, sf::Vector2f size) : weapon(type), name(name), texture(texture), 
+		damage(damage), cooldown(cooldown), range(range), size(size) {}
+	kk::weaponType weapon;
+	std::string name;
+	std::string texture;
+	int damage;
+	float cooldown;
+	float range;
+	sf::Vector2f size;
+};
+
+struct evAddWeaponEnemy
+{
+	evAddWeaponEnemy(entityx::Entity ent, kk::weaponType type, std::string name, std::string texture, int damage, float cooldown, float range, sf::Vector2f size) : ent(ent), weapon(type), name(name), texture(texture), 
+		damage(damage), cooldown(cooldown), range(range), size(size) {}
+	entityx::Entity ent;
 	kk::weaponType weapon;
 	std::string name;
 	std::string texture;
@@ -37,7 +62,8 @@ struct evAddWeapon
 // when an enemy dies 
 struct evEnemyDead
 {
-	evEnemyDead(cEnemyType type) : type(type) {}
+	evEnemyDead(entityx::Entity ent, cEnemyType type) : ent(ent), type(type) {}
+	entityx::Entity ent;
 	cEnemyType type;
 };
 
@@ -131,6 +157,13 @@ struct evHitEnemy
 	evHitEnemy(entityx::Entity enemy, float damage) : enemy(enemy), damage(damage) {}
 	entityx::Entity enemy;
 	float damage;
+};
+
+struct evHitPlayer
+{
+	evHitPlayer(entityx::Entity player, entityx::Entity weapon) : player(player), weapon(weapon) {}
+	entityx::Entity player;
+	entityx::Entity weapon;
 };
 
 struct evSwitchWeapon

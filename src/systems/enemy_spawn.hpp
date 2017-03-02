@@ -16,12 +16,13 @@
 class enemySpawnSystem : public entityx::System<enemySpawnSystem>, public entityx::Receiver<enemySpawnSystem>
 {
 public:
-	enemySpawnSystem(entityx::EntityManager& entityManager, sf::RenderWindow* _window);
+	enemySpawnSystem(entityx::EntityManager& entityManager, entityx::EventManager& eventManager, sf::RenderWindow* _window);
 	void configure(entityx::EventManager& eventManager);
 	void update(entityx::EntityManager &entities, entityx::EventManager &events, entityx::TimeDelta dt);
 	void receive(const evSpawnEnemy& enemy);
 private:
 	entityx::EntityManager& entityManager;
+	entityx::EventManager& eventManager;
 	sf::RenderWindow* window;
 	// random numbers
 	std::random_device randomDevice;

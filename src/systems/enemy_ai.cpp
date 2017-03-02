@@ -1,7 +1,7 @@
 #include "enemy_ai.hpp"
 
-enemyAISystem::enemyAISystem(entityx::EntityManager& _entityManager) :
-	entityManager(_entityManager)
+enemyAISystem::enemyAISystem(entityx::EntityManager& _entityManager, entityx::EventManager& _eventManager) :
+	entityManager(_entityManager), eventManager(_eventManager)
 {};
 
 void enemyAISystem::configure(entityx::EventManager& eventManager)
@@ -50,10 +50,73 @@ void enemyAISystem::update(entityx::EntityManager &entities, entityx::EventManag
 
 		if (enemy.component<cHealth>()->hp <= 0)
 		{
-			events.emit<evEnemyDead>(cEnemyType(enemy.component<cEnemyType>()->type));
+			events.emit<evEnemyDead>(enemy, cEnemyType(enemy.component<cEnemyType>()->type));
 			enemy.destroy();
 		}
+
+		// handle attacking. sends an "attack" per each player, tests if attack should be sent
+		entities.each<cPlayerID, cPosition, cRenderable, cDirection, cAnimation>([enemy, this](entityx::Entity player, cPlayerID &_pID, cPosition &_position, cRenderable &_render, cDirection &_direction, cAnimation &_anim)
+		{
+			attack(enemy, player);
+		});
 	});
+}
+
+void enemyAISystem::attack(entityx::Entity enemy, entityx::Entity player)
+{
+	entityx::ComponentHandle<cPosition> pPos = player.component<cPosition>();
+	entityx::ComponentHandle<cPosition> ePos = enemy.component<cPosition>();
+
+	entityx::ComponentHandle<cDirection> pDir = player.component<cDirection>();
+	entityx::ComponentHandle<cDirection> eDir = enemy.component<cDirection>();
+	
+	kk::weaponType wType;
+	if (enemy.has_component<cRailWeapon>())
+		wType = kk::WEAPON_RAIL;
+	else if (enemy.has_component<cMeleeWeapon>())
+		wType = kk::WEAPON_MELEE;
+	else if (enemy.has_component<cProjectileWeapon>())
+		wType = kk::WEAPON_PROJECTILE;
+	else
+		wType = kk::WEAPON_MELEE; // temporary. needs some sort of error out
+
+	if (eDir->right) // facing to the right
+	{
+		if (wType == kk::WEAPON_MELEE)
+		{
+			// check if the player is within 50 pixels of the enemy, start attacking. will be made dynamic later
+			if (std::abs(pPos->pos.x - ePos->pos.x) < 50)
+			{
+				eventManager.emit<evFireEnemy>(enemy, player, eDir.get(), wType);
+			}
+		}
+		else if (wType == kk::WEAPON_MELEE)
+		{
+			// todo
+		}
+		else if (wType == kk::WEAPON_PROJECTILE)
+		{
+			// todo
+		}
+	}
+	else // facing to the left
+	{
+		if (wType == kk::WEAPON_MELEE)
+		{
+			if (std::abs(ePos->pos.x - pPos->pos.x) < 50)
+			{
+				eventManager.emit<evFireEnemy>(enemy, player, eDir.get(), wType);
+			}
+		}
+		else if (wType == kk::WEAPON_MELEE)
+		{
+			// todo
+		}
+		else if (wType == kk::WEAPON_PROJECTILE)
+		{
+			// todo
+		}
+	}
 }
 
 void enemyAISystem::takeDamage(entityx::Entity entity, int damage)

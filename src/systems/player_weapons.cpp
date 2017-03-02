@@ -170,6 +170,8 @@ void playerWeaponSystem::receive(const evAddWeapon &event)
 		10);
 	weaponInventory[index].component<cAnimation>()->animations.addAnimation("idle", 1, 1);
 	weaponInventory[index].component<cAnimation>()->animations.setAnimation("idle", false);
+
+	//kk::log(std::to_string(&weaponInventory[index].id());
 }
 
 void playerWeaponSystem::receive(const entityx::ComponentAddedEvent<cPlayerID> &event)

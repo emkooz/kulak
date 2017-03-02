@@ -21,6 +21,7 @@ void World::update(sf::Time deltaTime)
 		systems.update<cameraSystem>(deltaTime.asSeconds());
 		systems.update<statsSystem>(deltaTime.asSeconds());
 		systems.update<hudSystem>(deltaTime.asSeconds());
+		systems.update<enemyWeaponSystem>(deltaTime.asSeconds());
 	}
 	if (kk::getState() == kk::gameState::STATE_MENU)
 	{
@@ -35,8 +36,8 @@ void World::createSystems()
 	systems.add<inputSystem>(events);
 	systems.add<movementSystem>(entities);
 	systems.add<animationSystem>(entities);
-	systems.add<enemySpawnSystem>(entities, window);
-	systems.add<enemyAISystem>(entities);
+	systems.add<enemySpawnSystem>(entities, events, window);
+	systems.add<enemyAISystem>(entities, events);
 	systems.add<weaponSystem>(entities, events);
 	systems.add<playerWeaponSystem>(entities, events);
 	systems.add<cameraSystem>(entities, window);
@@ -44,6 +45,7 @@ void World::createSystems()
 	systems.add<hudSystem>(entities, events, window);
 	systems.add<stateSystem>();
 	systems.add<menuSystem>(entities, events, window);
+	systems.add<enemyWeaponSystem>(entities, events);
 	systems.configure();
 }
 

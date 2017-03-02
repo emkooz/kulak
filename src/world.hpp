@@ -18,6 +18,7 @@
 #include "systems/hud_system.hpp"
 #include "systems/state.hpp"
 #include "systems/menu.hpp"
+#include "systems/enemy_weapons.hpp"
 #include "components/cPlayer.hpp"
 #include "components/cAnimation.hpp"
 #include "components/cWeapon.hpp"

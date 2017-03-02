@@ -8,6 +8,7 @@ void statsSystem::configure(entityx::EventManager& eventManager)
 {
 	eventManager.subscribe<evPlayerCreated>(*this);
 	eventManager.subscribe<evEnemyDead>(*this);
+	eventManager.subscribe<evHitPlayer>(*this);
 }
 
 void statsSystem::update(entityx::EntityManager &entities, entityx::EventManager &events, entityx::TimeDelta dt)
@@ -16,6 +17,12 @@ void statsSystem::update(entityx::EntityManager &entities, entityx::EventManager
 	{
 
 	}
+}
+
+void statsSystem::receive(const evHitPlayer &event)
+{
+	entityx::Entity weapon = event.weapon;
+	pStats.removeHealth(weapon.component<cWeaponBase>()->damage);
 }
 
 void statsSystem::receive(const evPlayerCreated &event)
@@ -29,6 +36,6 @@ void statsSystem::receive(const evEnemyDead &event)
 {
 	if (event.type.type == 0)
 	{
-		pStats.changeGold(10);
+		pStats.addGold(10);
 	}
 }

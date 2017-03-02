@@ -1,7 +1,7 @@
 #include "enemy_spawn.hpp"
 
-enemySpawnSystem::enemySpawnSystem(entityx::EntityManager& _entityManager, sf::RenderWindow* _window) :
-	entityManager(_entityManager), window(_window), rand(randomDevice()), offset(-200, 200), spawnAvailable(false)
+enemySpawnSystem::enemySpawnSystem(entityx::EntityManager& _entityManager, entityx::EventManager& _eventManager, sf::RenderWindow* _window) :
+	entityManager(_entityManager), eventManager(_eventManager), window(_window), rand(randomDevice()), offset(-200, 200), spawnAvailable(false)
 {};
 
 void enemySpawnSystem::configure(entityx::EventManager& eventManager)
@@ -30,6 +30,7 @@ void enemySpawnSystem::update(entityx::EntityManager &entities, entityx::EventMa
 void enemySpawnSystem::spawnEnemy(int type, sf::Vector2f position)
 {
 	entityx::Entity enemy = entityManager.create();
+	//kk::log(std::to_string(enemy));
 	enemy.assign<cEnemyType>(0);
 	enemy.assign<cHealth>(100);
 	//sf::Vector2f position((800 / 2) + offset(rand), (600 / 2) + offset(rand));
@@ -53,6 +54,9 @@ void enemySpawnSystem::spawnEnemy(int type, sf::Vector2f position)
 		10);
 	enemy.component<cAnimation>()->animations.addAnimation("running", 5, 12);
 	enemy.component<cAnimation>()->animations.setAnimation("running", false);
+
+	//                                   weapon type,              name,     tex, dmg, cd,    range,  size
+	eventManager.emit<evAddWeaponEnemy>(enemy, kk::WEAPON_MELEE, "knife", "knife", 5, 0.15f, 32.f, sf::Vector2f(256, 256));
 }
 
 void enemySpawnSystem::receive(const evSpawnEnemy& enemy)
