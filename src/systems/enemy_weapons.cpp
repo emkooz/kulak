@@ -71,13 +71,14 @@ void enemyWeaponSystem::receive(const evFireEnemy &event)
 
 void enemyWeaponSystem::receive(const evEnemyDead &event)
 {
-	lastWeaponEnemy = weaponVector[weaponVector.size() - 1].component<cWeaponBase>()->enemy;
 	int vectorIndex = weaponMap[event.ent]; // get index of weapon we want to delete
-	weaponVector[weaponMap[event.ent]].destroy();
-	std::swap(weaponVector[vectorIndex], weaponVector[weaponVector.size() - 1]); // swap the last added weapon and the one we want to delete
+	std::swap(weaponVector[vectorIndex], weaponVector.back()); // swap the last added weapon and the one we want to delete // IT FUCKS UP ON THIS LINE
+	weaponVector.back().destroy(); // invalidate + destroy entity
 	weaponVector.pop_back(); // delete swapped weapon from vector
 	weaponMap.erase(event.ent); // delete map entry contianing deleted weapon
-	weaponMap[lastWeaponEnemy] = vectorIndex; // set map entry for last weapon to the vector position of where the weapon was deleted
+
+	if (weaponVector.size() > 0)
+		weaponMap[lastAddedEntity] = vectorIndex;
 }
 
 void enemyWeaponSystem::receive(const evAddWeaponEnemy &event)
@@ -113,7 +114,7 @@ void enemyWeaponSystem::receive(const evAddWeaponEnemy &event)
 	weaponVector[index].component<cAnimation>()->animations.addAnimation("idle", 1, 1);
 	weaponVector[index].component<cAnimation>()->animations.setAnimation("idle", false);
 
-	lastWeaponEnemy = event.ent;
+	lastAddedEntity = weaponVector[index];
 }
 
 // fetches weapon that is attached to passed in enemy entity

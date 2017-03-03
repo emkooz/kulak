@@ -32,5 +32,5 @@ private:
 	entityx::EventManager& eventManager;
 	std::unordered_map <entityx::Entity, int> weaponMap;
 	std::vector<entityx::Entity> weaponVector;
-	entityx::Entity lastWeaponEnemy; // used in weapon deletion so that it is O(1) instead of O(n)
+	entityx::Entity lastAddedEntity;
 };

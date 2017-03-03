@@ -11,7 +11,9 @@ void enemyAISystem::configure(entityx::EventManager& eventManager)
 
 void enemyAISystem::update(entityx::EntityManager &entities, entityx::EventManager &events, entityx::TimeDelta dt)
 {
-	entities.each<cEnemyType, cPosition, cRenderable, cVelocity, cDirection, cAnimation>([dt, &entities, &events, this](entityx::Entity enemy, cEnemyType &type, cPosition &position, cRenderable &render, cVelocity &vel, cDirection &direction, cAnimation &anim)
+	std::vector<entityx::Entity> entitiesToDestroy;
+
+	entities.each<cEnemyType, cPosition, cRenderable, cVelocity, cDirection, cAnimation>([dt, &entitiesToDestroy, &entities, &events, this](entityx::Entity enemy, cEnemyType &type, cPosition &position, cRenderable &render, cVelocity &vel, cDirection &direction, cAnimation &anim)
 	{
 		// no other way to fill the componenthandle using only a single entity, I guess...
 		// TODO: WARNING: this would break for multiplayer, create different solution
@@ -48,18 +50,27 @@ void enemyAISystem::update(entityx::EntityManager &entities, entityx::EventManag
 		if (render.box->getColor() == sf::Color::Red && type.hitDurationClock.getElapsedTime().asSeconds() > type.hitVisualDuration)
 			render.box->setColor(sf::Color::White);
 
-		if (enemy.component<cHealth>()->hp <= 0)
-		{
-			events.emit<evEnemyDead>(enemy, cEnemyType(enemy.component<cEnemyType>()->type));
-			enemy.destroy();
-		}
-
 		// handle attacking. sends an "attack" per each player, tests if attack should be sent
 		entities.each<cPlayerID, cPosition, cRenderable, cDirection, cAnimation>([enemy, this](entityx::Entity player, cPlayerID &_pID, cPosition &_position, cRenderable &_render, cDirection &_direction, cAnimation &_anim)
 		{
 			attack(enemy, player);
 		});
+
+		if (enemy.component<cHealth>()->hp <= 0)
+		{
+			events.emit<evEnemyDead>(enemy, cEnemyType(enemy.component<cEnemyType>()->type));
+			//enemy.destroy();
+			entitiesToDestroy.push_back(enemy);
+		}
 	});
+
+	for (int x = entitiesToDestroy.size() - 1; x >= 0; x--)
+	{
+		entitiesToDestroy[x].destroy();
+		entitiesToDestroy.pop_back();
+
+		int y = 0;
+	}
 }
 
 void enemyAISystem::attack(entityx::Entity enemy, entityx::Entity player)
