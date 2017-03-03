@@ -60,17 +60,8 @@ void enemyAISystem::update(entityx::EntityManager &entities, entityx::EventManag
 		{
 			events.emit<evEnemyDead>(enemy, cEnemyType(enemy.component<cEnemyType>()->type));
 			enemy.destroy();
-			//entitiesToDestroy.push_back(enemy);
 		}
 	});
-
-	/*for (int x = entitiesToDestroy.size() - 1; x >= 0; x--)
-	{
-		entitiesToDestroy[x].destroy();
-		entitiesToDestroy.pop_back();
-
-		int y = 0;
-	}*/
 }
 
 void enemyAISystem::attack(entityx::Entity enemy, entityx::Entity player)

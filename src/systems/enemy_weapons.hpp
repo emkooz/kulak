@@ -26,11 +26,6 @@ public:
 	void receive(const evFireEnemy& event);
 
 private:
-	entityx::Entity getWeapon(entityx::Entity enemy);
-
 	entityx::EntityManager& entityManager;
 	entityx::EventManager& eventManager;
-	std::unordered_map <entityx::Entity, int> weaponMap;
-	std::vector<entityx::Entity> weaponVector;
-	entityx::Entity lastAddedEntity;
 };

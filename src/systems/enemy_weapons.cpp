@@ -13,35 +13,33 @@ void enemyWeaponSystem::configure(entityx::EventManager& eventManager)
 
 void enemyWeaponSystem::update(entityx::EntityManager &entities, entityx::EventManager &events, entityx::TimeDelta dt)
 {
-	// update the position of each weapon relative to the paired enemy
-		for (int x = 0; x < weaponVector.size(); x++)
+	entities.each<cEnemyType, cWeaponEnemy>([this](entityx::Entity enemy, cEnemyType &type, cWeaponEnemy &wEnemy)
+	{
+		entityx::ComponentHandle<cAnimation> anim = wEnemy.weapon.component<cAnimation>();
+
+		if (enemy.component<cDirection>()->right) // moving to the right, point weapon to the right
 		{
-			entityx::Entity enemy = weaponVector[x].component<cWeaponBase>()->enemy;
-			entityx::ComponentHandle<cAnimation> anim = weaponVector[x].component<cAnimation>();
-
-			if (enemy.component<cDirection>()->right) // moving to the right, point weapon to the right
-			{
-				weaponVector[x].component<cPosition>()->pos.x = enemy.component<cPosition>()->pos.x + 32;
-				if (anim->animations.getReversed())
-					anim->animations.setReversed(weaponVector[x].component<cRenderable>()->box.get(), false);
-				weaponVector[x].component<cDirection>()->right = true;
-			}
-			else if (!enemy.component<cDirection>()->right) // moving to the left, point weapont to the left
-			{
-				weaponVector[x].component<cPosition>()->pos.x = enemy.component<cPosition>()->pos.x - 32;
-				if (!anim->animations.getReversed())
-					anim->animations.setReversed(weaponVector[x].component<cRenderable>()->box.get(), true);
-				weaponVector[x].component<cDirection>()->right = false;
-			}
-
-			weaponVector[x].component<cPosition>()->pos.y = enemy.component<cPosition>()->pos.y;
-			weaponVector[x].component<cRenderable>()->box->setPosition(weaponVector[x].component<cPosition>()->pos.x, weaponVector[x].component<cPosition>()->pos.y);
+			wEnemy.weapon.component<cPosition>()->pos.x = enemy.component<cPosition>()->pos.x + 32;
+			if (anim->animations.getReversed())
+				anim->animations.setReversed(wEnemy.weapon.component<cRenderable>()->box.get(), false);
+			wEnemy.weapon.component<cDirection>()->right = true;
 		}
+		else if (!enemy.component<cDirection>()->right) // moving to the left, point weapont to the left
+		{
+			wEnemy.weapon.component<cPosition>()->pos.x = enemy.component<cPosition>()->pos.x - 32;
+			if (!anim->animations.getReversed())
+				anim->animations.setReversed(wEnemy.weapon.component<cRenderable>()->box.get(), true);
+			wEnemy.weapon.component<cDirection>()->right = false;
+		}
+
+		wEnemy.weapon.component<cPosition>()->pos.y = enemy.component<cPosition>()->pos.y;
+		wEnemy.weapon.component<cRenderable>()->box->setPosition(wEnemy.weapon.component<cPosition>()->pos.x, wEnemy.weapon.component<cPosition>()->pos.y);
+	});
 }
 
 void enemyWeaponSystem::receive(const evFireEnemy &event)
 {
-	entityx::Entity weapon = getWeapon(event.enemy);
+	entityx::Entity enemy = event.enemy, weapon = enemy.component<cWeaponEnemy>()->weapon;
 
 	if (weapon.component<cWeaponBase>()->cooldownTimer.getElapsedTime().asSeconds() > weapon.component<cWeaponBase>()->cooldown) // off cooldown
 	{
@@ -71,54 +69,47 @@ void enemyWeaponSystem::receive(const evFireEnemy &event)
 
 void enemyWeaponSystem::receive(const evEnemyDead &event)
 {
-	int vectorIndex = weaponMap[event.ent]; // get index of weapon we want to delete
-	std::swap(weaponVector[vectorIndex], weaponVector.back()); // swap the last added weapon and the one we want to delete // IT FUCKS UP ON THIS LINE
-	weaponVector.back().destroy(); // invalidate + destroy entity
-	weaponVector.pop_back(); // delete swapped weapon from vector
-	weaponMap.erase(event.ent); // delete map entry contianing deleted weapon
+	entityx::Entity enemy = event.ent;
 
-	if (weaponVector.size() > 0)
-		weaponMap[lastAddedEntity] = vectorIndex;
+	if (enemy.has_component<cWeaponEnemy>())
+	{
+		enemy.component<cWeaponEnemy>()->weapon.destroy();
+		enemy.remove<cWeaponEnemy>();
+	}
 }
 
 void enemyWeaponSystem::receive(const evAddWeaponEnemy &event)
 {
-	weaponVector.push_back({});
-	int index = weaponVector.size() - 1;
-	weaponMap[event.ent] = index; // add new weapon to list of enemy weapons
-	weaponVector[index] = entityManager.create();
-	weaponVector[index].assign<cPosition>(sf::Vector2f(0.f, 0.f)); // assign defaults, updated on next tick? or update it here since we already have the enemy its tied to
-	weaponVector[index].assign<cDirection>(true);
-	weaponVector[index].assign<cWeaponBase>(event.ent, event.name, event.cooldown, event.damage, event.range, event.size);
+	entityx::Entity weapon = entityManager.create();
+	entityx::Entity enemy = event.ent;
+
+	weapon.assign<cPosition>(sf::Vector2f(0.f, 0.f)); // assign defaults, updated on next tick? or update it here since we already have the enemy its tied to
+	weapon.assign<cDirection>(true);
+	weapon.assign<cWeaponBase>(event.name, event.cooldown, event.damage, event.range, event.size);
 
 	if (event.weapon == kk::WEAPON_RAIL)
-		weaponVector[index].assign<cRailWeapon>();
+		weapon.assign<cRailWeapon>();
 	else if (event.weapon == kk::WEAPON_MELEE)
-		weaponVector[index].assign<cMeleeWeapon>();
+		weapon.assign<cMeleeWeapon>();
 	else if (event.weapon == kk::WEAPON_PROJECTILE)
-		weaponVector[index].assign<cProjectileWeapon>();
+		weapon.assign<cProjectileWeapon>();
 
 	std::shared_ptr<sf::Sprite> weaponSprite(new sf::Sprite());
 	weaponSprite->setTexture(*kk::getTexture(event.texture));
 	weaponSprite->setScale(0.2, 0.2); // TODO: temporary
-	weaponVector[index].assign<cRenderable>(
+	weapon.assign<cRenderable>(
 		weaponSprite,
 		3,
 		true);
-	weaponVector[index].assign<cAnimation>(
+	weapon.assign<cAnimation>(
 		kk::getTexture(event.texture),
 		1,
 		1,
 		sf::Vector2i(256, 256),
 		10);
-	weaponVector[index].component<cAnimation>()->animations.addAnimation("idle", 1, 1);
-	weaponVector[index].component<cAnimation>()->animations.setAnimation("idle", false);
 
-	lastAddedEntity = weaponVector[index];
+	weapon.component<cAnimation>()->animations.addAnimation("idle", 1, 1);
+	weapon.component<cAnimation>()->animations.setAnimation("idle", false);
+
+	enemy.assign<cWeaponEnemy>(weapon);
 }
-
-// fetches weapon that is attached to passed in enemy entity
-entityx::Entity enemyWeaponSystem::getWeapon(entityx::Entity enemy)
-{
-	return weaponVector[weaponMap[enemy]];
-} 
