@@ -11,9 +11,9 @@ void enemyAISystem::configure(entityx::EventManager& eventManager)
 
 void enemyAISystem::update(entityx::EntityManager &entities, entityx::EventManager &events, entityx::TimeDelta dt)
 {
-	std::vector<entityx::Entity> entitiesToDestroy;
+	//std::vector<entityx::Entity> entitiesToDestroy;
 
-	entities.each<cEnemyType, cPosition, cRenderable, cVelocity, cDirection, cAnimation>([dt, &entitiesToDestroy, &entities, &events, this](entityx::Entity enemy, cEnemyType &type, cPosition &position, cRenderable &render, cVelocity &vel, cDirection &direction, cAnimation &anim)
+	entities.each<cEnemyType, cPosition, cRenderable, cVelocity, cDirection, cAnimation>([dt, &entities, &events, this](entityx::Entity enemy, cEnemyType &type, cPosition &position, cRenderable &render, cVelocity &vel, cDirection &direction, cAnimation &anim)
 	{
 		// no other way to fill the componenthandle using only a single entity, I guess...
 		// TODO: WARNING: this would break for multiplayer, create different solution
@@ -59,18 +59,18 @@ void enemyAISystem::update(entityx::EntityManager &entities, entityx::EventManag
 		if (enemy.component<cHealth>()->hp <= 0)
 		{
 			events.emit<evEnemyDead>(enemy, cEnemyType(enemy.component<cEnemyType>()->type));
-			//enemy.destroy();
-			entitiesToDestroy.push_back(enemy);
+			enemy.destroy();
+			//entitiesToDestroy.push_back(enemy);
 		}
 	});
 
-	for (int x = entitiesToDestroy.size() - 1; x >= 0; x--)
+	/*for (int x = entitiesToDestroy.size() - 1; x >= 0; x--)
 	{
 		entitiesToDestroy[x].destroy();
 		entitiesToDestroy.pop_back();
 
 		int y = 0;
-	}
+	}*/
 }
 
 void enemyAISystem::attack(entityx::Entity enemy, entityx::Entity player)
