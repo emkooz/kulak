@@ -64,7 +64,7 @@ void menuSystem::update(entityx::EntityManager &entities, entityx::EventManager 
 
 		if (!mousePressed && sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		{
-			events.emit<evSetState>(kk::gameState::STATE_PLAYING);
+			events.emit<evSetState>(kk::gameState::STATE_PREGAME);
 			events.emit<evChangeBackground>("bg");
 			mousePressed = true;
 		}

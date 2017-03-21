@@ -23,6 +23,7 @@ void stateSystem::configure(entityx::EventManager& eventManager)
 {
 	eventManager.subscribe<evSetState>(*this);
 	kk::setState(kk::gameState::STATE_MENU);
+	eventManager.emit<evSetState>(kk::STATE_MENU);
 }
 
 void stateSystem::update(entityx::EntityManager &entities, entityx::EventManager &events, entityx::TimeDelta dt)

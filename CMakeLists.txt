@@ -32,9 +32,13 @@ set (SFML_STATIC_LIBRARIES TRUE)
 	set (CMAKE_CXX_FLAGS "/EHsc")
 #Entityx
 link_directories (C:/lib/entityx/lib)
+#TGUI
+link_directories (C:/lib/TGUI-0.7.3/lib)
+#	set (TGUI_ROOT C:/lib/TGUI-0.7.3)
 endif()
 
 find_package(EntityX REQUIRED)
+find_package(TGUI REQUIRED)
 # Dynamically linked on Linux
 find_package (SFML 2 COMPONENTS system window graphics audio REQUIRED)
 if (SFML_FOUND)
@@ -58,5 +62,6 @@ if (SFML_FOUND)
 
 	include_directories (${SFML_INCLUDE_DIR})
 	include_directories (${ENTITYX_INCLUDE_DIR})
-	target_link_libraries (kulak ${SFML_LIBRARIES} debug ${ENTITYX_LIBRARY_DEBUG} optimized ${ENTITYX_LIBRARY})
+	include_directories (${TGUI_INCLUDE_DIR})
+	target_link_libraries (kulak ${SFML_LIBRARIES} debug ${ENTITYX_LIBRARY_DEBUG} ${TGUI_LIBRARY_DEBUG} optimized ${ENTITYX_LIBRARY} ${TGUI_LIBRARY})
 endif()

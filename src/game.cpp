@@ -111,6 +111,9 @@ void Game::render()
 		});
 	}
 	window.setView(cameraView); // reset back to  normal game view
+
+	// render GUI, always on top
+	world.renderGui();
 }
 
 void Game::run()
@@ -132,12 +135,10 @@ void Game::run()
 				update(tickrate);
 			} // possibly do something if update time was lower than tickrate?
 
-
 			window.clear(clearColor);
 			render();
 			window.display();
 	}
-
 	window.close();
 }
 
@@ -158,5 +159,6 @@ void Game::pollSFMLEvent()
 		case sf::Event::KeyReleased:
 			world.events.emit<evKeyboard>(event.key.code, false);
 		}
+		world.pollGui(event);
 	}
 }

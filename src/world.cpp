@@ -1,6 +1,7 @@
 #include "world.hpp"
 
-World::World(sf::RenderWindow* _window)
+World::World(sf::RenderWindow* _window) :
+	gui(entities, events)
 {
 	window = _window;
 	configure(events); // configure base before all else
@@ -32,6 +33,9 @@ void World::update(sf::Time deltaTime)
 
 void World::createSystems()
 {
+	// setup the GUI
+	gui.init(window);
+
 	// generate all systems
 	systems.add<inputSystem>(events);
 	systems.add<movementSystem>(entities);
@@ -91,6 +95,16 @@ void World::configure(entityx::EventManager &event_manager)
 	event_manager.subscribe<evPause>(*this);
 	event_manager.subscribe<evResume>(*this);
 	event_manager.subscribe<evQuit>(*this);
+}
+
+void World::pollGui(sf::Event ev)
+{
+	gui.pollEvents(ev);
+}
+
+void World::renderGui()
+{
+	gui.draw();
 }
 
 void World::receive(const evPause& pause)

@@ -5,6 +5,7 @@
 #include "resource.hpp"
 #include "log.hpp"
 #include "background.hpp"
+#include "gui.hpp"
 #include "systems/state.hpp"
 #include "systems/input.hpp"
 #include "systems/player_movement.hpp"
@@ -35,10 +36,13 @@ public:
 	void receive(const evQuit& quit);
 	void createEntities(entityx::EventManager& event_manager);
 	void createSystems();
+	void pollGui(sf::Event ev);
+	void renderGui();
 
 	entityx::Entity ePlayer; // temporary
 private:
 
 	sf::RenderWindow* window;
 	background bg;
+	GUI gui;
 };
