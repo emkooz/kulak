@@ -11,6 +11,16 @@ cmake_install.cmake
 *.sublime-project
 *.sublime-workspace
 CMakeSettings.json
+build/compile_commands.json
+build/CMakeTools/CMakeToolsHelpers.cmake
+build/CMakeTools/InitializeCache.cmake
+
+#VSCode
+.vscode/*
+.vscode/settings.json
+.vscode/tasks.json
+.vscode/launch.json
+.vscode/extensions.json
 
 ##### CMake #####
 CMakeCache.txt
