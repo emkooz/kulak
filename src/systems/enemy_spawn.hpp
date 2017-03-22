@@ -1,6 +1,8 @@
 #pragma once
 #include <random>
 #include <memory>
+#include <vector>
+#include <iostream>
 #include <entityx/entityx.h>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
@@ -33,4 +35,13 @@ private:
 	bool spawnAvailable;
 
 	void spawnEnemy(int type, sf::Vector2f position);
+
+	struct level
+	{
+		// order of vector is order that enemies should be spawned in
+		std::vector<int> types;
+	}
+	std::vector<level> levels;
+
+	void readSpawnFile();
 };

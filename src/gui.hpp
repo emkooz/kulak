@@ -15,6 +15,7 @@ public:
 	void receive(const evStatsCreated& event);
 	void pollEvents(sf::Event event);
 	void draw();
+	void update();
 
 private:
 	entityx::EntityManager& entityManager;

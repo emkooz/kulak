@@ -7,6 +7,8 @@ enemySpawnSystem::enemySpawnSystem(entityx::EntityManager& _entityManager, entit
 void enemySpawnSystem::configure(entityx::EventManager& eventManager)
 {
 	eventManager.subscribe<evSpawnEnemy>(*this);
+
+	readSpawnFile();
 }
 
 void enemySpawnSystem::update(entityx::EntityManager &entities, entityx::EventManager &events, entityx::TimeDelta dt)
@@ -57,6 +59,11 @@ void enemySpawnSystem::spawnEnemy(int type, sf::Vector2f position)
 
 	//                                   weapon type,              name,     tex, dmg, cd,    range,  size
 	eventManager.emit<evAddWeaponEnemy>(enemy, kk::WEAPON_MELEE, "knife", "knife", 5, 0.15f, 32.f, sf::Vector2f(256, 256));
+}
+
+void enemySpawnSystem::readSpawnFile()
+{
+
 }
 
 void enemySpawnSystem::receive(const evSpawnEnemy& enemy)

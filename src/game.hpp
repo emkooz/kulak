@@ -4,6 +4,7 @@
 #include "systems/input.hpp"
 #include "log.hpp"
 #include "resource.hpp"
+#include "cvar.hpp"
 #include "world.hpp"
 #include <vector>
 
@@ -17,6 +18,7 @@ public:
 
 private:
 	void loadTextures();
+	void loadCvars();
 	void update(sf::Time deltaTime);
 	void render();
 	void pollSFMLEvent();

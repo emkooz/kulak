@@ -62,6 +62,7 @@ void GUI::init(sf::RenderWindow* _window)
 		gui.add(pHealth, "pStatHealth");
 		statWidgets.emplace_back(pHealth);
 
+	// Gold text + upgrade in middle
 	auto tGoldUpgrade = tgui::Label::copy(tGold);
 		tGoldUpgrade->setPosition(centerHorizontal(tGoldUpgrade, width) - 50, centerVertical(tGoldUpgrade, height));
 		gui.add(tGoldUpgrade, "tStatGoldUpgrade");
@@ -76,13 +77,17 @@ void GUI::init(sf::RenderWindow* _window)
 		gui.add(bGoldUpgrade, "bStatGoldUpgrade");
 		statWidgets.emplace_back(bGoldUpgrade);
 
+	// Health text + upgrade in middle
 	auto tHealthUpgrade = tgui::Label::copy(tHealth);
 		tHealthUpgrade->setPosition(tGoldUpgrade->getPosition().x, tGoldUpgrade->getPosition().y + tGoldUpgrade->getSize().y);
 		gui.add(tHealthUpgrade, "tStatHealthUpgrade");
 		statWidgets.emplace_back(tHealthUpgrade);
 
-	auto bHealthUpgrade = tgui::Button::copy(bGoldUpgrade);
+	auto bHealthUpgrade = tgui::Button::create();
+		bHealthUpgrade->setText("Upgrade");
 		bHealthUpgrade->setPosition(bGoldUpgrade->getPosition().x, bGoldUpgrade->getPosition().y + bGoldUpgrade->getSize().y);
+		bHealthUpgrade->setSize(75, 24);
+		bHealthUpgrade->hide();
 		bHealthUpgrade->connect("pressed", [&]() {eventManager.emit<evBuyHP>();});
 		gui.add(bHealthUpgrade, "bStatHealthUpgrade");
 		statWidgets.emplace_back(bHealthUpgrade);
@@ -111,6 +116,19 @@ void GUI::receive(const evSetState& event)
 void GUI::receive(const evStatsCreated &event)
 {
 	pStats = event.pStats;
+}
+
+void GUI::update()
+{
+	auto tGold = gui.get<tgui::Label>("tStatGold");
+	auto tHealth = gui.get<tgui::Label>("tStatHealth");
+	auto tGoldUpgrade = gui.get<tgui::Label>("tStatGoldUpgrade");
+	auto tHealthUpgrade = gui.get<tgui::Label>("tStatHealthUpgrade");
+
+	tGold->setText(std::to_string(pStats->getGold()));
+	tHealth->setText(std::to_string(pStats->getHealth()));
+	tGoldUpgrade->setText(std::to_string(pStats->getGold()));
+	tHealthUpgrade->setText(std::to_string(pStats->getHealth()));
 }
 
 void GUI::pollEvents(sf::Event events)

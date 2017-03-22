@@ -44,10 +44,18 @@ void statsSystem::receive(const evEnemyDead &event)
 
 void statsSystem::receive(const evBuyHP& event)
 {
-	//pStats.addHealth(10);
+	int remainingGold = pStats.getGold() - 15;
+	kk::log(std::to_string(remainingGold));
+	if (remainingGold > 0)
+	{
+		pStats.setGold(remainingGold);
+		pStats.addHealth(10);
+	}
 }
 
 void statsSystem::receive(const evBuyMana& event)
 {
-
+	// TODO: lets not forget about this later, yeah?
+	pStats.addGold(10);
+	kk::log("WOW");
 }

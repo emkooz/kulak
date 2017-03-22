@@ -29,6 +29,11 @@ void Game::loadTextures()
 	kk::loadFont("font", "Verdana.ttf");
 }
 
+void Game::loadCvars()
+{
+
+}
+
 void Game::update(sf::Time deltaTime)
 {
 	//world.systems.update_all(deltaTime.asSeconds());

@@ -29,6 +29,9 @@ void World::update(sf::Time deltaTime)
 		systems.update<menuSystem>(deltaTime.asSeconds());
 	}
 	//systems.update<stateSystem>(deltaTime.asSeconds());
+
+	// update GUI with the new values
+	gui.update();
 }
 
 void World::createSystems()
