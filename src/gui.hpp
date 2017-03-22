@@ -3,20 +3,23 @@
 #include <TGUI/TGUI.hpp>
 #include <entityx/entityx.h>
 #include "systems/state.hpp"
+#include "player_stats.hpp"
+#include "resource.hpp"
 
 class GUI : public entityx::Receiver<GUI>
 {
 public:
 	GUI(entityx::EntityManager& entityManager, entityx::EventManager& eventManager);
 	void init(sf::RenderWindow* _window);
-	void configure(entityx::EventManager& eventManager);
 	void receive(const evSetState& event);
+	void receive(const evStatsCreated& event);
 	void pollEvents(sf::Event event);
 	void draw();
 
 private:
 	entityx::EntityManager& entityManager;
 	entityx::EventManager& eventManager;
+	stats* pStats;
 
 	template <typename T>
 	tgui::Layout centerVertical(T widget, tgui::Layout width);
@@ -28,5 +31,5 @@ private:
 
 	// Pregame menu
 	std::vector <std::shared_ptr<tgui::Widget>> statWidgets;
-	
+	// "update" vector?
 };

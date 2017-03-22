@@ -192,3 +192,11 @@ struct evChangeBackground
 	evChangeBackground(std::string name) : name(name) {}
 	std::string name;
 };
+
+struct evBuyHP
+{
+};
+
+struct evBuyMana
+{
+};

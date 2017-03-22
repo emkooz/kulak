@@ -33,9 +33,6 @@ void World::update(sf::Time deltaTime)
 
 void World::createSystems()
 {
-	// setup the GUI
-	gui.init(window);
-
 	// generate all systems
 	systems.add<inputSystem>(events);
 	systems.add<movementSystem>(entities);
@@ -88,6 +85,9 @@ void World::createEntities(entityx::EventManager& event_manager)
 	event_manager.emit<evAddWeapon>(kk::WEAPON_MELEE, "knife", "knife", 5, 0.15f, 32.f,   sf::Vector2f(256, 256));
 
 	event_manager.emit<evPlayerCreated>(ePlayer);
+
+	// setup the GUI
+	gui.init(window);
 }
 
 void World::configure(entityx::EventManager &event_manager)

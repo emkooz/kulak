@@ -15,6 +15,8 @@ public:
 	void receive(const evPlayerCreated &event);
 	void receive(const evEnemyDead &event);
 	void receive (const evHitPlayer &event);
+	void receive(const evBuyHP& event);
+	void receive(const evBuyMana& event);
 	//void receive (const evGainHealth &event);
 	// movementspeed change event
 	stats pStats;

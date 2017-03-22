@@ -9,6 +9,8 @@ void statsSystem::configure(entityx::EventManager& eventManager)
 	eventManager.subscribe<evPlayerCreated>(*this);
 	eventManager.subscribe<evEnemyDead>(*this);
 	eventManager.subscribe<evHitPlayer>(*this);
+	eventManager.subscribe<evBuyHP>(*this);
+	eventManager.subscribe<evBuyMana>(*this);
 }
 
 void statsSystem::update(entityx::EntityManager &entities, entityx::EventManager &events, entityx::TimeDelta dt)
@@ -38,4 +40,14 @@ void statsSystem::receive(const evEnemyDead &event)
 	{
 		pStats.addGold(10);
 	}
+}
+
+void statsSystem::receive(const evBuyHP& event)
+{
+	//pStats.addHealth(10);
+}
+
+void statsSystem::receive(const evBuyMana& event)
+{
+
 }
