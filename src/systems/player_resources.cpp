@@ -45,7 +45,6 @@ void statsSystem::receive(const evEnemyDead &event)
 void statsSystem::receive(const evBuyHP& event)
 {
 	int remainingGold = pStats.getGold() - 15;
-	kk::log(std::to_string(remainingGold));
 	if (remainingGold > 0)
 	{
 		pStats.setGold(remainingGold);

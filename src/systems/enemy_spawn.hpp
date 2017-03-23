@@ -36,7 +36,6 @@ private:
 	// random numbers
 	std::random_device randomDevice;
 	std::mt19937 rand;
-	std::uniform_int_distribution<int> offset;
 
 	// internal clock for timing spawning
 	sf::Clock clock;
@@ -48,6 +47,7 @@ private:
 
 	struct level
 	{
+		level() {}
 		// order of vector is order that enemies should be spawned in
 		std::vector<int> types;
 	};

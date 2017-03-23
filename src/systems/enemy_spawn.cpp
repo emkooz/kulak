@@ -1,7 +1,7 @@
 #include "enemy_spawn.hpp"
 
 enemySpawnSystem::enemySpawnSystem(entityx::EntityManager& _entityManager, entityx::EventManager& _eventManager, sf::RenderWindow* _window) :
-	entityManager(_entityManager), eventManager(_eventManager), window(_window), rand(randomDevice()), offset(-200, 200), spawnAvailable(false)
+	entityManager(_entityManager), eventManager(_eventManager), window(_window), rand(randomDevice()), spawnAvailable(false)
 {};
 
 void enemySpawnSystem::configure(entityx::EventManager& eventManager)
@@ -36,13 +36,13 @@ void enemySpawnSystem::update(entityx::EntityManager &entities, entityx::EventMa
 		{
 			std::bernoulli_distribution randGen(0.5); // 50/50 spawning left or right
 			auto randBool = std::bind(randGen, rand);
+			std::uniform_int_distribution<int> offset((bounds->getBounds().top) + 60, -(bounds->getBounds().top) - 40);
 
 			for (; enemiesToSpawn > 0; enemiesToSpawn--)
 			{
 				eventManager.emit<evSpawnEnemy>(levels[currentLevel - 1].types[enemiesToSpawn - 1],
 					sf::Vector2f((randBool() ? bounds->getBounds().left - 50 : bounds->getBounds().left + bounds->getBounds().width + 50), // X coord of spawn
-								 (0 + offset(rand)))); // Y coord of spawn (+-200 from center)
-				kk::log("SPAWNING");
+								 (offset(rand)))); // Y coord of spawn (+-offset from center)
 			}
 		}
 	}
@@ -84,27 +84,31 @@ void enemySpawnSystem::readSpawnFile()
 {
 	std::ifstream file("spawns.kk", std::ios::binary);
 	std::vector<char> vBuffer((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
-	std::string buffer = std::string(vBuffer.begin(), vBuffer.end());
+	std::string buffer(vBuffer.begin(), vBuffer.end());
 
-	if (buffer.size() > 0 && buffer.compare(0, 5, "KULAK") == 0) // make sure the header is correct
+	if (!file.fail() && buffer.size() > 0 && buffer.compare(0, 5, "KULAK") == 0) // make sure the header is correct
 	{
-		level lvl; // temporary
-
+		// read through file
 		for (int pos = 5; pos < buffer.size(); pos++)
 		{
-			if (buffer[pos] == 0x01)
-				lvl.types.push_back(1);
+			if (buffer[pos] == '>') // > == new level
+			{
+				levels.emplace_back();
+			}
+			else if (buffer[pos] == 0x01)
+			{
+				levels.back().types.push_back(1);
+			}
 		}
-
-		levels.push_back(lvl); // make this real later
-
-		enemiesAlive = lvl.types.size();
+		kk::log("levels size: " + std::to_string(levels.size()));
+		enemiesAlive = levels[0].types.size();
 		enemiesToSpawn = enemiesAlive;
 		currentLevel = 1;
 	}
 	else
 	{
 		kk::log("Failed to load spawns.kk", kk::logType::error);
+		// generate randomized spawns
 	}
 }
 
