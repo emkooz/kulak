@@ -57,5 +57,4 @@ void statsSystem::receive(const evBuyMana& event)
 {
 	// TODO: lets not forget about this later, yeah?
 	pStats.addGold(10);
-	kk::log("WOW");
 }

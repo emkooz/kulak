@@ -7,6 +7,9 @@ enemySpawnSystem::enemySpawnSystem(entityx::EntityManager& _entityManager, entit
 void enemySpawnSystem::configure(entityx::EventManager& eventManager)
 {
 	eventManager.subscribe<evSpawnEnemy>(*this);
+	eventManager.subscribe<evLevelCompleted>(*this);
+	eventManager.subscribe<evEnemyDead>(*this);
+	eventManager.subscribe<evBackgroundCreated>(*this);
 
 	readSpawnFile();
 }
@@ -14,7 +17,7 @@ void enemySpawnSystem::configure(entityx::EventManager& eventManager)
 void enemySpawnSystem::update(entityx::EntityManager &entities, entityx::EventManager &events, entityx::TimeDelta dt)
 {
 	// handle spawning enemies based on a ruleset. currently just spawns enemies randomly
-	if (kk::getPressed(sf::Keyboard::P))
+	/*if (kk::getPressed(sf::Keyboard::P))
 	{
 		if (spawnAvailable)
 		{
@@ -25,8 +28,24 @@ void enemySpawnSystem::update(entityx::EntityManager &entities, entityx::EventMa
 	else
 	{
 		spawnAvailable = true;
-	}
+	}*/ // set this to a debug mode?
 
+	if (kk::getState() == kk::STATE_PLAYING)
+	{
+		if (enemiesToSpawn)
+		{
+			std::bernoulli_distribution randGen(0.5); // 50/50 spawning left or right
+			auto randBool = std::bind(randGen, rand);
+
+			for (; enemiesToSpawn > 0; enemiesToSpawn--)
+			{
+				eventManager.emit<evSpawnEnemy>(levels[currentLevel - 1].types[enemiesToSpawn - 1],
+					sf::Vector2f((randBool() ? bounds->getBounds().left - 50 : bounds->getBounds().left + bounds->getBounds().width + 50), // X coord of spawn
+								 (0 + offset(rand)))); // Y coord of spawn (+-200 from center)
+				kk::log("SPAWNING");
+			}
+		}
+	}
 }
 
 void enemySpawnSystem::spawnEnemy(int type, sf::Vector2f position)
@@ -63,10 +82,63 @@ void enemySpawnSystem::spawnEnemy(int type, sf::Vector2f position)
 
 void enemySpawnSystem::readSpawnFile()
 {
+	std::ifstream file("spawns.kk", std::ios::binary);
+	std::vector<char> vBuffer((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
+	std::string buffer = std::string(vBuffer.begin(), vBuffer.end());
 
+	if (buffer.size() > 0 && buffer.compare(0, 5, "KULAK") == 0) // make sure the header is correct
+	{
+		level lvl; // temporary
+
+		for (int pos = 5; pos < buffer.size(); pos++)
+		{
+			if (buffer[pos] == 0x01)
+				lvl.types.push_back(1);
+		}
+
+		levels.push_back(lvl); // make this real later
+
+		enemiesAlive = lvl.types.size();
+		enemiesToSpawn = enemiesAlive;
+		currentLevel = 1;
+	}
+	else
+	{
+		kk::log("Failed to load spawns.kk", kk::logType::error);
+	}
 }
 
 void enemySpawnSystem::receive(const evSpawnEnemy& enemy)
 {
 	spawnEnemy(enemy.type, enemy.pos);
+}
+
+void enemySpawnSystem::receive(const evLevelCompleted& event)
+{
+	if (levels.size() > event.nextLevel)
+	{
+		enemiesAlive = levels[event.nextLevel].types.size();
+		enemiesToSpawn = enemiesAlive;
+		currentLevel = event.nextLevel;
+	}
+	else // TODO: account for this
+	{
+		kk::log("No more levels left! Randomizing.");
+		/* randomize here */
+	}
+}
+
+void enemySpawnSystem::receive(const evEnemyDead& event)
+{
+	enemiesAlive--;
+
+	if (enemiesAlive == 0)
+	{
+		eventManager.emit<evAllEnemiesDead>();
+	}
+}
+
+void enemySpawnSystem::receive(const evBackgroundCreated& event)
+{
+	bounds = event.bg;
 }

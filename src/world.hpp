@@ -20,6 +20,7 @@
 #include "systems/state.hpp"
 #include "systems/menu.hpp"
 #include "systems/enemy_weapons.hpp"
+#include "systems/level_system.hpp"
 #include "components/cPlayer.hpp"
 #include "components/cAnimation.hpp"
 #include "components/cWeapon.hpp"

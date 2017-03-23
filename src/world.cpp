@@ -47,9 +47,10 @@ void World::createSystems()
 	systems.add<cameraSystem>(entities, window);
 	systems.add<statsSystem>(entities, events);
 	systems.add<hudSystem>(entities, events, window);
-	systems.add<stateSystem>();
+	systems.add<stateSystem>(events);
 	systems.add<menuSystem>(entities, events, window);
 	systems.add<enemyWeaponSystem>(entities, events);
+	systems.add<levelSystem>(entities, events, window);
 	systems.configure();
 }
 

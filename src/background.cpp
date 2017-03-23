@@ -25,6 +25,7 @@ void background::receive(const evChangeBackground &event)
 	entityx::ComponentHandle<cRenderable> bg = eBG.component<cRenderable>();
 	bg->box->setTexture(*kk::getTexture(event.name));
 	bg->box->setOrigin(bg->box->getTexture()->getSize().x / 2, bg->box->getTexture()->getSize().y / 2);
+	bounds = bg->box->getGlobalBounds();
 }
 
 sf::FloatRect background::getBounds()

@@ -200,3 +200,13 @@ struct evBuyHP
 struct evBuyMana
 {
 };
+
+struct evAllEnemiesDead
+{
+};
+
+struct evLevelCompleted
+{
+	evLevelCompleted(int nextLevel) : nextLevel(nextLevel) {}
+	int nextLevel;
+};
