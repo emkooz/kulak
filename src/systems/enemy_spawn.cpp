@@ -119,9 +119,9 @@ void enemySpawnSystem::receive(const evSpawnEnemy& enemy)
 
 void enemySpawnSystem::receive(const evLevelCompleted& event)
 {
-	if (levels.size() > event.nextLevel)
+	if (levels.size() >= event.nextLevel)
 	{
-		enemiesAlive = levels[event.nextLevel].types.size();
+		enemiesAlive = levels[event.nextLevel - 1].types.size();
 		enemiesToSpawn = enemiesAlive;
 		currentLevel = event.nextLevel;
 	}
