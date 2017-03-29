@@ -12,3 +12,14 @@ struct cAnimation
 
 	animationSheet animations;
 };
+
+
+// the index of the animation for the main entity MUST equal the layer it is a part of
+struct cAnimationLayered
+{
+	cAnimationLayered() : state(""), entityLayer(0) {};
+	std::string state;
+	int entityLayer; // this is the layer that the main entity has. for the player its the body
+	std::vector<animationSheet> animations;
+	std::vector<cRenderable> otherLayers;
+};

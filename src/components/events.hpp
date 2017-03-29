@@ -89,6 +89,13 @@ struct evEntityAnimationSet
 	entityx::Entity &ent;
 };
 
+struct evAddedLayerToAnimation
+{
+	evAddedLayerToAnimation(entityx::Entity &ent, int layer) : ent(ent), layer(layer) {}
+	entityx::Entity &ent;
+	int layer;
+};
+
 // event released when an enemy spawns
 struct evSpawnEnemy
 {

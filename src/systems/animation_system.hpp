@@ -14,6 +14,7 @@ public:
 	void update(entityx::EntityManager &entities, entityx::EventManager &events, entityx::TimeDelta dt);
 	void receive(const evPlayerAnimationSet& animation);
 	void receive(const entityx::ComponentAddedEvent<cAnimation> &event);
+	void animationSystem::receive(const evAddedLayerToAnimation &event);
 private:
 	entityx::EntityManager& entityManager;
 };

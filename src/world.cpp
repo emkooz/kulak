@@ -69,20 +69,33 @@ void World::createEntities(entityx::EventManager& event_manager)
 	std::shared_ptr<sf::Sprite> pSprite(new sf::Sprite());
 	pSprite->setTexture(*kk::getTexture("player"));
 	pSprite->setTextureRect(sf::IntRect(0, 0, 0, 0));
+	std::shared_ptr<sf::Sprite> pAK(new sf::Sprite());
+	pAK->setTexture(*kk::getTexture("ak"));
+	pAK->setTextureRect(sf::IntRect(0, 0, 0, 0));
 	ePlayer.assign<cRenderable>(
 		pSprite, // sf::Sprite
 		2, // renderLayer
 		true // render
 		);
-	ePlayer.assign<cAnimation>(
+	/*ePlayer.assign<cAnimation>(
 		kk::getTexture("player"), // sprite sheet
 		8, // row size
 		65, // total frames
 		sf::Vector2i(64, 64), // each frame is 64x64px
-		10); // runs at 10 frames per second
-	ePlayer.component<cAnimation>()->animations.addAnimation("running", 5, 12);
-	ePlayer.component<cAnimation>()->animations.addAnimation("idle", 65, 65);
-	ePlayer.component<cAnimation>()->animations.setAnimation("idle", false);
+		10); // runs at 10 frames per second*/
+	ePlayer.assign<cAnimationLayered>();
+	ePlayer.component<cAnimationLayered>()->otherLayers.emplace_back(pAK, 2, true);
+	ePlayer.component<cAnimationLayered>()->entityLayer = 0; // render order of main texture
+	ePlayer.component<cAnimationLayered>()->animations.emplace_back(kk::getTexture("player"), 8, 65, sf::Vector2i(64,64), 10);
+	ePlayer.component<cAnimationLayered>()->animations.emplace_back(kk::getTexture("ak"), 8, 65, sf::Vector2i(64, 64), 10);
+	ePlayer.component<cAnimationLayered>()->animations[0].addAnimation("running", 5, 12);
+	ePlayer.component<cAnimationLayered>()->animations[0].addAnimation("idle", 65, 65);
+	ePlayer.component<cAnimationLayered>()->animations[0].setAnimation("idle", false);
+	ePlayer.component<cAnimationLayered>()->animations[1].addAnimation("running", 5, 12);
+	ePlayer.component<cAnimationLayered>()->animations[1].addAnimation("idle", 65, 65);
+	ePlayer.component<cAnimationLayered>()->animations[1].setAnimation("idle", false);
+	event_manager.emit<evAddedLayerToAnimation>(ePlayer, 0);
+	event_manager.emit<evAddedLayerToAnimation>(ePlayer, 1);
 
 	//                              weapon type,     name,     tex,   dmg, cd,    range,  size
 	event_manager.emit<evAddWeapon>(kk::WEAPON_RAIL, "rail",   "ak",   20, 0.1f,  4000.f, sf::Vector2f(256, 256));

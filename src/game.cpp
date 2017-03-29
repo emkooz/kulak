@@ -20,7 +20,7 @@ void Game::loadTextures()
 	kk::log("Loading textures...");
 	kk::loadTexture("rtz", "rtzw.jpg");
 	kk::loadTexture("player", "player_sheet_fix.png");
-	kk::loadTexture("ak", "ak47.png");
+	kk::loadTexture("ak", "player_ak.png");
 	kk::loadTexture("knife", "knife.png");
 	kk::loadTexture("bg", "bg.png");
 	kk::loadTexture("health", "health.png");
@@ -70,7 +70,23 @@ void Game::render()
 		{
 			for (int y = 0; y < renderList[x].size(); y++) // loop through each item in layer
 			{
-				window.draw(*renderList[x][y].component<cRenderable>()->box);
+				if (renderList[x][y].has_component<cAnimationLayered>()) // if layered animation
+				{
+					entityx::ComponentHandle<cAnimationLayered> animation = renderList[x][y].component<cAnimationLayered>();
+					for (int x = 0; x < animation->animations.size(); x++)
+					{
+						if (x < animation->entityLayer)
+							window.draw(*animation->otherLayers[x].box);
+						else if (x > animation->entityLayer)
+							window.draw(*animation->otherLayers[x - 1].box);
+					}
+
+					window.draw(*renderList[x][y].component<cRenderable>()->box);
+				}
+				else // normal animation
+				{
+					window.draw(*renderList[x][y].component<cRenderable>()->box);
+				}
 			}
 		}
 
