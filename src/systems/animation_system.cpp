@@ -28,10 +28,13 @@ void animationSystem::update(entityx::EntityManager &entities, entityx::EventMan
 			if (x > animation.entityLayer)
 			{
 				animation.otherLayers[x - 1].box->setTextureRect(animation.animations[x].getCurrentRect());
+				// change position for each connected layer relative to main entity layer (the body)
+				animation.otherLayers[x - 1].box->setPosition(render.box->getPosition());
 			}
 			else if (x < animation.entityLayer)
 			{
 				animation.otherLayers[x].box->setTextureRect(animation.animations[x].getCurrentRect());
+				animation.otherLayers[x].box->setPosition(render.box->getPosition());
 			}
 		}
 

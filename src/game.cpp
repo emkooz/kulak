@@ -73,15 +73,15 @@ void Game::render()
 				if (renderList[x][y].has_component<cAnimationLayered>()) // if layered animation
 				{
 					entityx::ComponentHandle<cAnimationLayered> animation = renderList[x][y].component<cAnimationLayered>();
-					for (int x = 0; x < animation->animations.size(); x++)
+					for (int z = 0; z < animation->animations.size(); z++)
 					{
-						if (x < animation->entityLayer)
-							window.draw(*animation->otherLayers[x].box);
-						else if (x > animation->entityLayer)
-							window.draw(*animation->otherLayers[x - 1].box);
+						if (z < animation->entityLayer)
+							window.draw(*animation->otherLayers[z].box);
+						else if (z > animation->entityLayer)
+							window.draw(*animation->otherLayers[z - 1].box);
+						else
+							window.draw(*renderList[x][y].component<cRenderable>()->box);
 					}
-
-					window.draw(*renderList[x][y].component<cRenderable>()->box);
 				}
 				else // normal animation
 				{

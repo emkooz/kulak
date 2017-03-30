@@ -81,7 +81,7 @@ void playerWeaponSystem::update(entityx::EntityManager &entities, entityx::Event
 	}
 
 	// update the position of the weapon relative to the player. 
-	entities.each<cPlayerID, cPosition>([this](entityx::Entity entity, cPlayerID& id, cPosition& pos)
+	/*entities.each<cPlayerID, cPosition>([this](entityx::Entity entity, cPlayerID& id, cPosition& pos)
 	{
 		for (int x = 0; x < weaponInventory.size(); x++)
 		{
@@ -92,7 +92,11 @@ void playerWeaponSystem::update(entityx::EntityManager &entities, entityx::Event
 			weaponInventory[x].component<cPosition>()->pos.y = pos.pos.y;
 			weaponInventory[x].component<cRenderable>()->box->setPosition(weaponInventory[x].component<cPosition>()->pos.x, weaponInventory[x].component<cPosition>()->pos.y);
 		}
-	});
+	});*/
+	/*entities.each<cPlayerID, cPosition, cAnimationLayered>([this](entityx::Entity entity, cPlayerID& id, cPosition& pos, cAnimationLayered& anim)
+	{
+
+	});*/
 
 }
 
