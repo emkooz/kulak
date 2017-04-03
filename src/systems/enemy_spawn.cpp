@@ -51,11 +51,8 @@ void enemySpawnSystem::update(entityx::EntityManager &entities, entityx::EventMa
 void enemySpawnSystem::spawnEnemy(int type, sf::Vector2f position)
 {
 	entityx::Entity enemy = entityManager.create();
-	//kk::log(std::to_string(enemy));
 	enemy.assign<cEnemyType>(0);
 	enemy.assign<cHealth>(100);
-	//sf::Vector2f position((800 / 2) + offset(rand), (600 / 2) + offset(rand));
-	//kk::log("position: " + std::to_string(position.x) + "   " + std::to_string(position.y));
 	enemy.assign<cPosition>(position);
 	enemy.assign<cDirection>(true);
 	enemy.assign<cVelocity>(130.f, 130.f);
@@ -76,8 +73,8 @@ void enemySpawnSystem::spawnEnemy(int type, sf::Vector2f position)
 	enemy.component<cAnimation>()->animations.addAnimation("running", 5, 12);
 	enemy.component<cAnimation>()->animations.setAnimation("running", false);
 
-	//                                   weapon type,              name,     tex, dmg, cd,    range,  size
-	eventManager.emit<evAddWeaponEnemy>(enemy, kk::WEAPON_MELEE, "knife", "knife", 5, 0.15f, 32.f, sf::Vector2f(256, 256));
+	//                                  ent,  weapon type,      name,   dmg,  cd
+	eventManager.emit<evAddWeaponEnemy>(enemy, kk::WEAPON_MELEE, "knife", 5, 0.15f);
 }
 
 void enemySpawnSystem::readSpawnFile()

@@ -58,7 +58,7 @@ void World::createEntities(entityx::EventManager& event_manager)
 {
 	bg.load(entities, events);
 
-	ePlayer = entities.create(); // does scope matter? could declare it in this function instead of class?
+	ePlayer = entities.create();
 	ePlayer.assign<cHealth>(100);
 	ePlayer.assign<cGold>(0);
 	ePlayer.assign<cMana>(100);
@@ -77,12 +77,6 @@ void World::createEntities(entityx::EventManager& event_manager)
 		2, // renderLayer
 		true // render
 		);
-	/*ePlayer.assign<cAnimation>(
-		kk::getTexture("player"), // sprite sheet
-		8, // row size
-		65, // total frames
-		sf::Vector2i(64, 64), // each frame is 64x64px
-		10); // runs at 10 frames per second*/
 	ePlayer.assign<cAnimationLayered>();
 	ePlayer.component<cAnimationLayered>()->otherLayers.emplace_back(pAK, 2, true);
 	ePlayer.component<cAnimationLayered>()->entityLayer = 0; // render order of main texture
@@ -92,14 +86,14 @@ void World::createEntities(entityx::EventManager& event_manager)
 	ePlayer.component<cAnimationLayered>()->animations[0].addAnimation("idle", 65, 65);
 	ePlayer.component<cAnimationLayered>()->animations[0].setAnimation("idle", false);
 	ePlayer.component<cAnimationLayered>()->animations[1].addAnimation("running", 5, 12);
-	ePlayer.component<cAnimationLayered>()->animations[1].addAnimation("idle", 65, 65);
+	ePlayer.component<cAnimationLayered>()->animations[1].addAnimation("idle", 1, 1);
 	ePlayer.component<cAnimationLayered>()->animations[1].setAnimation("idle", false);
 	event_manager.emit<evAddedLayerToAnimation>(ePlayer, 0);
 	event_manager.emit<evAddedLayerToAnimation>(ePlayer, 1);
 
 	//                              weapon type,     name,     tex,   dmg, cd,    range,  size
-	event_manager.emit<evAddWeapon>(kk::WEAPON_RAIL, "rail",   "ak",   20, 0.1f,  4000.f, sf::Vector2f(256, 256));
-	event_manager.emit<evAddWeapon>(kk::WEAPON_MELEE, "knife", "knife", 5, 0.15f, 32.f,   sf::Vector2f(256, 256));
+	event_manager.emit<evAddWeapon>(kk::WEAPON_RAIL, "rail",   20, 0.1f);
+	event_manager.emit<evAddWeapon>(kk::WEAPON_MELEE, "knife", 5, 0.15);
 
 	event_manager.emit<evPlayerCreated>(ePlayer);
 

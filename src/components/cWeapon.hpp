@@ -4,14 +4,11 @@
 
 struct cWeaponBase
 {
-	cWeaponBase(std::string name, float cooldown, int damage, float range, sf::Vector2f size) : name(name), damage(damage), cooldown(cooldown), pos({ 0.0f, 0.0f }), range(range), size(size) {}
+	cWeaponBase(std::string name, float cooldown, int damage) : name(name), damage(damage), cooldown(cooldown) {}
 	std::string name;
 	float cooldown; // delay per shot in seconds
 	sf::Clock cooldownTimer;
 	int damage;
-	sf::Vector2f pos;
-	float range;
-	sf::Vector2f size;
 };
 
 struct cWeaponEnemy
@@ -30,6 +27,15 @@ struct cMeleeWeapon
 
 struct cProjectileWeapon
 {
+};
+
+struct cWeaponHitbox
+{
+	cWeaponHitbox(sf::FloatRect hitbox, sf::Vector2f offset) : hitbox(hitbox), offset(offset) {}
+	cWeaponHitbox(float left, float top, float width, float height, sf::Vector2f offset) : hitbox(sf::FloatRect(left, top, width, height)), offset(offset) {}
+	sf::FloatRect hitbox;
+	sf::Vector2f offset; // this is how far away the hitbox is from the center of sprite. used in calculating new hitbox on direction reversal
+	
 };
 
 namespace kk

@@ -34,29 +34,23 @@ struct evFireEnemy
 
 struct evAddWeapon
 {
-	evAddWeapon(kk::weaponType type, std::string name, std::string texture, int damage, float cooldown, float range, sf::Vector2f size) : weapon(type), name(name), texture(texture), 
-		damage(damage), cooldown(cooldown), range(range), size(size) {}
+	evAddWeapon(kk::weaponType type, std::string name, int damage, float cooldown) : weapon(type), name(name),
+		damage(damage), cooldown(cooldown) {}
 	kk::weaponType weapon;
 	std::string name;
-	std::string texture;
 	int damage;
 	float cooldown;
-	float range;
-	sf::Vector2f size;
 };
 
 struct evAddWeaponEnemy
 {
-	evAddWeaponEnemy(entityx::Entity ent, kk::weaponType type, std::string name, std::string texture, int damage, float cooldown, float range, sf::Vector2f size) : ent(ent), weapon(type), name(name), texture(texture), 
-		damage(damage), cooldown(cooldown), range(range), size(size) {}
+	evAddWeaponEnemy(entityx::Entity ent, kk::weaponType type, std::string name, int damage, float cooldown) : ent(ent), weapon(type), name(name),
+		damage(damage), cooldown(cooldown) {}
 	entityx::Entity ent;
 	kk::weaponType weapon;
 	std::string name;
-	std::string texture;
 	int damage;
 	float cooldown;
-	float range;
-	sf::Vector2f size;
 };
 
 // when an enemy dies 

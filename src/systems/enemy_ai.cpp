@@ -51,7 +51,7 @@ void enemyAISystem::update(entityx::EntityManager &entities, entityx::EventManag
 			render.box->setColor(sf::Color::White);
 
 		// handle attacking. sends an "attack" per each player, tests if attack should be sent
-		entities.each<cPlayerID, cPosition, cRenderable, cDirection, cAnimation>([enemy, this](entityx::Entity player, cPlayerID &_pID, cPosition &_position, cRenderable &_render, cDirection &_direction, cAnimation &_anim)
+		entities.each<cPlayerID, cPosition, cRenderable, cDirection>([enemy, this](entityx::Entity player, cPlayerID &_pID, cPosition &_position, cRenderable &_render, cDirection &_direction)
 		{
 			attack(enemy, player);
 		});
