@@ -24,7 +24,7 @@ void movementSystem::update(entityx::EntityManager &entities, entityx::EventMana
 	if (kk::getPressed(sf::Keyboard::D))
 		moveRight = true;
 
-	entities.each<cPlayerID, cPosition, cVelocity, cRenderable, cDirection>([dt, &events, moveUp, moveDown, moveLeft, moveRight, this](entityx::Entity entity, cPlayerID &player, cPosition &pos, cVelocity &vel, cRenderable &render, cDirection &direction)
+	entities.each<cPlayerID, cPosition, cVelocity, cRenderable, cDirection, cCurrentWeapon>([dt, &events, moveUp, moveDown, moveLeft, moveRight, this](entityx::Entity entity, cPlayerID &player, cPosition &pos, cVelocity &vel, cRenderable &render, cDirection &direction, cCurrentWeapon &weapon)
 	{
 		// temporary solution, extremely basic
 		if (moveUp)
@@ -34,7 +34,7 @@ void movementSystem::update(entityx::EntityManager &entities, entityx::EventMana
 			else
 			{
 				vel.y = -320.f;
-				events.emit<evPlayerAnimationSet>(0, direction.right, "running");
+				events.emit<evPlayerAnimationSet>(0, direction.right, weapon.name + "_running");
 			}
 		}
 		if (moveDown)
@@ -44,7 +44,7 @@ void movementSystem::update(entityx::EntityManager &entities, entityx::EventMana
 			else
 			{
 				vel.y = 320.f;
-				events.emit<evPlayerAnimationSet>(0, direction.right, "running");
+				events.emit<evPlayerAnimationSet>(0, direction.right, weapon.name + "_running");
 			}
 		}
 		if (moveLeft)
@@ -56,7 +56,7 @@ void movementSystem::update(entityx::EntityManager &entities, entityx::EventMana
 			else
 			{
 				vel.x = -320.f;
-				events.emit<evPlayerAnimationSet>(0, false, "running");
+				events.emit<evPlayerAnimationSet>(0, false, weapon.name + "_running");
 				direction.right = false;
 			}
 		}
@@ -69,7 +69,7 @@ void movementSystem::update(entityx::EntityManager &entities, entityx::EventMana
 			else
 			{
 				vel.x = 320.f;
-				events.emit<evPlayerAnimationSet>(0, true, "running");
+				events.emit<evPlayerAnimationSet>(0, true, weapon.name + "_running");
 				direction.right = true;
 			}
 		}
@@ -81,9 +81,9 @@ void movementSystem::update(entityx::EntityManager &entities, entityx::EventMana
 		if (vel.x == 0 && vel.y == 0)
 		{
 			if (direction.right)
-				events.emit<evPlayerAnimationSet>(0, true, "idle");
+				events.emit<evPlayerAnimationSet>(0, true, weapon.name + "_idle");
 			else
-				events.emit<evPlayerAnimationSet>(0, false, "idle");
+				events.emit<evPlayerAnimationSet>(0, false, weapon.name + "_idle");
 		}
 		
 		float deltaPosX = vel.x * dt;

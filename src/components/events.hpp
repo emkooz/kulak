@@ -140,12 +140,12 @@ struct evFireRail
 
 struct evFireMelee
 {
-	evFireMelee(entityx::ComponentHandle<cWeaponBase> melee, cPlayerID pID, cPosition pos, cDirection dir, entityx::ComponentHandle<cRenderable> sprite) : melee(melee), pID(pID), pos(pos), dir(dir), sprite(sprite) {}
+	evFireMelee(entityx::ComponentHandle<cWeaponBase> melee, cPlayerID pID, cPosition pos, cDirection dir, entityx::ComponentHandle<cWeaponHitbox> hitbox) : melee(melee), pID(pID), pos(pos), dir(dir), hitbox(hitbox) {}
 	entityx::ComponentHandle<cWeaponBase> melee;
 	cPlayerID pID;
 	cPosition pos;
 	cDirection dir;
-	entityx::ComponentHandle<cRenderable> sprite;
+	entityx::ComponentHandle<cWeaponHitbox> hitbox;
 };
 
 struct evFireProjectile

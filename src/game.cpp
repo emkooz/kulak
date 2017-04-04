@@ -18,10 +18,8 @@ Game::~Game()
 void Game::loadTextures()
 {
 	kk::log("Loading textures...");
-	kk::loadTexture("rtz", "rtzw.jpg");
 	kk::loadTexture("player", "player_sheet_fix.png");
-	kk::loadTexture("ak", "player_ak.png");
-	kk::loadTexture("knife", "knife.png");
+	kk::loadTexture("weapons", "player_weapons.png");
 	kk::loadTexture("bg", "bg.png");
 	kk::loadTexture("health", "health.png");
 	kk::loadTexture("coin", "coin.png");

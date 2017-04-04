@@ -44,7 +44,7 @@ void animationSystem::update(entityx::EntityManager &entities, entityx::EventMan
 
 void animationSystem::receive(const evPlayerAnimationSet& evAnim)
 {
-	entityManager.each<cPlayerID, cAnimationLayered, cRenderable>([evAnim](entityx::Entity entity, cPlayerID &id, cAnimationLayered &animation, cRenderable &render)
+	entityManager.each<cPlayerID, cAnimationLayered, cRenderable, cCurrentWeapon>([evAnim](entityx::Entity entity, cPlayerID &id, cAnimationLayered &animation, cRenderable &render, cCurrentWeapon &weapon)
 	{
 		if (id.id == evAnim.id)
 		{

@@ -70,7 +70,7 @@ void World::createEntities(entityx::EventManager& event_manager)
 	pSprite->setTexture(*kk::getTexture("player"));
 	pSprite->setTextureRect(sf::IntRect(0, 0, 0, 0));
 	std::shared_ptr<sf::Sprite> pAK(new sf::Sprite());
-	pAK->setTexture(*kk::getTexture("ak"));
+	pAK->setTexture(*kk::getTexture("weapons"));
 	pAK->setTextureRect(sf::IntRect(0, 0, 0, 0));
 	ePlayer.assign<cRenderable>(
 		pSprite, // sf::Sprite
@@ -81,19 +81,25 @@ void World::createEntities(entityx::EventManager& event_manager)
 	ePlayer.component<cAnimationLayered>()->otherLayers.emplace_back(pAK, 2, true);
 	ePlayer.component<cAnimationLayered>()->entityLayer = 0; // render order of main texture
 	ePlayer.component<cAnimationLayered>()->animations.emplace_back(kk::getTexture("player"), 8, 65, sf::Vector2i(64,64), 10);
-	ePlayer.component<cAnimationLayered>()->animations.emplace_back(kk::getTexture("ak"), 8, 65, sf::Vector2i(64, 64), 10);
-	ePlayer.component<cAnimationLayered>()->animations[0].addAnimation("running", 5, 12);
-	ePlayer.component<cAnimationLayered>()->animations[0].addAnimation("idle", 65, 65);
-	ePlayer.component<cAnimationLayered>()->animations[0].setAnimation("idle", false);
-	ePlayer.component<cAnimationLayered>()->animations[1].addAnimation("running", 5, 12);
-	ePlayer.component<cAnimationLayered>()->animations[1].addAnimation("idle", 1, 1);
-	ePlayer.component<cAnimationLayered>()->animations[1].setAnimation("idle", false);
+	ePlayer.component<cAnimationLayered>()->animations.emplace_back(kk::getTexture("weapons"), 8, 65, sf::Vector2i(64, 64), 10);
+	ePlayer.component<cAnimationLayered>()->animations[0].addAnimation("rail_running", 5, 12);
+	ePlayer.component<cAnimationLayered>()->animations[0].addAnimation("rail_idle", 65, 65);
+	ePlayer.component<cAnimationLayered>()->animations[0].setAnimation("rail_idle", false);
+	ePlayer.component<cAnimationLayered>()->animations[0].addAnimation("knife_running", 5, 12);
+	ePlayer.component<cAnimationLayered>()->animations[0].addAnimation("knife_idle", 65, 65);
+	ePlayer.component<cAnimationLayered>()->animations[1].addAnimation("rail_running", 5, 12);
+	ePlayer.component<cAnimationLayered>()->animations[1].addAnimation("rail_idle", 1, 1);
+	ePlayer.component<cAnimationLayered>()->animations[1].setAnimation("rail_idle", false);
+	ePlayer.component<cAnimationLayered>()->animations[1].addAnimation("knife_running", 21, 28);
+	ePlayer.component<cAnimationLayered>()->animations[1].addAnimation("knife_idle", 17, 17);
 	event_manager.emit<evAddedLayerToAnimation>(ePlayer, 0);
 	event_manager.emit<evAddedLayerToAnimation>(ePlayer, 1);
 
 	//                              weapon type,     name,     tex,   dmg, cd,    range,  size
 	event_manager.emit<evAddWeapon>(kk::WEAPON_RAIL, "rail",   20, 0.1f);
 	event_manager.emit<evAddWeapon>(kk::WEAPON_MELEE, "knife", 5, 0.15);
+
+	ePlayer.assign<cCurrentWeapon>("rail");
 
 	event_manager.emit<evPlayerCreated>(ePlayer);
 

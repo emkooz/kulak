@@ -73,7 +73,7 @@ void hudSystem::receive(const evStatsCreated &event)
 
 	//TODO FUTURE: current weapons. right now its just always going to be rail + melee. make this dynamic
 	std::shared_ptr<sf::Sprite> railBox(new sf::Sprite);
-	railBox->setTexture(*kk::getTexture("ak"));
+	railBox->setTexture(*kk::getTexture("weapons"));
 	railBox->setScale(0.25, 0.25);
 	railBox->setPosition((window->getSize().x / 2) - (railBox->getTexture()->getSize().x * railBox->getScale().x), window->getSize().y - (railBox->getTexture()->getSize().y * railBox->getScale().y) - 2);
 	rail.assign<cRenderableHUD>(
@@ -82,7 +82,7 @@ void hudSystem::receive(const evStatsCreated &event)
 		true);
 
 	std::shared_ptr<sf::Sprite> meleeBox(new sf::Sprite);
-	meleeBox->setTexture(*kk::getTexture("knife"));
+	meleeBox->setTexture(*kk::getTexture("weapons"));
 	meleeBox->setScale(0.25, 0.25);
 	meleeBox->setPosition((window->getSize().x / 2) + 6, window->getSize().y - (meleeBox->getTexture()->getSize().y * meleeBox->getScale().y) - 2);
 	melee.assign<cRenderableHUD>(

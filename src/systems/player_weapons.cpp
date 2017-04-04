@@ -21,19 +21,17 @@ void playerWeaponSystem::update(entityx::EntityManager &entities, entityx::Event
 	if (kk::getPressed(sf::Keyboard::Left))
 	{
 		weaponInventory[currentWeapon].component<cDirection>()->right = false;
-		//sf::Sprite* box = weaponInventory[currentWeapon].component<cRenderable>()->box.get();
-		//weaponInventory[currentWeapon].component<cAnimation>()->animations.setReversed(box, true);
 		currentDirection = "left";
 
 		entityx::ComponentHandle<cWeaponBase> base = weaponInventory[currentWeapon].component<cWeaponBase>();
 
 		if (base->cooldownTimer.getElapsedTime().asSeconds() > base->cooldown)
 		{
+			entityx::ComponentHandle<cWeaponHitbox> hitbox = weaponInventory[currentWeapon].component<cWeaponHitbox>();
+
 			if (weaponInventory[currentWeapon].has_component<cRailWeapon>())
 			{
 				cPlayerID pID(0);
-				// come from tip of weapon
-				//cPosition pos(sf::Vector2f(weaponInventory[currentWeapon].component<cPosition>()->pos + sf::Vector2f(((base->size.x * weaponInventory[currentWeapon].component<cRenderable>()->box->getScale().x) / 2), 0)));
 				cPosition pos(weaponInventory[currentWeapon].component<cPosition>()->pos);
 				cDirection dir(weaponInventory[currentWeapon].component<cDirection>()->right);
 				// temporary. just to get something testable right now
@@ -44,7 +42,7 @@ void playerWeaponSystem::update(entityx::EntityManager &entities, entityx::Event
 				cPlayerID pID(0);
 				cPosition pos(sf::Vector2f(weaponInventory[currentWeapon].component<cPosition>()->pos));
 				cDirection dir(weaponInventory[currentWeapon].component<cDirection>()->right);
-				//eventManager.emit<evFireMelee>(base, pID, pos, dir, weaponInventory[currentWeapon].component<cRenderable>());
+				eventManager.emit<evFireMelee>(base, pID, pos, dir, hitbox);
 			}
 
 			base->cooldownTimer.restart();
@@ -53,14 +51,14 @@ void playerWeaponSystem::update(entityx::EntityManager &entities, entityx::Event
 	else if (kk::getPressed(sf::Keyboard::Right))
 	{
 		weaponInventory[currentWeapon].component<cDirection>()->right = true;
-		//sf::Sprite* box = weaponInventory[currentWeapon].component<cRenderable>()->box.get();
-		//weaponInventory[currentWeapon].component<cAnimation>()->animations.setReversed(box, false);
 		currentDirection = "right";
 
 		entityx::ComponentHandle<cWeaponBase> base = weaponInventory[currentWeapon].component<cWeaponBase>();
 
 		if (base->cooldownTimer.getElapsedTime().asSeconds() > base->cooldown)
 		{
+			entityx::ComponentHandle<cWeaponHitbox> hitbox = weaponInventory[currentWeapon].component<cWeaponHitbox>();
+
 			if (weaponInventory[currentWeapon].has_component<cRailWeapon>())
 			{
 				cPlayerID pID(0);
@@ -74,31 +72,24 @@ void playerWeaponSystem::update(entityx::EntityManager &entities, entityx::Event
 				cPlayerID pID(0);
 				cPosition pos(sf::Vector2f(weaponInventory[currentWeapon].component<cPosition>()->pos));
 				cDirection dir(weaponInventory[currentWeapon].component<cDirection>()->right);
-				//eventManager.emit<evFireMelee>(base, pID, pos, dir, weaponInventory[currentWeapon].component<cRenderable>());
+				eventManager.emit<evFireMelee>(base, pID, pos, dir, hitbox);
 			}
 
 			base->cooldownTimer.restart();
 		}
 	}
 
-	// update the position of the weapon relative to the player. 
-	/*entities.each<cPlayerID, cPosition>([this](entityx::Entity entity, cPlayerID& id, cPosition& pos)
-	{
-		for (int x = 0; x < weaponInventory.size(); x++)
-		{
-			if (currentDirection == "right")
-				weaponInventory[x].component<cPosition>()->pos.x = pos.pos.x + 32;
-			else if (currentDirection == "left")
-				weaponInventory[x].component<cPosition>()->pos.x = pos.pos.x - 32;
-			weaponInventory[x].component<cPosition>()->pos.y = pos.pos.y;
-			weaponInventory[x].component<cRenderable>()->box->setPosition(weaponInventory[x].component<cPosition>()->pos.x, weaponInventory[x].component<cPosition>()->pos.y);
-		}
-	});*/
 	entities.each<cPlayerID, cPosition, cAnimationLayered>([this](entityx::Entity entity, cPlayerID& id, cPosition& pos, cAnimationLayered& anim)
 	{
 		for (int x = 0; x < weaponInventory.size(); x++)
 		{
 			weaponInventory[x].component<cPosition>()->pos = pos.pos;
+			auto hitbox = weaponInventory[x].component<cWeaponHitbox>();
+			hitbox->hitbox.left =
+				currentDirection == "right" ? // facing right
+				pos.pos.x + hitbox->offset.x : // set to right sided hitbox
+				pos.pos.x - hitbox->offset.x - hitbox->hitbox.width; // else set to left sided hitbox
+			hitbox->hitbox.top = pos.pos.y + hitbox->offset.y;
 		}
 	});
 
@@ -142,6 +133,7 @@ void playerWeaponSystem::swapWeapons(int index)
 				weaponInventory[x].component<cRenderable>()->render = true;
 		}*/
 
+		pEntity.component<cCurrentWeapon>()->name = cur.component<cWeaponBase>()->name;
 		eventManager.emit<evSwitchWeapon>(index);
 	}
 }
@@ -156,30 +148,30 @@ void playerWeaponSystem::receive(const evAddWeapon &event)
 	weaponInventory[index].assign<cDirection>(true);
 	weaponInventory[index].assign<cWeaponBase>(event.name, event.cooldown, event.damage);
 
+	auto pPos = pEntity.component<cPosition>()->pos;
+
 	if (event.weapon == kk::WEAPON_RAIL)
+	{
 		weaponInventory[index].assign<cRailWeapon>();
+		if (event.name == "rail")
+		{
+			sf::FloatRect hitbox = sf::FloatRect(pPos.x + 32, pPos.y, 1000.f, 2.f);
+			weaponInventory[index].assign<cWeaponHitbox>(hitbox, sf::Vector2f(2.f, 0.f));
+		}
+	}
 	else if (event.weapon == kk::WEAPON_MELEE)
+	{
 		weaponInventory[index].assign<cMeleeWeapon>();
+		if (event.name == "knife")
+		{
+			sf::FloatRect hitbox = sf::FloatRect(pPos.x + 32, pPos.y + 10, 50.f, 10.f);
+			weaponInventory[index].assign<cWeaponHitbox>(hitbox, sf::Vector2f(2.f, 10.f));
+		}
+	}
 	else if (event.weapon == kk::WEAPON_PROJECTILE)
+	{
 		weaponInventory[index].assign<cProjectileWeapon>();
-
-	/*std::shared_ptr<sf::Sprite> weaponSprite(new sf::Sprite());
-	weaponSprite->setTexture(*kk::getTexture(event.texture));
-	weaponSprite->setScale(0.2, 0.2); // TODO: temporary
-	weaponInventory[index].assign<cRenderable>(
-		weaponSprite,
-		3,
-		index == 0? true : false);
-	weaponInventory[index].assign<cAnimation>(
-		kk::getTexture(event.texture),
-		1,
-		1,
-		sf::Vector2i(256,256),
-		10);
-	weaponInventory[index].component<cAnimation>()->animations.addAnimation("idle", 1, 1);
-	weaponInventory[index].component<cAnimation>()->animations.setAnimation("idle", false);*/
-
-	//kk::log(std::to_string(&weaponInventory[index].id());
+	}
 }
 
 void playerWeaponSystem::receive(const entityx::ComponentAddedEvent<cPlayerID> &event)

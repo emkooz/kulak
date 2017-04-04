@@ -93,33 +93,22 @@ void weaponSystem::receive(const evFireRail& _rail)
 
 void weaponSystem::receive(const evFireMelee& melee)
 {
+	auto hitbox = melee.hitbox->hitbox;
+
 	// loop through each enemy checking for a collision
 	// later on use quadtrees
-	entityManager.each<cEnemyType, cPosition, cRenderable, cAnimation>([this, melee](entityx::Entity entity, cEnemyType &type, cPosition &pos, cRenderable &render, cAnimation &animation)
+	entityManager.each<cEnemyType, cPosition, cRenderable, cAnimation>([this, melee, hitbox](entityx::Entity entity, cEnemyType &type, cPosition &pos, cRenderable &render, cAnimation &animation)
 	{
-		sf::FloatRect mLocalBounds = melee.sprite->box->getLocalBounds();
-		sf::FloatRect mGlobalBounds = melee.sprite->box->getGlobalBounds();
-		sf::Vector2f mScale = melee.sprite->box->getScale();
 		// if the player is on the left side of the enemy and we are shooting right (this is kinda assuming its only shooting straight forward)
 		if (melee.pos.pos.x <= pos.pos.x && melee.dir.right)
 		{
-			sf::RectangleShape hitbox;
-			hitbox.setSize(sf::Vector2f(mLocalBounds.width * mScale.x, mLocalBounds.height * mScale.y));
-			hitbox.setOrigin(sf::Vector2f(hitbox.getSize().x / 2, hitbox.getSize().y / 2));
-			hitbox.setPosition(sf::Vector2f(mGlobalBounds.left + ((mLocalBounds.width * fabs(mScale.x)) / 2), mGlobalBounds.top + ((mLocalBounds.height * fabs(mScale.y)) / 2)));
-		
-			if (hitbox.getGlobalBounds().intersects(render.box->getGlobalBounds()))
+			if (hitbox.intersects(render.box->getGlobalBounds()))
 				eventManager.emit<evHitEnemy>(entity, melee.melee->damage);
 		}
 		// if the player is on the right side of the enemy and shooting left (same warning applies)
 		else if (melee.pos.pos.x > pos.pos.x && !melee.dir.right)
 		{
-			sf::RectangleShape hitbox;
-			hitbox.setSize(sf::Vector2f(mLocalBounds.width * mScale.x, mLocalBounds.height * mScale.y));
-			hitbox.setOrigin(sf::Vector2f(hitbox.getSize().x / 2, hitbox.getSize().y / 2));
-			hitbox.setPosition(sf::Vector2f(mGlobalBounds.left + ((mLocalBounds.width * fabs(mScale.x)) / 2), mGlobalBounds.top + ((mLocalBounds.height * fabs(mScale.y)) / 2)));
-
-			if (hitbox.getGlobalBounds().intersects(render.box->getGlobalBounds()))
+			if (hitbox.intersects(render.box->getGlobalBounds()))
 				eventManager.emit<evHitEnemy>(entity, melee.melee->damage);
 		} // the code above is the same code from the if statement above it, maybe make it a function?
 	});

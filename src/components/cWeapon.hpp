@@ -11,6 +11,12 @@ struct cWeaponBase
 	int damage;
 };
 
+struct cCurrentWeapon
+{
+	cCurrentWeapon(std::string name) : name(name) {}
+	std::string name;
+};
+
 struct cWeaponEnemy
 {
 	cWeaponEnemy(entityx::Entity weapon) : weapon(weapon) {}
