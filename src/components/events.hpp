@@ -35,11 +35,14 @@ struct evFireEnemy
 struct evAddWeapon
 {
 	evAddWeapon(kk::weaponType type, std::string name, int damage, float cooldown) : weapon(type), name(name),
-		damage(damage), cooldown(cooldown) {}
+		damage(damage), cooldown(cooldown), velocity({ 0.f, 0.f }) {}
+	evAddWeapon(kk::weaponType type, std::string name, int damage, float cooldown, sf::Vector2f velocity) : weapon(type), name(name),
+		damage(damage), cooldown(cooldown), velocity(velocity) {}
 	kk::weaponType weapon;
 	std::string name;
 	int damage;
 	float cooldown;
+	sf::Vector2f velocity;
 };
 
 struct evAddWeaponEnemy
@@ -150,7 +153,17 @@ struct evFireMelee
 
 struct evFireProjectile
 {
+	evFireProjectile(entityx::ComponentHandle<cWeaponBase> weapon, 
+		int pID,
+		entityx::ComponentHandle<cPosition> pos,
+		entityx::ComponentHandle<cDirection> dir,
+		entityx::ComponentHandle<cWeaponHitbox> hitbox) : weapon(weapon), pID(pID), pos(pos), dir(dir), hitbox(hitbox) {}
 
+	entityx::ComponentHandle<cWeaponBase> weapon;
+	int pID;
+	entityx::ComponentHandle<cPosition> pos;
+	entityx::ComponentHandle<cDirection> dir;
+	entityx::ComponentHandle<cWeaponHitbox> hitbox;
 };
 
 struct evHitEnemy

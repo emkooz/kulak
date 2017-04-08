@@ -41,8 +41,8 @@ void enemyAISystem::update(entityx::EntityManager &entities, entityx::EventManag
 			anim.animations.setReversed(render.box.get(), false);
 		}
 
-		position.pos.x += (vector.x * vel.x * dt);
-		position.pos.y += (vector.y * vel.y * dt);
+		position.pos.x += (vector.x * vel.velocity.x * dt);
+		position.pos.y += (vector.y * vel.velocity.y * dt);
 		render.box->setPosition(position.pos);
 
 		// this manages the enemy's color state, indicator for getting hit.

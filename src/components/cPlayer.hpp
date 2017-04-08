@@ -57,7 +57,8 @@ struct cDirection
 
 struct cVelocity
 {
-	cVelocity(float x = 0.0f, float y = 0.0f) : x(x), y(y) {}
-	float x, y;
+	cVelocity(float x = 0.0f, float y = 0.0f) : velocity({ x, y }) {}
+	cVelocity(sf::Vector2f velocity) : velocity(velocity) {}
+	sf::Vector2f velocity;
 };
 

@@ -8,14 +8,36 @@ void weaponSystem::configure(entityx::EventManager& eventManager)
 {
 	eventManager.subscribe<evFireRail>(*this);
 	eventManager.subscribe<evFireMelee>(*this);
+	eventManager.subscribe<evFireProjectile>(*this);
+	eventManager.subscribe<evBackgroundCreated>(*this);
 }
 
 void weaponSystem::update(entityx::EntityManager &entities, entityx::EventManager &events, entityx::TimeDelta dt)
 {
-	/*entities.each<cRail, cPlayerID, cRenderable>([](entityx::Entity entity, cRail &rail, cPlayerID &id, cRenderable &render)
+	sf::FloatRect bounds = bg->getBounds();
+
+	// update projectiles
+	entityManager.each<cProjectile, cVelocity, cDirection, cPosition, cRenderable, cWeaponBase>([this, &dt, &bounds](entityx::Entity entity, cProjectile &proj, cVelocity &vel, 
+																										cDirection &dir, cPosition &pos, cRenderable &render, cWeaponBase &base)
 	{
-		rail.pos = { render.box->getPosition().x + render.box->getLocalBounds().width, (render.box->getPosition().y + render.box->getLocalBounds().height) / 2 };
-	});*/
+		pos.pos.x += ((dir.right? 1 : -1) * (vel.velocity.x * dt));
+		pos.pos.y += vel.velocity.y * dt;
+		render.box->setPosition(pos.pos);
+
+		// check collision between each enemy (use quadtree later)
+		entityManager.each<cEnemyType, cPosition, cRenderable, cAnimation>([this, &render, &base, &entity](entityx::Entity _entity, cEnemyType &_type, cPosition &_pos, cRenderable &_render, cAnimation &_animation)
+		{
+			if (render.box->getGlobalBounds().intersects(_render.box->getGlobalBounds()))
+			{
+				eventManager.emit<evHitEnemy>(_entity, base.damage);
+				entity.destroy();
+			}
+		});
+
+		// kill projectile if it reaches the edges of the map + 50?
+		if ((pos.pos.x > bounds.left + bounds.width + 50) || (pos.pos.x < bounds.left - 50))
+			entity.destroy();
+	});
 }
 
 void weaponSystem::receive(const evFireRail& _rail)
@@ -112,6 +134,36 @@ void weaponSystem::receive(const evFireMelee& melee)
 				eventManager.emit<evHitEnemy>(entity, melee.melee->damage);
 		} // the code above is the same code from the if statement above it, maybe make it a function?
 	});
+}
+
+void weaponSystem::receive(const evFireProjectile& weapon)
+{
+	// spawn projectile
+	entityx::Entity projectile = entityManager.create();
+	projectile.assign<cPosition>(sf::Vector2f(
+		(weapon.dir ? weapon.pos->pos.x + weapon.hitbox->offset.x : weapon.pos->pos.x - weapon.hitbox->offset.x),
+		 weapon.pos->pos.y));
+	projectile.assign<cVelocity>(weapon.weapon->velocity);
+	projectile.assign<cDirection>(weapon.dir->right);
+	projectile.assign<cProjectile>();
+
+	std::shared_ptr<sf::Sprite> sprite(new sf::Sprite());
+	sprite->setTexture(*kk::getTexture("coin"));
+	sprite->setPosition(projectile.component<cPosition>()->pos);
+	sprite->setScale(0.1f, 0.1f);
+	projectile.assign<cRenderable>(
+		sprite,
+		3,
+		true
+		);
+
+	projectile.assign<cProjectileOrigin>(true); // from a player
+	projectile.assign<cWeaponBase>(weapon.weapon);
+}
+
+void weaponSystem::receive(const evBackgroundCreated &event)
+{
+	bg = event.bg;
 }
 
 // Taken from Graphics Gems 2, original author of lines_intersect: Mukesh Prasad. Link: http://www.realtimerendering.com/resources/GraphicsGems/gemsii/xlines.c 

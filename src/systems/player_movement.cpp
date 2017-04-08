@@ -24,8 +24,9 @@ void movementSystem::update(entityx::EntityManager &entities, entityx::EventMana
 	if (kk::getPressed(sf::Keyboard::D))
 		moveRight = true;
 
-	entities.each<cPlayerID, cPosition, cVelocity, cRenderable, cDirection, cCurrentWeapon>([dt, &events, moveUp, moveDown, moveLeft, moveRight, this](entityx::Entity entity, cPlayerID &player, cPosition &pos, cVelocity &vel, cRenderable &render, cDirection &direction, cCurrentWeapon &weapon)
+	entities.each<cPlayerID, cPosition, cVelocity, cRenderable, cDirection, cCurrentWeapon>([dt, &events, moveUp, moveDown, moveLeft, moveRight, this](entityx::Entity entity, cPlayerID &player, cPosition &pos, cVelocity &velocity, cRenderable &render, cDirection &direction, cCurrentWeapon &weapon)
 	{
+		auto vel = velocity.velocity;
 		// temporary solution, extremely basic
 		if (moveUp)
 		{

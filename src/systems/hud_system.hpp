@@ -29,5 +29,6 @@ private:
 	entityx::Entity goldText;
 	entityx::Entity rail;
 	entityx::Entity melee;
+	entityx::Entity proj;
 	entityx::Entity selectedWeapon;
 };

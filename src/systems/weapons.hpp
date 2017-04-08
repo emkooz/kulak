@@ -8,6 +8,7 @@
 #include <components/cAnimation.hpp>
 #include "components/events.hpp"
 #include "log.hpp"
+#include "background.hpp"
 #include <vector>
 
 // handles gun management (ammo, state, etc), position?, all properties like damage, and hitscan collisions
@@ -20,6 +21,8 @@ public:
 	void update(entityx::EntityManager &entities, entityx::EventManager &events, entityx::TimeDelta dt);
 	void receive(const evFireRail& rail);
 	void receive(const evFireMelee& melee);
+	void receive(const evFireProjectile& projectile);
+	void receive(const evBackgroundCreated &event);
 
 private:
 	entityx::EntityManager& entityManager;
@@ -27,4 +30,5 @@ private:
 	bool same_sign(float a, float b);
 	int line_intersects(sf::Vector2f p1, sf::Vector2f p2, sf::Vector2f p3, sf::Vector2f p4, sf::Vector2f& collision);
 	std::vector<entityx::Entity> rails;
+	background* bg;
 };

@@ -87,17 +87,22 @@ void World::createEntities(entityx::EventManager& event_manager)
 	ePlayer.component<cAnimationLayered>()->animations[0].setAnimation("rail_idle", false);
 	ePlayer.component<cAnimationLayered>()->animations[0].addAnimation("knife_running", 5, 12);
 	ePlayer.component<cAnimationLayered>()->animations[0].addAnimation("knife_idle", 65, 65);
+	ePlayer.component<cAnimationLayered>()->animations[0].addAnimation("proj_running", 5, 12);
+	ePlayer.component<cAnimationLayered>()->animations[0].addAnimation("proj_idle", 65, 65);
 	ePlayer.component<cAnimationLayered>()->animations[1].addAnimation("rail_running", 5, 12);
 	ePlayer.component<cAnimationLayered>()->animations[1].addAnimation("rail_idle", 1, 1);
 	ePlayer.component<cAnimationLayered>()->animations[1].setAnimation("rail_idle", false);
 	ePlayer.component<cAnimationLayered>()->animations[1].addAnimation("knife_running", 21, 28);
 	ePlayer.component<cAnimationLayered>()->animations[1].addAnimation("knife_idle", 17, 17);
+	ePlayer.component<cAnimationLayered>()->animations[1].addAnimation("proj_running", 5, 12);
+	ePlayer.component<cAnimationLayered>()->animations[1].addAnimation("proj_idle", 1, 1);
 	event_manager.emit<evAddedLayerToAnimation>(ePlayer, 0);
 	event_manager.emit<evAddedLayerToAnimation>(ePlayer, 1);
 
 	//                              weapon type,     name,     tex,   dmg, cd,    range,  size
 	event_manager.emit<evAddWeapon>(kk::WEAPON_RAIL, "rail",   20, 0.1f);
 	event_manager.emit<evAddWeapon>(kk::WEAPON_MELEE, "knife", 5, 0.15);
+	event_manager.emit<evAddWeapon>(kk::WEAPON_PROJECTILE, "proj", 45, 0.35f, sf::Vector2f(500.f, 0.f));
 
 	ePlayer.assign<cCurrentWeapon>("rail");
 

@@ -28,21 +28,26 @@ void playerWeaponSystem::update(entityx::EntityManager &entities, entityx::Event
 		if (base->cooldownTimer.getElapsedTime().asSeconds() > base->cooldown)
 		{
 			entityx::ComponentHandle<cWeaponHitbox> hitbox = weaponInventory[currentWeapon].component<cWeaponHitbox>();
+			auto weapon = weaponInventory[currentWeapon];
 
-			if (weaponInventory[currentWeapon].has_component<cRailWeapon>())
+			if (weapon.has_component<cRailWeapon>())
 			{
 				cPlayerID pID(0);
-				cPosition pos(weaponInventory[currentWeapon].component<cPosition>()->pos);
-				cDirection dir(weaponInventory[currentWeapon].component<cDirection>()->right);
+				cPosition pos(weapon.component<cPosition>()->pos);
+				cDirection dir(weapon.component<cDirection>()->right);
 				// temporary. just to get something testable right now
 				eventManager.emit<evFireRail>(base, pID, pos, dir);
 			}
-			else if (weaponInventory[currentWeapon].has_component<cMeleeWeapon>())
+			else if (weapon.has_component<cMeleeWeapon>())
 			{
 				cPlayerID pID(0);
-				cPosition pos(sf::Vector2f(weaponInventory[currentWeapon].component<cPosition>()->pos));
-				cDirection dir(weaponInventory[currentWeapon].component<cDirection>()->right);
+				cPosition pos(sf::Vector2f(weapon.component<cPosition>()->pos));
+				cDirection dir(weapon.component<cDirection>()->right);
 				eventManager.emit<evFireMelee>(base, pID, pos, dir, hitbox);
+			}
+			else if (weapon.has_component<cProjectileWeapon>())
+			{
+				eventManager.emit<evFireProjectile>(base, 0, weapon.component<cPosition>(), weapon.component<cDirection>(), weapon.component<cWeaponHitbox>());
 			}
 
 			base->cooldownTimer.restart();
@@ -54,25 +59,30 @@ void playerWeaponSystem::update(entityx::EntityManager &entities, entityx::Event
 		currentDirection = "right";
 
 		entityx::ComponentHandle<cWeaponBase> base = weaponInventory[currentWeapon].component<cWeaponBase>();
+		auto weapon = weaponInventory[currentWeapon];
 
 		if (base->cooldownTimer.getElapsedTime().asSeconds() > base->cooldown)
 		{
-			entityx::ComponentHandle<cWeaponHitbox> hitbox = weaponInventory[currentWeapon].component<cWeaponHitbox>();
+			entityx::ComponentHandle<cWeaponHitbox> hitbox = weapon.component<cWeaponHitbox>();
 
-			if (weaponInventory[currentWeapon].has_component<cRailWeapon>())
+			if (weapon.has_component<cRailWeapon>())
 			{
 				cPlayerID pID(0);
-				cPosition pos(weaponInventory[currentWeapon].component<cPosition>()->pos); 
-				cDirection dir(weaponInventory[currentWeapon].component<cDirection>()->right);
+				cPosition pos(weapon.component<cPosition>()->pos); 
+				cDirection dir(weapon.component<cDirection>()->right);
 				// temporary. just to get something testable right now
 				eventManager.emit<evFireRail>(base, pID, pos, dir);
 			}
-			else if (weaponInventory[currentWeapon].has_component<cMeleeWeapon>())
+			else if (weapon.has_component<cMeleeWeapon>())
 			{
 				cPlayerID pID(0);
-				cPosition pos(sf::Vector2f(weaponInventory[currentWeapon].component<cPosition>()->pos));
-				cDirection dir(weaponInventory[currentWeapon].component<cDirection>()->right);
+				cPosition pos(sf::Vector2f(weapon.component<cPosition>()->pos));
+				cDirection dir(weapon.component<cDirection>()->right);
 				eventManager.emit<evFireMelee>(base, pID, pos, dir, hitbox);
+			}
+			else if (weapon.has_component<cProjectileWeapon>())
+			{
+				eventManager.emit<evFireProjectile>(base, 0, weapon.component<cPosition>(), weapon.component<cDirection>(), weapon.component<cWeaponHitbox>());
 			}
 
 			base->cooldownTimer.restart();
@@ -146,7 +156,7 @@ void playerWeaponSystem::receive(const evAddWeapon &event)
 	weaponInventory[index] = entityManager.create();
 	weaponInventory[index].assign<cPosition>(sf::Vector2f(0.f, 0.f));
 	weaponInventory[index].assign<cDirection>(true);
-	weaponInventory[index].assign<cWeaponBase>(event.name, event.cooldown, event.damage);
+	weaponInventory[index].assign<cWeaponBase>(event.name, event.cooldown, event.damage, event.velocity);
 
 	auto pPos = pEntity.component<cPosition>()->pos;
 
@@ -171,6 +181,11 @@ void playerWeaponSystem::receive(const evAddWeapon &event)
 	else if (event.weapon == kk::WEAPON_PROJECTILE)
 	{
 		weaponInventory[index].assign<cProjectileWeapon>();
+		if (event.name == "proj")
+		{
+			sf::FloatRect hitbox = sf::FloatRect(pPos.x + 32, pPos.y + 10, 50.f, 10.f);
+			weaponInventory[index].assign<cWeaponHitbox>(hitbox, sf::Vector2f(2.f, 10.f));
+		}
 	}
 }
 

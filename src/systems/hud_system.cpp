@@ -27,6 +27,7 @@ void hudSystem::receive(const evStatsCreated &event)
 	goldText = entityManager.create(); goldText.assign<cStaticView>();
 	rail = entityManager.create(); rail.assign<cStaticView>(); // this will be made dynamic later
 	melee = entityManager.create(); melee.assign<cStaticView>(); // this will be made dynamic later
+	proj = entityManager.create(); proj.assign<cStaticView>(); // this will be made dynamic later
 	selectedWeapon = entityManager.create(); selectedWeapon.assign<cStaticView>();
 
 	// Setup scene here.
@@ -87,6 +88,15 @@ void hudSystem::receive(const evStatsCreated &event)
 	meleeBox->setPosition((window->getSize().x / 2) + 6, window->getSize().y - (meleeBox->getTexture()->getSize().y * meleeBox->getScale().y) - 2);
 	melee.assign<cRenderableHUD>(
 		meleeBox,
+		0,
+		true);
+
+	std::shared_ptr<sf::Sprite> projBox(new sf::Sprite);
+	projBox->setTexture(*kk::getTexture("weapons"));
+	projBox->setScale(0.25, 0.25);
+	projBox->setPosition((window->getSize().x / 2) + 6, window->getSize().y - (projBox->getTexture()->getSize().y * projBox->getScale().y) - 2);
+	proj.assign<cRenderableHUD>(
+		projBox,
 		0,
 		true);
 

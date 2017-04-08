@@ -1,14 +1,17 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-
+#include <entityx/entityx.h>
 
 struct cWeaponBase
 {
-	cWeaponBase(std::string name, float cooldown, int damage) : name(name), damage(damage), cooldown(cooldown) {}
+	cWeaponBase(std::string name, float cooldown, int damage) : name(name), damage(damage), cooldown(cooldown), velocity({0.f, 0.f}) {}
+	cWeaponBase(std::string name, float cooldown, int damage, sf::Vector2f velocity) : name(name), damage(damage), cooldown(cooldown), velocity(velocity) {}
+	cWeaponBase(entityx::ComponentHandle<cWeaponBase> base) : name(base->name), cooldown(base->cooldown), damage(base->damage), velocity(base->velocity) {}
 	std::string name;
 	float cooldown; // delay per shot in seconds
 	sf::Clock cooldownTimer;
 	int damage;
+	sf::Vector2f velocity;
 };
 
 struct cCurrentWeapon
@@ -33,6 +36,16 @@ struct cMeleeWeapon
 
 struct cProjectileWeapon
 {
+};
+
+struct cProjectile
+{
+};
+
+struct cProjectileOrigin
+{
+	cProjectileOrigin(bool player) : player(player) {}
+	bool player;
 };
 
 struct cWeaponHitbox
