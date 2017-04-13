@@ -33,7 +33,7 @@ set (SFML_STATIC_LIBRARIES TRUE)
 #Entityx
 link_directories (C:/lib/entityx/lib)
 #TGUI
-link_directories (C:/lib/TGUI-0.7.3/lib)
+link_directories (C:/lib/TGUI-0.7.4/lib)
 #	set (TGUI_ROOT C:/lib/TGUI-0.7.3)
 endif()
 

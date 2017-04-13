@@ -24,9 +24,13 @@ void World::update(sf::Time deltaTime)
 		systems.update<hudSystem>(deltaTime.asSeconds());
 		systems.update<enemyWeaponSystem>(deltaTime.asSeconds());
 	}
-	if (kk::getState() == kk::gameState::STATE_MENU)
+	else if (kk::getState() == kk::gameState::STATE_MENU)
 	{
 		systems.update<menuSystem>(deltaTime.asSeconds());
+	}
+	else if (kk::getState() == kk::STATE_PREGAME)
+	{
+		systems.update<animationSystem>(deltaTime.asSeconds());
 	}
 	//systems.update<stateSystem>(deltaTime.asSeconds());
 
@@ -38,7 +42,7 @@ void World::createSystems()
 {
 	// generate all systems
 	systems.add<inputSystem>(events);
-	systems.add<movementSystem>(entities);
+	systems.add<movementSystem>(entities, events);
 	systems.add<animationSystem>(entities);
 	systems.add<enemySpawnSystem>(entities, events, window);
 	systems.add<enemyAISystem>(entities, events);
@@ -47,7 +51,7 @@ void World::createSystems()
 	systems.add<cameraSystem>(entities, window);
 	systems.add<statsSystem>(entities, events);
 	systems.add<hudSystem>(entities, events, window);
-	systems.add<stateSystem>(events);
+	systems.add<stateSystem>(entities, events);
 	systems.add<menuSystem>(entities, events, window);
 	systems.add<enemyWeaponSystem>(entities, events);
 	systems.add<levelSystem>(entities, events, window);
@@ -67,8 +71,9 @@ void World::createEntities(entityx::EventManager& event_manager)
 	ePlayer.assign<cDirection>(true); // true = right, make enum for DIR_LEFT and DIR_RIGHT later
 	ePlayer.assign<cVelocity>(0.f, 0.f);
 	std::shared_ptr<sf::Sprite> pSprite(new sf::Sprite());
-	pSprite->setTexture(*kk::getTexture("player"));
+	pSprite->setTexture(*kk::getTexture("adventurer"));
 	pSprite->setTextureRect(sf::IntRect(0, 0, 0, 0));
+	pSprite->setScale(0.2, 0.2);
 	std::shared_ptr<sf::Sprite> pAK(new sf::Sprite());
 	pAK->setTexture(*kk::getTexture("weapons"));
 	pAK->setTextureRect(sf::IntRect(0, 0, 0, 0));
@@ -78,26 +83,27 @@ void World::createEntities(entityx::EventManager& event_manager)
 		true // render
 		);
 	ePlayer.assign<cAnimationLayered>();
-	ePlayer.component<cAnimationLayered>()->otherLayers.emplace_back(pAK, 2, true);
+	//ePlayer.component<cAnimationLayered>()->otherLayers.emplace_back(pAK, 2, true);
+	//ePlayer.component<cAnimationLayered>()->otherLayers[0].render = false;
 	ePlayer.component<cAnimationLayered>()->entityLayer = 0; // render order of main texture
-	ePlayer.component<cAnimationLayered>()->animations.emplace_back(kk::getTexture("player"), 8, 65, sf::Vector2i(64,64), 10);
-	ePlayer.component<cAnimationLayered>()->animations.emplace_back(kk::getTexture("weapons"), 8, 65, sf::Vector2i(64, 64), 10);
-	ePlayer.component<cAnimationLayered>()->animations[0].addAnimation("rail_running", 5, 12);
-	ePlayer.component<cAnimationLayered>()->animations[0].addAnimation("rail_idle", 65, 65);
+	ePlayer.component<cAnimationLayered>()->animations.emplace_back(kk::getTexture("adventurer"), 4, 20, sf::Vector2i(415, 507), 10);
+	//ePlayer.component<cAnimationLayered>()->animations.emplace_back(kk::getTexture("weapons"), 8, 65, sf::Vector2i(64, 64), 10);
+	ePlayer.component<cAnimationLayered>()->animations[0].addAnimation("rail_running", 11, 20);
+	ePlayer.component<cAnimationLayered>()->animations[0].addAnimation("rail_idle", 1, 10);
 	ePlayer.component<cAnimationLayered>()->animations[0].setAnimation("rail_idle", false);
-	ePlayer.component<cAnimationLayered>()->animations[0].addAnimation("knife_running", 5, 12);
-	ePlayer.component<cAnimationLayered>()->animations[0].addAnimation("knife_idle", 65, 65);
-	ePlayer.component<cAnimationLayered>()->animations[0].addAnimation("proj_running", 5, 12);
-	ePlayer.component<cAnimationLayered>()->animations[0].addAnimation("proj_idle", 65, 65);
-	ePlayer.component<cAnimationLayered>()->animations[1].addAnimation("rail_running", 5, 12);
+	ePlayer.component<cAnimationLayered>()->animations[0].addAnimation("knife_running", 11, 20);
+	ePlayer.component<cAnimationLayered>()->animations[0].addAnimation("knife_idle", 1, 10);
+	ePlayer.component<cAnimationLayered>()->animations[0].addAnimation("proj_running", 11, 20);
+	ePlayer.component<cAnimationLayered>()->animations[0].addAnimation("proj_idle", 1, 10);
+	/*ePlayer.component<cAnimationLayered>()->animations[1].addAnimation("rail_running", 5, 12);
 	ePlayer.component<cAnimationLayered>()->animations[1].addAnimation("rail_idle", 1, 1);
 	ePlayer.component<cAnimationLayered>()->animations[1].setAnimation("rail_idle", false);
 	ePlayer.component<cAnimationLayered>()->animations[1].addAnimation("knife_running", 21, 28);
 	ePlayer.component<cAnimationLayered>()->animations[1].addAnimation("knife_idle", 17, 17);
 	ePlayer.component<cAnimationLayered>()->animations[1].addAnimation("proj_running", 5, 12);
-	ePlayer.component<cAnimationLayered>()->animations[1].addAnimation("proj_idle", 1, 1);
+	ePlayer.component<cAnimationLayered>()->animations[1].addAnimation("proj_idle", 1, 1);*/
 	event_manager.emit<evAddedLayerToAnimation>(ePlayer, 0);
-	event_manager.emit<evAddedLayerToAnimation>(ePlayer, 1);
+	//event_manager.emit<evAddedLayerToAnimation>(ePlayer, 1);
 
 	//                              weapon type,     name,     tex,   dmg, cd,    range,  size
 	event_manager.emit<evAddWeapon>(kk::WEAPON_RAIL, "rail",   20, 0.1f);

@@ -1,7 +1,9 @@
 #include "player_stats.hpp"
 
 stats::stats() :
-	movementSpeed(350)
+	movementSpeed(350), goldGain(0), manaPS(0), maxHP(100), maxMana(100),
+	maxHPUC(15), maxManaUC(15), goldGainUC(20), MSUC(5), manaPSUC(20),
+	currentLevel(1), goldAtLevel(0)
 {
 }
 
@@ -86,4 +88,92 @@ void stats::removeMana(int _mana)
 void stats::setMana(int _mana)
 {
 	mana->mana = _mana;
+}
+
+unsigned int stats::getMaxHP()
+{
+	return maxHP;
+}
+
+unsigned int stats::getMaxMana()
+{
+	return maxMana;
+}
+
+unsigned int stats::getGoldGain()
+{
+	return goldGain;
+}
+
+float stats::getManaPS()
+{
+	return manaPS;
+}
+
+void stats::addGoldGain(unsigned int gg)
+{
+	goldGain += gg;
+}
+
+void stats::addMaxHP(unsigned int mhp)
+{
+	maxHP += mhp;
+}
+
+void stats::addMaxMana(unsigned int mm)
+{
+	maxMana += mm;
+}
+
+void stats::addMPS(float mps)
+{
+	manaPS += mps;
+}
+
+unsigned int stats::getUpgradeCost(std::string attrib)
+{
+	if (attrib == "maxHP")
+		return maxHPUC;
+	else if (attrib == "maxMana")
+		return maxManaUC;
+	else if (attrib == "goldGain")
+		return goldGainUC;
+	else if (attrib == "MS")
+		return MSUC;
+	else if (attrib == "manaPS")
+		return manaPSUC;
+}
+
+void stats::addUpgradeCost(std::string attrib, int val)
+{
+	if (attrib == "maxHP")
+		maxHPUC += val;
+	else if (attrib == "maxMana")
+		maxManaUC += val;
+	else if (attrib == "goldGain")
+		goldGainUC += val;
+	else if (attrib == "MS")
+		MSUC += val;
+	else if (attrib == "manaPS")
+		manaPSUC += val;
+}
+
+void stats::setCurrentLevel(int level)
+{
+	currentLevel = level;
+}
+
+int stats::getCurrentLevel()
+{
+	return currentLevel;
+}
+
+void stats::setGoldAtLevel(int gold)
+{
+	goldAtLevel = gold;
+}
+
+int stats::getGoldAtLevel()
+{
+	return goldAtLevel;
 }

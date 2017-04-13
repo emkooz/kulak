@@ -26,5 +26,6 @@ private:
 	World world;
 
 	sf::RenderWindow window;
+	sf::ContextSettings windowSettings;
 	sf::Color clearColor;
 };

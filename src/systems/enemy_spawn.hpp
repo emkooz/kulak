@@ -25,6 +25,7 @@ public:
 	void update(entityx::EntityManager &entities, entityx::EventManager &events, entityx::TimeDelta dt);
 	void receive(const evSpawnEnemy& enemy);
 	void receive(const evLevelCompleted& event);
+	void receive(const evLevelFailed& event);
 	void receive(const evEnemyDead& event);
 	void receive(const evBackgroundCreated& event);
 
@@ -55,6 +56,7 @@ private:
 	int currentLevel;
 	int enemiesAlive;
 	int enemiesToSpawn;
+	std::vector<entityx::Entity> enemiesToDelete;
 
 	void readSpawnFile();
 };

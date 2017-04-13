@@ -11,10 +11,12 @@ namespace kk
 class stateSystem : public entityx::System<stateSystem>, public entityx::Receiver<stateSystem>
 {
 public:
-	stateSystem(entityx::EventManager& _eventManager);
+	stateSystem(entityx::EntityManager& _entityManager ,entityx::EventManager& _eventManager);
+	entityx::EntityManager& entityManager;
 	entityx::EventManager& eventManager;
 	void configure(entityx::EventManager& eventManager);
 	void update(entityx::EntityManager &entities, entityx::EventManager &events, entityx::TimeDelta dt);
 	void receive(const evSetState &event);
 	void receive(const evLevelCompleted& event);
+	void receive(const evLevelFailed& event);
 };

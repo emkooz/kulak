@@ -59,7 +59,7 @@ public:
 	void setMode (mode _mode);
 	void setSpeed (float speed);
 	void setReversed(bool reversed);
-	void setReversed(sf::Sprite* box, bool reversed);
+	void setReversed(std::shared_ptr<sf::Sprite> box, bool reversed);
 	bool getReversed();
 	sf::Vector2f getSize();
 	void update ();

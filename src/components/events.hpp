@@ -215,6 +215,18 @@ struct evBuyMana
 {
 };
 
+struct evBuyMS
+{
+};
+
+struct evBuyGoldGain
+{
+};
+
+struct evBuyMPS
+{
+};
+
 struct evAllEnemiesDead
 {
 };
@@ -223,4 +235,10 @@ struct evLevelCompleted
 {
 	evLevelCompleted(int nextLevel) : nextLevel(nextLevel) {}
 	int nextLevel;
+};
+
+struct evLevelFailed
+{
+	evLevelFailed(int currentLevel) : currentLevel(currentLevel) {}
+	int currentLevel;
 };

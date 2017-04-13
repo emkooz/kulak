@@ -50,16 +50,20 @@ void animationSystem::receive(const evPlayerAnimationSet& evAnim)
 		{
 			animation.state = evAnim.name;
 
+			auto anim = animation.otherLayers;
+
 			for (int x = 0; x < animation.animations.size(); x++)
 			{
 				animation.animations[x].setAnimation(evAnim.name, evAnim.right);
 				
-				if (x < animation.entityLayer)
-					animation.otherLayers[x].box->setScale(evAnim.right ? sf::Vector2f(1, 1) : sf::Vector2f(-1, 1));
+				if (x <= animation.entityLayer)
+				{
+					animation.animations[x].setReversed(render.box, evAnim.right);
+				}
 				else if (x > animation.entityLayer)
-					animation.otherLayers[x-1].box->setScale(evAnim.right ? sf::Vector2f(1, 1) : sf::Vector2f(-1, 1));
-				else
-					render.box->setScale(evAnim.right ? sf::Vector2f(1, 1) : sf::Vector2f(-1, 1));
+				{
+					animation.animations[x - 1].setReversed(render.box, evAnim.right);
+				}
 			}
 		}
 	});

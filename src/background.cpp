@@ -7,8 +7,8 @@ void background::load(entityx::EntityManager& entityManager, entityx::EventManag
 	eBG.assign<cBackground>();
 	std::shared_ptr<sf::Sprite> bgSprite(new sf::Sprite);
 	bgSprite->setTexture(*kk::getTexture("menubg"));
+	bgSprite->setPosition(0, 0);
 	bgSprite->setOrigin(bgSprite->getTexture()->getSize().x / 2, bgSprite->getTexture()->getSize().y / 2);
-	bgSprite->setPosition(0.f, 0.f);
 	//bgSprite->setColor(sf::Color::Transparent);
 	bounds = bgSprite->getGlobalBounds();
 	eBG.assign<cRenderable>(

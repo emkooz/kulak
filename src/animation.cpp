@@ -130,14 +130,14 @@ void animationSheet::setReversed(bool rev)
 	reversed = rev;
 }
 
-void animationSheet::setReversed(sf::Sprite* box, bool _reversed)
+void animationSheet::setReversed(std::shared_ptr<sf::Sprite> box, bool right)
 {
-	if (_reversed && box->getScale().x > 0)
+	if (right && box->getScale().x < 0)
 		box->setScale({-(box->getScale().x), box->getScale().y});
-	else if (!_reversed && box->getScale().x < 0)
+	else if (!right && box->getScale().x > 0)
 		box->setScale({-(box->getScale().x), box->getScale().y});
 
-	reversed = _reversed;
+	reversed = right? false : true;
 }
 
 bool animationSheet::getReversed()

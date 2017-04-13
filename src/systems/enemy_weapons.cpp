@@ -39,20 +39,23 @@ void enemyWeaponSystem::update(entityx::EntityManager &entities, entityx::EventM
 
 void enemyWeaponSystem::receive(const evFireEnemy &event)
 {
-	entityx::Entity enemy = event.enemy, weapon = enemy.component<cWeaponEnemy>()->weapon;
-
-	if (weapon.component<cWeaponBase>()->cooldownTimer.getElapsedTime().asSeconds() > weapon.component<cWeaponBase>()->cooldown) // off cooldown
+	if (kk::getState() == kk::STATE_PLAYING)
 	{
-		weapon.component<cWeaponBase>()->cooldownTimer.restart();
+		entityx::Entity enemy = event.enemy;
+		auto weapon = enemy.component<cWeaponEnemy>()->weapon;
 
-		entityx::Entity player = event.player;
-		sf::FloatRect gPlayerBounds = player.component<cRenderable>()->box->getGlobalBounds();
-
-		if (event.type == kk::WEAPON_MELEE)
+		if (weapon.component<cWeaponBase>()->cooldownTimer.getElapsedTime().asSeconds() > weapon.component<cWeaponBase>()->cooldown) // off cooldown
 		{
-			if (weapon.component<cWeaponHitbox>()->hitbox.intersects(gPlayerBounds))
+			weapon.component<cWeaponBase>()->cooldownTimer.restart();
+			entityx::Entity player = event.player;
+			sf::FloatRect gPlayerBounds = player.component<cRenderable>()->box->getGlobalBounds();
+
+			if (event.type == kk::WEAPON_MELEE)
 			{
-				eventManager.emit<evHitPlayer>(event.player, weapon);
+				if (weapon.component<cWeaponHitbox>()->hitbox.intersects(gPlayerBounds))
+				{
+					eventManager.emit<evHitPlayer>(event.player, weapon);
+				}
 			}
 		}
 	}

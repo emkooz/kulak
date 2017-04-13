@@ -13,6 +13,9 @@ public:
 	void update(entityx::EntityManager &entities, entityx::EventManager &events, entityx::TimeDelta dt);
 	void receive(const entityx::ComponentAddedEvent<cPlayerID> &event);
 	void receive(const evBackgroundCreated &event);
+	void receive(const evLevelCompleted& event);
+	void receive(const evLevelFailed& event);
+
 private:
 	entityx::EntityManager& entityManager;
 	entityx::Entity pEntity;

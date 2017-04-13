@@ -8,6 +8,7 @@ void enemySpawnSystem::configure(entityx::EventManager& eventManager)
 {
 	eventManager.subscribe<evSpawnEnemy>(*this);
 	eventManager.subscribe<evLevelCompleted>(*this);
+	eventManager.subscribe<evLevelFailed>(*this);
 	eventManager.subscribe<evEnemyDead>(*this);
 	eventManager.subscribe<evBackgroundCreated>(*this);
 
@@ -44,6 +45,15 @@ void enemySpawnSystem::update(entityx::EntityManager &entities, entityx::EventMa
 					sf::Vector2f((randBool() ? bounds->getBounds().left - 50 : bounds->getBounds().left + bounds->getBounds().width + 50), // X coord of spawn
 								 (offset(rand)))); // Y coord of spawn (+-offset from center)
 			}
+		}
+	}
+
+	if (enemiesToDelete.size() > 0)
+	{
+		for (int x = enemiesToDelete.size(); x > 0; x--)
+		{
+			enemiesToDelete[x - 1].destroy();
+			enemiesToDelete.pop_back();
 		}
 	}
 }
@@ -127,6 +137,18 @@ void enemySpawnSystem::receive(const evLevelCompleted& event)
 		kk::log("No more levels left! Randomizing.");
 		/* randomize here */
 	}
+}
+
+void enemySpawnSystem::receive(const evLevelFailed& event)
+{
+	// delete every enemy, reset the spawn counter
+	entityManager.each<cEnemyType>([this](entityx::Entity _entity, cEnemyType &_type)
+	{
+		enemiesToDelete.emplace_back(_entity);
+	});
+
+	enemiesAlive = levels[event.currentLevel - 1].types.size();
+	enemiesToSpawn = enemiesAlive;
 }
 
 void enemySpawnSystem::receive(const evEnemyDead& event)

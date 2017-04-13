@@ -19,12 +19,16 @@ void Game::loadTextures()
 {
 	kk::log("Loading textures...");
 	kk::loadTexture("player", "player_sheet_fix.png");
+	kk::loadTexture("adventurer", "adventurer.png");
 	kk::loadTexture("weapons", "player_weapons.png");
 	kk::loadTexture("bg", "bg.png");
 	kk::loadTexture("health", "health.png");
 	kk::loadTexture("coin", "coin.png");
 	kk::loadTexture("menubg", "menu-bg.png");
+	kk::loadTexture("statbg", "statbg.png");
 	kk::loadFont("font", "Verdana.ttf");
+
+	kk::getTexture("adventurer")->setSmooth(true);
 }
 
 void Game::loadCvars()
@@ -118,16 +122,37 @@ void Game::render()
 	}
 	window.setView(window.getDefaultView());
 	// menu render
-	if (kk::getState() == kk::gameState::STATE_MENU)
+	if (kk::getState() == kk::gameState::STATE_MENU || kk::getState() == kk::gameState::STATE_PREGAME)
 	{
 		world.entities.each<cBackground>([this](entityx::Entity entity, cBackground &bg)
 		{
 			window.draw(*entity.component<cRenderable>()->box);
 		});
-		world.entities.each<cStaticView, cRenderableMenuText>([this](entityx::Entity entity, cStaticView &layer, cRenderableMenuText &text)
+
+		if (kk::getState() == kk::STATE_PREGAME)
 		{
-			window.draw(*text.text);
-		});
+			world.entities.each<cPlayerID, cRenderable>([this](entityx::Entity entity, cPlayerID &player, cRenderable &render)
+			{
+				entityx::ComponentHandle<cAnimationLayered> animation = entity.component<cAnimationLayered>();
+				for (int z = 0; z < animation->animations.size(); z++)
+				{
+					if (z < animation->entityLayer)
+						window.draw(*animation->otherLayers[z].box);
+					else if (z > animation->entityLayer)
+						window.draw(*animation->otherLayers[z - 1].box);
+					else
+						window.draw(*entity.component<cRenderable>()->box);
+				}
+			});
+		}
+
+		if (kk::getState() == kk::STATE_MENU)
+		{
+			world.entities.each<cStaticView, cRenderableMenuText>([this](entityx::Entity entity, cStaticView &layer, cRenderableMenuText &text)
+			{
+				window.draw(*text.text);
+			});
+		}
 	}
 	window.setView(cameraView); // reset back to  normal game view
 

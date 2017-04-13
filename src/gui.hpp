@@ -13,6 +13,7 @@ public:
 	void init(sf::RenderWindow* _window);
 	void receive(const evSetState& event);
 	void receive(const evStatsCreated& event);
+	void receive(const evLevelCompleted& event);
 	void pollEvents(sf::Event event);
 	void draw();
 	void update();

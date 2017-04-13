@@ -10,6 +10,8 @@ void cameraSystem::configure(entityx::EventManager& eventManager)
 {
 	eventManager.subscribe<entityx::ComponentAddedEvent<cPlayerID>>(*this);
 	eventManager.subscribe<evBackgroundCreated>(*this);
+	eventManager.subscribe<evLevelCompleted>(*this);
+	eventManager.subscribe<evLevelFailed>(*this);
 }
 
 void cameraSystem::update(entityx::EntityManager &entities, entityx::EventManager &events, entityx::TimeDelta dt)
@@ -47,6 +49,18 @@ void cameraSystem::receive(const entityx::ComponentAddedEvent<cPlayerID> &event)
 	window->setView(cameraView);
 
 	deadzone = window->getSize().x * 0.05; // deadzone is 5% (x and -x) of width
+}
+
+void cameraSystem::receive(const evLevelCompleted& event)
+{
+	cameraView.setCenter(0.f, 0.f);
+	window->setView(cameraView);
+}
+
+void cameraSystem::receive(const evLevelFailed& event)
+{
+	cameraView.setCenter(0.f, 0.f);
+	window->setView(cameraView);
 }
 
 void cameraSystem::receive(const evBackgroundCreated &event)

@@ -33,12 +33,12 @@ void enemyAISystem::update(entityx::EntityManager &entities, entityx::EventManag
 		if (vector.x < 0) // moving left
 		{
 			direction.right = false;
-			anim.animations.setReversed(render.box.get(), true); 
+			anim.animations.setReversed(render.box, false); 
 		}
 		else
 		{
 			direction.right = true;
-			anim.animations.setReversed(render.box.get(), false);
+			anim.animations.setReversed(render.box, true);
 		}
 
 		position.pos.x += (vector.x * vel.velocity.x * dt);
@@ -89,7 +89,7 @@ void enemyAISystem::attack(entityx::Entity enemy, entityx::Entity player)
 			// check if the player is within 50 pixels of the enemy, start attacking. will be made dynamic later
 			if (std::abs(pPos->pos.x - ePos->pos.x) < 50)
 			{
-				eventManager.emit<evFireEnemy>(enemy, player, eDir.get(), wType);
+					eventManager.emit<evFireEnemy>(enemy, player, eDir.get(), wType);
 			}
 		}
 		else if (wType == kk::WEAPON_MELEE)
@@ -107,7 +107,7 @@ void enemyAISystem::attack(entityx::Entity enemy, entityx::Entity player)
 		{
 			if (std::abs(ePos->pos.x - pPos->pos.x) < 50)
 			{
-				eventManager.emit<evFireEnemy>(enemy, player, eDir.get(), wType);
+					eventManager.emit<evFireEnemy>(enemy, player, eDir.get(), wType);
 			}
 		}
 		else if (wType == kk::WEAPON_MELEE)

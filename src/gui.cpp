@@ -5,6 +5,7 @@ GUI::GUI(entityx::EntityManager& entityManager, entityx::EventManager& eventMana
 {
 	eventManager.subscribe<evSetState>(*this);
 	eventManager.subscribe<evStatsCreated>(*this);
+	eventManager.subscribe<evLevelCompleted>(*this);
 };
 
 void GUI::init(sf::RenderWindow* _window)
@@ -15,18 +16,48 @@ void GUI::init(sf::RenderWindow* _window)
 	auto width = tgui::bindWidth(gui);
 	auto height = tgui::bindHeight(gui);
 
+	auto theme = tgui::Theme::create("red.txt");
+
 	// TODO: update tgui to dev branch, change labels to richtext?
 
 	// Stats widgets //
 	// Play button
-	auto bPlay = tgui::Button::create();
+	tgui::Button::Ptr bPlay = theme->load("Button");
 		bPlay->setSize(width * 0.1, height * 0.1);
 		bPlay->setPosition(centerHorizontal(bPlay, width), height * 0.8);
 		bPlay->setText("Play");
 		bPlay->hide();
 		bPlay->connect("pressed", [&](){eventManager.emit<evSetState>(kk::STATE_PLAYING);});
-		gui.add(bPlay, "bStatPlay");
+		gui.add(bPlay, "bStatsPlay");
 		statWidgets.emplace_back(bPlay);
+
+	// Back button
+	tgui::Button::Ptr bBack = theme->load("Button");
+		bBack->setSize(26, 26);
+		bBack->setPosition(5, 5);
+		bBack->setText("<-");
+		bBack->hide();
+		bBack->connect("pressed", [&]() {eventManager.emit<evSetState>(kk::STATE_MENU);});
+		gui.add(bBack, "bStatsBack");
+		statWidgets.emplace_back(bBack);
+
+	// Player name
+	auto tName = tgui::Label::create();
+		tName->setText("<name>");
+		tName->setTextSize(26);
+		tName->setPosition(bBack->getPosition().x + bBack->getFullSize().x + 20, 5);
+		tName->hide();
+		gui.add(tName, "tStatsName");
+		statWidgets.emplace_back(tName);
+
+	// Level
+	auto tLevel = tgui::Label::create();
+		tLevel->setText("Level 1");
+		tLevel->setTextSize(36);
+		tLevel->setPosition(centerHorizontal(tLevel, width), height * 0.1);
+		tLevel->hide();
+		gui.add(tLevel, "tStatsLevel");
+		statWidgets.emplace_back(tLevel);
 
 	// Gold text + image at top right
 	auto tGold = tgui::Label::create();
@@ -34,7 +65,7 @@ void GUI::init(sf::RenderWindow* _window)
 		tGold->setTextSize(24);
 		tGold->setPosition(width - 100, 2);
 		tGold->hide();
-		gui.add(tGold, "tStatGold");
+		gui.add(tGold, "tStatsGold");
 		statWidgets.emplace_back(tGold);
 
 	auto pGold = tgui::Picture::create();
@@ -42,7 +73,7 @@ void GUI::init(sf::RenderWindow* _window)
 		pGold->setPosition(tGold->getPosition().x - 30, 2);
 		pGold->setSize(24, 24);
 		pGold->hide();
-		gui.add(pGold, "pStatGold");
+		gui.add(pGold, "pStatsGold");
 		statWidgets.emplace_back(pGold);
 
 	// Health text + image at top right
@@ -51,7 +82,7 @@ void GUI::init(sf::RenderWindow* _window)
 		tHealth->setTextSize(24);
 		tHealth->setPosition(pGold->getPosition().x - 100, 2);
 		tHealth->hide();
-		gui.add(tHealth, "tStatHealth");
+		gui.add(tHealth, "tStatsHealth");
 		statWidgets.emplace_back(tHealth);
 
 	auto pHealth = tgui::Picture::create();
@@ -59,38 +90,138 @@ void GUI::init(sf::RenderWindow* _window)
 		pHealth->setPosition(tHealth->getPosition().x - 30, 2);
 		pHealth->setSize(24, 24);
 		pHealth->hide();
-		gui.add(pHealth, "pStatHealth");
+		gui.add(pHealth, "pStatsHealth");
 		statWidgets.emplace_back(pHealth);
 
-	// Gold text + upgrade in middle
-	auto tGoldUpgrade = tgui::Label::copy(tGold);
-		tGoldUpgrade->setPosition(centerHorizontal(tGoldUpgrade, width) - 50, centerVertical(tGoldUpgrade, height));
-		gui.add(tGoldUpgrade, "tStatGoldUpgrade");
-		statWidgets.emplace_back(tGoldUpgrade);
+	// Max HP upgrade text + value + upgrade button
+	auto tMHPText = tgui::Label::create();
+		tMHPText->setText("Max HP:");
+		tMHPText->setTextSize(26);
+		tMHPText->setPosition(10, height * 0.3);
+		tMHPText->hide();
+		gui.add(tMHPText, "tStatsMHPText");
+		statWidgets.emplace_back(tMHPText);
 
-	auto bGoldUpgrade = tgui::Button::create();
-		bGoldUpgrade->setText("Upgrade");
-		bGoldUpgrade->setPosition(tGoldUpgrade->getPosition().x + 100, centerVertical(bGoldUpgrade, height) + 2);
-		bGoldUpgrade->setSize(75, 24);
-		bGoldUpgrade->hide();
-		bGoldUpgrade->connect("pressed", [&]() {eventManager.emit<evBuyMana>();});
-		gui.add(bGoldUpgrade, "bStatGoldUpgrade");
-		statWidgets.emplace_back(bGoldUpgrade);
+	auto tMHPValue = tgui::Label::create();
+		tMHPValue->setText(std::to_string(pStats->getMaxHP()));
+		tMHPValue->setTextSize(26);
+		tMHPValue->setPosition(width * 0.3, tMHPText->getPosition().y);
+		tMHPValue->hide();
+		gui.add(tMHPValue, "tStatsMHPValue");
+		statWidgets.emplace_back(tMHPValue);
 
-	// Health text + upgrade in middle
-	auto tHealthUpgrade = tgui::Label::copy(tHealth);
-		tHealthUpgrade->setPosition(tGoldUpgrade->getPosition().x, tGoldUpgrade->getPosition().y + tGoldUpgrade->getSize().y);
-		gui.add(tHealthUpgrade, "tStatHealthUpgrade");
-		statWidgets.emplace_back(tHealthUpgrade);
+	tgui::Button::Ptr bMHPUpgrade = theme->load("Button");
+		bMHPUpgrade->setText("<val> - Upgrade");
+		bMHPUpgrade->setSize(100, 26);
+		bMHPUpgrade->setPosition(centerHorizontal(bMHPUpgrade, width), tMHPValue->getPosition().y);
+		bMHPUpgrade->hide();
+		bMHPUpgrade->connect("pressed", [&]() {eventManager.emit<evBuyHP>();});
+		gui.add(bMHPUpgrade, "bStatsMHPUpgrade");
+		statWidgets.emplace_back(bMHPUpgrade);
 
-	auto bHealthUpgrade = tgui::Button::create();
-		bHealthUpgrade->setText("Upgrade");
-		bHealthUpgrade->setPosition(bGoldUpgrade->getPosition().x, bGoldUpgrade->getPosition().y + bGoldUpgrade->getSize().y);
-		bHealthUpgrade->setSize(75, 24);
-		bHealthUpgrade->hide();
-		bHealthUpgrade->connect("pressed", [&]() {eventManager.emit<evBuyHP>();});
-		gui.add(bHealthUpgrade, "bStatHealthUpgrade");
-		statWidgets.emplace_back(bHealthUpgrade);
+	// Max mana upgrade text + value + upgrade button
+	auto tMMText = tgui::Label::create();
+		tMMText->setText("Max mana:");
+		tMMText->setTextSize(26);
+		tMMText->setPosition(10, tMHPText->getPosition().y + tMHPText->getFullSize().y + 15);
+		tMMText->hide();
+		gui.add(tMMText, "tStatsMMText");
+		statWidgets.emplace_back(tMMText);
+
+	auto tMMValue = tgui::Label::create();
+		tMMValue->setText(std::to_string(pStats->getMaxMana()));
+		tMMValue->setTextSize(26);
+		tMMValue->setPosition(width * 0.3, tMMText->getPosition().y);
+		tMMValue->hide();
+		gui.add(tMMValue, "tStatsMMValue");
+		statWidgets.emplace_back(tMMValue);
+
+	tgui::Button::Ptr bMMUpgrade = theme->load("Button");
+		bMMUpgrade->setText("<val> - Upgrade");
+		bMMUpgrade->setPosition(centerHorizontal(bMHPUpgrade, width), tMMValue->getPosition().y);
+		bMMUpgrade->setSize(100, 26);
+		bMMUpgrade->hide();
+		bMMUpgrade->connect("pressed", [&]() {eventManager.emit<evBuyMana>();});
+		gui.add(bMMUpgrade, "bStatsMMUpgrade");
+		statWidgets.emplace_back(bMMUpgrade);
+
+	// MS upgrade text + value + upgrade button
+	auto tMSText = tgui::Label::create();
+		tMSText->setText("Movement speed:");
+		tMSText->setTextSize(26);
+		tMSText->setPosition(10, tMMText->getPosition().y + tMMText->getFullSize().y + 15);
+		tMSText->hide();
+		gui.add(tMSText, "tStatsMSText");
+		statWidgets.emplace_back(tMSText);
+
+	auto tMSValue = tgui::Label::create();
+		tMSValue->setText(std::to_string((int)pStats->getMS()));
+		tMSValue->setTextSize(26);
+		tMSValue->setPosition(width * 0.3, tMSText->getPosition().y);
+		tMSValue->hide();
+		gui.add(tMSValue, "tStatsMSValue");
+		statWidgets.emplace_back(tMSValue);
+
+	tgui::Button::Ptr bMSUpgrade = theme->load("Button");
+		bMSUpgrade->setText("<val> - Upgrade");
+		bMSUpgrade->setPosition(centerHorizontal(bMHPUpgrade, width), tMSValue->getPosition().y);
+		bMSUpgrade->setSize(100, 26);
+		bMSUpgrade->hide();
+		bMSUpgrade->connect("pressed", [&]() {eventManager.emit<evBuyMS>();});
+		gui.add(bMSUpgrade, "bStatsMSUpgrade");
+		statWidgets.emplace_back(bMSUpgrade);
+
+	// Gold gain upgrade text + value + upgrade button
+	auto tGGText = tgui::Label::create();
+		tGGText->setText("Gold gain:");
+		tGGText->setTextSize(26);
+		tGGText->setPosition(10, tMSText->getPosition().y + tMSText->getFullSize().y + 15);
+		tGGText->hide();
+		gui.add(tGGText, "tStatsGGText");
+		statWidgets.emplace_back(tGGText);
+
+	auto tGGValue = tgui::Label::create();
+		tGGValue->setText(std::to_string(pStats->getGoldGain()));
+		tGGValue->setTextSize(26);
+		tGGValue->setPosition(width * 0.3, tGGText->getPosition().y);
+		tGGValue->hide();
+		gui.add(tGGValue, "tStatsGGValue");
+		statWidgets.emplace_back(tGGValue);
+
+	tgui::Button::Ptr bGGUpgrade = theme->load("Button");
+		bGGUpgrade->setText("<val> - Upgrade");
+		bGGUpgrade->setPosition(centerHorizontal(bMHPUpgrade, width), tGGValue->getPosition().y);
+		bGGUpgrade->setSize(100, 26);
+		bGGUpgrade->hide();
+		bGGUpgrade->connect("pressed", [&]() {eventManager.emit<evBuyGoldGain>();});
+		gui.add(bGGUpgrade, "bStatsGGUpgrade");
+		statWidgets.emplace_back(bGGUpgrade);
+
+	// Mana/s upgrade text + value + upgrade button
+	auto tMPSText = tgui::Label::create();
+		tMPSText->setText("Mana per second:");
+		tMPSText->setTextSize(26);
+		tMPSText->setPosition(10, tGGText->getPosition().y + tGGText->getFullSize().y + 15);
+		tMPSText->hide();
+		gui.add(tMPSText, "tStatsMPSText");
+		statWidgets.emplace_back(tMPSText);
+
+	auto tMPSValue = tgui::Label::create();
+		tMPSValue->setText(std::to_string((int)pStats->getManaPS()));
+		tMPSValue->setTextSize(26);
+		tMPSValue->setPosition(width * 0.3, tMPSText->getPosition().y);
+		tMPSValue->hide();
+		gui.add(tMPSValue, "tStatsMPSValue");
+		statWidgets.emplace_back(tMPSValue);
+
+	tgui::Button::Ptr bMPSUpgrade = theme->load("Button");
+		bMPSUpgrade->setText("<val> - Upgrade");
+		bMPSUpgrade->setPosition(centerHorizontal(bMHPUpgrade, width), tMPSValue->getPosition().y);
+		bMPSUpgrade->setSize(100, 26);
+		bMPSUpgrade->hide();
+		bMPSUpgrade->connect("pressed", [&]() {eventManager.emit<evBuyMPS>();});
+		gui.add(bMPSUpgrade, "bStatsMPSUpgrade");
+		statWidgets.emplace_back(bMPSUpgrade);
 }
 
 void GUI::receive(const evSetState& event)
@@ -113,22 +244,34 @@ void GUI::receive(const evSetState& event)
 	}
 }
 
-void GUI::receive(const evStatsCreated &event)
-{
-	pStats = event.pStats;
-}
-
 void GUI::update()
 {
-	auto tGold = gui.get<tgui::Label>("tStatGold");
-	auto tHealth = gui.get<tgui::Label>("tStatHealth");
-	auto tGoldUpgrade = gui.get<tgui::Label>("tStatGoldUpgrade");
-	auto tHealthUpgrade = gui.get<tgui::Label>("tStatHealthUpgrade");
+		auto tGold = gui.get<tgui::Label>("tStatsGold");
+		auto tHealth = gui.get<tgui::Label>("tStatsHealth");
+		auto tMaxHP = gui.get<tgui::Label>("tStatsMHPValue");
+		auto tMaxMana = gui.get<tgui::Label>("tStatsMMValue");
+		auto tMS = gui.get<tgui::Label>("tStatsMSValue");
+		auto tGoldGain = gui.get<tgui::Label>("tStatsGGValue");
+		auto tMPS = gui.get<tgui::Label>("tStatsMPSValue");
+		auto bMaxHP = gui.get<tgui::Button>("bStatsMHPUpgrade");
+		auto bMaxMana = gui.get<tgui::Button>("bStatsMMUpgrade");
+		auto bMS = gui.get<tgui::Button>("bStatsMSUpgrade");
+		auto bGoldGain = gui.get<tgui::Button>("bStatsGGUpgrade");
+		auto bMPS = gui.get<tgui::Button>("bStatsMPSUpgrade");
 
-	tGold->setText(std::to_string(pStats->getGold()));
-	tHealth->setText(std::to_string(pStats->getHealth()));
-	tGoldUpgrade->setText(std::to_string(pStats->getGold()));
-	tHealthUpgrade->setText(std::to_string(pStats->getHealth()));
+		tGold->setText(std::to_string(pStats->getGold()));
+		tHealth->setText(std::to_string(pStats->getHealth()));
+		tMaxHP->setText(std::to_string(pStats->getMaxHP()));
+		tMaxMana->setText(std::to_string(pStats->getMaxMana()));
+		tMS->setText(std::to_string((int)pStats->getMS()));
+		tGoldGain->setText(std::to_string(pStats->getGoldGain()));
+		tMPS->setText(std::to_string((int)pStats->getManaPS()));
+
+		bMaxHP->setText(std::to_string(pStats->getUpgradeCost("maxHP")) + " - Upgrade");
+		bMaxMana->setText(std::to_string(pStats->getUpgradeCost("maxMana")) + " - Upgrade");
+		bGoldGain->setText(std::to_string(pStats->getUpgradeCost("goldGain")) + " - Upgrade");
+		bMS->setText(std::to_string(pStats->getUpgradeCost("MS")) + " - Upgrade");
+		bMPS->setText(std::to_string(pStats->getUpgradeCost("manaPS")) + " - Upgrade");
 }
 
 void GUI::pollEvents(sf::Event events)
@@ -141,14 +284,25 @@ void GUI::draw()
 	gui.draw();
 }
 
+void GUI::receive(const evStatsCreated &event)
+{
+	pStats = event.pStats;
+}
+
+void GUI::receive(const evLevelCompleted& event)
+{
+	auto text = gui.get<tgui::Label>("tStatsLevel");
+	text->setText("Level " + std::to_string(event.nextLevel));
+}
+
 template <typename T>
 tgui::Layout GUI::centerHorizontal(T widget, tgui::Layout width)
 {
-	return ((width / 2) - (widget->getSize().x / 2));
+	return ((width / 2) - (widget->getFullSize().x / 2));
 }
 
 template <typename T>
 tgui::Layout GUI::centerVertical(T widget, tgui::Layout height)
 {
-	return ((height / 2) - (widget->getSize().y / 2));
+	return ((height / 2) - (widget->getFullSize().y / 2));
 }
