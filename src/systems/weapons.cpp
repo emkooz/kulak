@@ -20,23 +20,26 @@ void weaponSystem::update(entityx::EntityManager &entities, entityx::EventManage
 	entityManager.each<cProjectile, cVelocity, cDirection, cPosition, cRenderable, cWeaponBase>([this, &dt, &bounds](entityx::Entity entity, cProjectile &proj, cVelocity &vel, 
 																										cDirection &dir, cPosition &pos, cRenderable &render, cWeaponBase &base)
 	{
-		pos.pos.x += ((dir.right? 1 : -1) * (vel.velocity.x * dt));
-		pos.pos.y += vel.velocity.y * dt;
-		render.box->setPosition(pos.pos);
-
-		// check collision between each enemy (use quadtree later)
-		entityManager.each<cEnemyType, cPosition, cRenderable, cAnimation>([this, &render, &base, &entity](entityx::Entity _entity, cEnemyType &_type, cPosition &_pos, cRenderable &_render, cAnimation &_animation)
+		if (proj.owner == "player") // only checking projectiles that came from the player
 		{
-			if (render.box->getGlobalBounds().intersects(_render.box->getGlobalBounds()))
-			{
-				eventManager.emit<evHitEnemy>(_entity, base.damage);
-				entity.destroy();
-			}
-		});
+			pos.pos.x += ((dir.right ? 1 : -1) * (vel.velocity.x * dt));
+			pos.pos.y += vel.velocity.y * dt;
+			render.box->setPosition(pos.pos);
 
-		// kill projectile if it reaches the edges of the map + 50?
-		if ((pos.pos.x > bounds.left + bounds.width + 50) || (pos.pos.x < bounds.left - 50))
-			entity.destroy();
+			// check collision between each enemy (use quadtree later)
+			entityManager.each<cEnemyType, cPosition, cRenderable, cAnimation>([this, &render, &base, &entity](entityx::Entity _entity, cEnemyType &_type, cPosition &_pos, cRenderable &_render, cAnimation &_animation)
+			{
+				if (render.box->getGlobalBounds().intersects(_render.box->getGlobalBounds()))
+				{
+					eventManager.emit<evHitEnemy>(_entity, base.damage);
+					entity.destroy();
+				}
+			});
+
+			// kill projectile if it reaches the edges of the map + 50?
+			if ((pos.pos.x > bounds.left + bounds.width + 50) || (pos.pos.x < bounds.left - 50))
+				entity.destroy();
+		}
 	});
 }
 
@@ -145,7 +148,7 @@ void weaponSystem::receive(const evFireProjectile& weapon)
 		 weapon.pos->pos.y));
 	projectile.assign<cVelocity>(weapon.weapon->velocity);
 	projectile.assign<cDirection>(weapon.dir->right);
-	projectile.assign<cProjectile>();
+	projectile.assign<cProjectile>("player");
 
 	std::shared_ptr<sf::Sprite> sprite(new sf::Sprite());
 	sprite->setTexture(*kk::getTexture("coin"));

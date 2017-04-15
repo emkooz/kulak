@@ -9,6 +9,7 @@
 #include "input.hpp"
 #include "log.hpp"
 #include "resource.hpp"
+#include "background.hpp"
 #include "components/events.hpp"
 #include <memory>
 #include <vector>
@@ -24,8 +25,10 @@ public:
 	void receive(const evAddWeaponEnemy& event);
 	void receive(const evEnemyDead& event);
 	void receive(const evFireEnemy& event);
+	void receive(const evBackgroundCreated& event);
 
 private:
 	entityx::EntityManager& entityManager;
 	entityx::EventManager& eventManager;
+	background* bg;
 };

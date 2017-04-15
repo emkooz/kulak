@@ -136,7 +136,7 @@ void movementSystem::receive(const evLevelCompleted &event)
 		pos.pos = sf::Vector2f(0.f, 0.f);
 		velocity.velocity = sf::Vector2f(0.f, 0.f);
 		render.box->setPosition(pos.pos);
-		eventManager.emit<evPlayerAnimationSet>(0, true, weapon.name + "_idle");
+		eventManager.emit<evPlayerAnimationSet>(0, false, weapon.name + "_idle");
 	});
 }
 
@@ -147,7 +147,7 @@ void movementSystem::receive(const evLevelFailed& event)
 		pos.pos = sf::Vector2f(0.f, 0.f);
 		velocity.velocity = sf::Vector2f(0.f, 0.f);
 		render.box->setPosition(pos.pos);
-		eventManager.emit<evPlayerAnimationSet>(0, true, weapon.name + "_idle");
+		eventManager.emit<evPlayerAnimationSet>(0, false, weapon.name + "_idle");
 	});
 }
 

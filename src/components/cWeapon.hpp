@@ -40,6 +40,8 @@ struct cProjectileWeapon
 
 struct cProjectile
 {
+	cProjectile(std::string owner) : owner(owner) {}
+	std::string owner;
 };
 
 struct cProjectileOrigin

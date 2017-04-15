@@ -93,6 +93,17 @@ void GUI::init(sf::RenderWindow* _window)
 		gui.add(pHealth, "pStatsHealth");
 		statWidgets.emplace_back(pHealth);
 
+	// Tabs to switch between player stats, weapon stats, and buying weapons
+	tgui::Tab::Ptr bUpgradeTabs = theme->load("Tab");
+		bUpgradeTabs->setTabHeight(26);
+		bUpgradeTabs->setPosition(10, height * 0.2);
+		bUpgradeTabs->add("Player Upgrades");
+		bUpgradeTabs->add("Weapon Upgrades");
+		bUpgradeTabs->add("Weapon Store");
+		bUpgradeTabs->hide();
+		gui.add(bUpgradeTabs, "bStatsUpgradeTabs");
+		statWidgets.emplace_back(bUpgradeTabs);
+
 	// Max HP upgrade text + value + upgrade button
 	auto tMHPText = tgui::Label::create();
 		tMHPText->setText("Max HP:");

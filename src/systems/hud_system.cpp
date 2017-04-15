@@ -74,17 +74,17 @@ void hudSystem::receive(const evStatsCreated &event)
 
 	//TODO FUTURE: current weapons. right now its just always going to be rail + melee. make this dynamic
 	std::shared_ptr<sf::Sprite> railBox(new sf::Sprite);
-	railBox->setTexture(*kk::getTexture("weapons"));
-	railBox->setScale(0.25, 0.25);
-	railBox->setPosition((window->getSize().x / 2) - (railBox->getTexture()->getSize().x * railBox->getScale().x), window->getSize().y - (railBox->getTexture()->getSize().y * railBox->getScale().y) - 2);
+	railBox->setTexture(*kk::getTexture("hud"));
+	railBox->setTextureRect(sf::IntRect(0, 0, 64, 64));
+	railBox->setPosition((window->getSize().x / 2) - (railBox->getGlobalBounds().width * railBox->getScale().x), window->getSize().y - (railBox->getGlobalBounds().height * railBox->getScale().y) - 2);
 	rail.assign<cRenderableHUD>(
 		railBox,
 		0,
 		true);
 
 	std::shared_ptr<sf::Sprite> meleeBox(new sf::Sprite);
-	meleeBox->setTexture(*kk::getTexture("weapons"));
-	meleeBox->setScale(0.25, 0.25);
+	meleeBox->setTexture(*kk::getTexture("hud"));
+	meleeBox->setTextureRect(sf::IntRect(64, 0, 64, 64));
 	meleeBox->setPosition((window->getSize().x / 2) + 6, window->getSize().y - (meleeBox->getTexture()->getSize().y * meleeBox->getScale().y) - 2);
 	melee.assign<cRenderableHUD>(
 		meleeBox,
@@ -92,9 +92,9 @@ void hudSystem::receive(const evStatsCreated &event)
 		true);
 
 	std::shared_ptr<sf::Sprite> projBox(new sf::Sprite);
-	projBox->setTexture(*kk::getTexture("weapons"));
-	projBox->setScale(0.25, 0.25);
-	projBox->setPosition((window->getSize().x / 2) + 6, window->getSize().y - (projBox->getTexture()->getSize().y * projBox->getScale().y) - 2);
+	projBox->setTexture(*kk::getTexture("hud"));
+	projBox->setTextureRect(sf::IntRect(128, 0, 64, 64));
+	projBox->setPosition((window->getSize().x / 2) + 6 + meleeBox->getGlobalBounds().width , window->getSize().y - (projBox->getTexture()->getSize().y * projBox->getScale().y) - 2);
 	proj.assign<cRenderableHUD>(
 		projBox,
 		0,
@@ -103,7 +103,7 @@ void hudSystem::receive(const evStatsCreated &event)
 	// this is for the selected weapon box
 	std::shared_ptr<sf::RectangleShape> selectedBox(new sf::RectangleShape);
 	selectedBox->setFillColor(sf::Color::Transparent);
-	selectedBox->setSize(sf::Vector2f(railBox->getTexture()->getSize().x * 0.25, railBox->getTexture()->getSize().y * 0.25));
+	selectedBox->setSize(sf::Vector2f(railBox->getGlobalBounds().width, railBox->getGlobalBounds().height));
 	selectedBox->setPosition(railBox->getPosition());
 	selectedBox->setOutlineThickness(2);
 	selectedBox->setOutlineColor(sf::Color::White);
@@ -118,6 +118,6 @@ void hudSystem::receive(const evSwitchWeapon &event)
 	// looks ugly af
 	entityx::ComponentHandle<cRenderableHUD> baseWeapon = rail.component<cRenderableHUD>();
 	selectedWeapon.component<cRenderableRectHUD>()->rect->setPosition(
-		(baseWeapon->box->getPosition().x) + (baseWeapon->box->getTexture()->getSize().x * baseWeapon->box->getScale().x * event.weapon) + (6 * event.weapon),
+		(baseWeapon->box->getPosition().x) + (baseWeapon->box->getGlobalBounds().width * baseWeapon->box->getScale().x * event.weapon) + (6 * event.weapon),
 		baseWeapon->box->getPosition().y);
 }

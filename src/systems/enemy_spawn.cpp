@@ -61,30 +61,60 @@ void enemySpawnSystem::update(entityx::EntityManager &entities, entityx::EventMa
 void enemySpawnSystem::spawnEnemy(int type, sf::Vector2f position)
 {
 	entityx::Entity enemy = entityManager.create();
-	enemy.assign<cEnemyType>(0);
-	enemy.assign<cHealth>(100);
-	enemy.assign<cPosition>(position);
-	enemy.assign<cDirection>(true);
-	enemy.assign<cVelocity>(130.f, 130.f);
-	std::shared_ptr<sf::Sprite> sprite(new sf::Sprite());
-	sprite->setTexture(*kk::getTexture("player"));
-	sprite->setTextureRect({ 0,0,0,0 });
-	sprite->setPosition(position);
-	enemy.assign<cRenderable>(
-		sprite,
-		1,
-		true);
-	enemy.assign<cAnimation>(
-		kk::getTexture("player"),
-		8,
-		65,
-		sf::Vector2i(64, 64),
-		10);
-	enemy.component<cAnimation>()->animations.addAnimation("running", 5, 12);
-	enemy.component<cAnimation>()->animations.setAnimation("running", false);
+	enemy.assign<cEnemyType>(type);
 
-	//                                  ent,  weapon type,      name,   dmg,  cd
-	eventManager.emit<evAddWeaponEnemy>(enemy, kk::WEAPON_MELEE, "knife", 5, 0.15f);
+	if (type == 1)
+	{
+		enemy.assign<cHealth>(100);
+		enemy.assign<cPosition>(position);
+		enemy.assign<cDirection>(true);
+		enemy.assign<cVelocity>(130.f, 130.f);
+		std::shared_ptr<sf::Sprite> sprite(new sf::Sprite());
+		sprite->setTexture(*kk::getTexture("player"));
+		sprite->setTextureRect({ 0,0,0,0 });
+		sprite->setPosition(position);
+		enemy.assign<cRenderable>(
+			sprite,
+			1,
+			true);
+		enemy.assign<cAnimation>(
+			kk::getTexture("player"),
+			8,
+			65,
+			sf::Vector2i(64, 64),
+			10);
+		enemy.component<cAnimation>()->animations.addAnimation("running", 5, 12);
+		enemy.component<cAnimation>()->animations.setAnimation("running", false);
+
+		//                                  ent,  weapon type,      name,   dmg,  cd
+		eventManager.emit<evAddWeaponEnemy>(enemy, kk::WEAPON_MELEE, "knife", 5, 0.15f);
+	}
+	else if (type == 2)
+	{
+		enemy.assign<cHealth>(100);
+		enemy.assign<cPosition>(position);
+		enemy.assign<cDirection>(true);
+		enemy.assign<cVelocity>(130.f, 130.f);
+		std::shared_ptr<sf::Sprite> sprite(new sf::Sprite());
+		sprite->setTexture(*kk::getTexture("player"));
+		sprite->setTextureRect({ 0,0,0,0 });
+		sprite->setPosition(position);
+		enemy.assign<cRenderable>(
+			sprite,
+			1,
+			true);
+		enemy.assign<cAnimation>(
+			kk::getTexture("player"),
+			8,
+			65,
+			sf::Vector2i(64, 64),
+			10);
+		enemy.component<cAnimation>()->animations.addAnimation("running", 5, 12);
+		enemy.component<cAnimation>()->animations.setAnimation("running", false);
+
+		//                                  ent,  weapon type,      name,   dmg,  cd
+		eventManager.emit<evAddWeaponEnemy>(enemy, kk::WEAPON_PROJECTILE, "proj", 10, 0.75f);
+	}
 }
 
 void enemySpawnSystem::readSpawnFile()
@@ -99,13 +129,13 @@ void enemySpawnSystem::readSpawnFile()
 		for (int pos = 5; pos < buffer.size(); pos++)
 		{
 			if (buffer[pos] == '>') // > == new level
-			{
 				levels.emplace_back();
-			}
 			else if (buffer[pos] == 0x01)
-			{
 				levels.back().types.push_back(1);
-			}
+			else if (buffer[pos] == 0x02)
+				levels.back().types.push_back(2);
+			else
+				levels.back().types.push_back(1);
 		}
 		kk::log("levels size: " + std::to_string(levels.size()));
 		enemiesAlive = levels[0].types.size();

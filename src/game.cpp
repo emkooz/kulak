@@ -26,6 +26,7 @@ void Game::loadTextures()
 	kk::loadTexture("coin", "coin.png");
 	kk::loadTexture("menubg", "menu-bg.png");
 	kk::loadTexture("statbg", "statbg.png");
+	kk::loadTexture("hud", "hud.png");
 	kk::loadFont("font", "Verdana.ttf");
 
 	kk::getTexture("adventurer")->setSmooth(true);

@@ -44,22 +44,20 @@ void stateSystem::receive(const evSetState &event)
 	else if (event.state == kk::STATE_PREGAME)
 	{
 		eventManager.emit<evChangeBackground>("statbg");
-		entityManager.each<cPlayerID, cRenderable, cAnimationLayered, cCurrentWeapon>([this](entityx::Entity entity, cPlayerID &player, cRenderable &render, cAnimationLayered& anim, cCurrentWeapon& weapon)
+		entityManager.each<cPlayerID, cRenderable, cAnimationLayered>([this](entityx::Entity entity, cPlayerID &player, cRenderable &render, cAnimationLayered& anim)
 		{
 			// TODO: fix scale changing when multiple layers are added
 			render.box->setPosition(sf::Vector2f(600.0f, 300.0f));
 			render.box->setScale(0.75, 0.75);
-			eventManager.emit<evPlayerAnimationSet>(0, true, weapon.name + "_idle");
 		});
 	}
 	else if (event.state == kk::STATE_PLAYING)
 	{
 		eventManager.emit<evChangeBackground>("bg");
-		entityManager.each<cPlayerID, cRenderable, cAnimationLayered, cCurrentWeapon>([this](entityx::Entity entity, cPlayerID &player, cRenderable &render, cAnimationLayered& anim, cCurrentWeapon& weapon)
+		entityManager.each<cPlayerID, cRenderable, cAnimationLayered>([this](entityx::Entity entity, cPlayerID &player, cRenderable &render, cAnimationLayered& anim)
 		{
 			render.box->setPosition(sf::Vector2f(0.f, 0.f));
 			render.box->setScale(0.2, 0.2);
-			eventManager.emit<evPlayerAnimationSet>(0, true, weapon.name + "_idle");
 		});
 	}
 }

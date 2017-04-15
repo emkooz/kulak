@@ -7,6 +7,7 @@ statsSystem::statsSystem(entityx::EntityManager& _entityManager, entityx::EventM
 void statsSystem::configure(entityx::EventManager& eventManager)
 {
 	eventManager.subscribe<evPlayerCreated>(*this);
+	eventManager.subscribe<evSetState>(*this);
 	eventManager.subscribe<evLevelCompleted>(*this);
 	eventManager.subscribe<evLevelFailed>(*this);
 	eventManager.subscribe<evEnemyDead>(*this);
@@ -45,6 +46,15 @@ void statsSystem::receive(const evPlayerCreated &event)
 	eventManager.emit<evStatsCreated>(&pStats);
 }
 
+void statsSystem::receive(const evSetState& event)
+{
+	if (event.state == kk::STATE_PLAYING)
+	{
+		pStats.setHealth(pStats.getMaxHP());
+		pStats.setMana(pStats.getMaxMana());
+	}
+}
+
 void statsSystem::receive(const evLevelCompleted& event)
 {
 	pStats.setCurrentLevel(event.nextLevel);
@@ -64,7 +74,7 @@ void statsSystem::receive(const evEnemyDead &event)
 {
 	int baseGold = 0;
 
-	if (event.type.type == 0)
+	if (event.type.type == 1)
 		baseGold = 10;
 
 	pStats.addGold(baseGold + pStats.getGoldGain());

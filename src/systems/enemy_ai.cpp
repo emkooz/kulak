@@ -73,11 +73,11 @@ void enemyAISystem::attack(entityx::Entity enemy, entityx::Entity player)
 	entityx::ComponentHandle<cDirection> eDir = enemy.component<cDirection>();
 	
 	kk::weaponType wType;
-	if (enemy.has_component<cRailWeapon>())
+	if (enemy.component<cWeaponEnemy>()->weapon.has_component<cRailWeapon>())
 		wType = kk::WEAPON_RAIL;
-	else if (enemy.has_component<cMeleeWeapon>())
+	else if (enemy.component<cWeaponEnemy>()->weapon.has_component<cMeleeWeapon>())
 		wType = kk::WEAPON_MELEE;
-	else if (enemy.has_component<cProjectileWeapon>())
+	else if (enemy.component<cWeaponEnemy>()->weapon.has_component<cProjectileWeapon>())
 		wType = kk::WEAPON_PROJECTILE;
 	else
 		wType = kk::WEAPON_MELEE; // temporary. needs some sort of error out
@@ -98,7 +98,12 @@ void enemyAISystem::attack(entityx::Entity enemy, entityx::Entity player)
 		}
 		else if (wType == kk::WEAPON_PROJECTILE)
 		{
-			// todo
+			auto hitbox = enemy.component<cWeaponEnemy>()->weapon.component<cWeaponHitbox>()->hitbox;
+
+			if (hitbox.intersects(player.component<cRenderable>()->box->getGlobalBounds()))
+			{
+				eventManager.emit<evFireEnemy>(enemy, player, eDir.get(), wType);
+			}
 		}
 	}
 	else // facing to the left
@@ -116,7 +121,12 @@ void enemyAISystem::attack(entityx::Entity enemy, entityx::Entity player)
 		}
 		else if (wType == kk::WEAPON_PROJECTILE)
 		{
-			// todo
+			auto hitbox = enemy.component<cWeaponEnemy>()->weapon.component<cWeaponHitbox>()->hitbox;
+
+			if (hitbox.intersects(player.component<cRenderable>()->box->getGlobalBounds()))
+			{
+				eventManager.emit<evFireEnemy>(enemy, player, eDir.get(), wType);
+			}
 		}
 	}
 }

@@ -14,6 +14,7 @@ public:
 	void configure(entityx::EventManager& eventManager);
 	void update(entityx::EntityManager &entities, entityx::EventManager &events, entityx::TimeDelta dt);
 	void receive(const evPlayerCreated &event);
+	void receive(const evSetState& event);
 	void receive(const evLevelCompleted& event);
 	void receive(const evLevelFailed& event);
 	void receive(const evEnemyDead &event);
