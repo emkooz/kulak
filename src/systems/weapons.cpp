@@ -26,19 +26,26 @@ void weaponSystem::update(entityx::EntityManager &entities, entityx::EventManage
 			pos.pos.y += vel.velocity.y * dt;
 			render.box->setPosition(pos.pos);
 
-			// check collision between each enemy (use quadtree later)
-			entityManager.each<cEnemyType, cPosition, cRenderable, cAnimation>([this, &render, &base, &entity](entityx::Entity _entity, cEnemyType &_type, cPosition &_pos, cRenderable &_render, cAnimation &_animation)
-			{
-				if (render.box->getGlobalBounds().intersects(_render.box->getGlobalBounds()))
-				{
-					eventManager.emit<evHitEnemy>(_entity, base.damage);
-					entity.destroy();
-				}
-			});
-
 			// kill projectile if it reaches the edges of the map + 50?
 			if ((pos.pos.x > bounds.left + bounds.width + 50) || (pos.pos.x < bounds.left - 50))
+			{
 				entity.destroy();
+			}
+			else
+			{ // check collision between each enemy (use quadtree later)
+
+			bool destroyed = false;
+
+				entityManager.each<cEnemyType, cPosition, cRenderable, cAnimation>([this, &render, &base, &entity, &destroyed](entityx::Entity _entity, cEnemyType &_type, cPosition &_pos, cRenderable &_render, cAnimation &_animation)
+				{
+					if (render.box->getGlobalBounds().intersects(_render.box->getGlobalBounds()) && !destroyed)
+					{
+						eventManager.emit<evHitEnemy>(_entity, base.damage);
+						entity.destroy();
+						destroyed = true;
+					}
+				});
+			}
 		}
 	});
 }
