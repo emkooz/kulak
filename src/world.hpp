@@ -21,6 +21,7 @@
 #include "systems/menu.hpp"
 #include "systems/enemy_weapons.hpp"
 #include "systems/level_system.hpp"
+#include "systems/sound_system.hpp"
 #include "components/cPlayer.hpp"
 #include "components/cAnimation.hpp"
 #include "components/cWeapon.hpp"

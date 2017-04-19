@@ -62,6 +62,8 @@ void enemySpawnSystem::spawnEnemy(int type, sf::Vector2f position)
 {
 	entityx::Entity enemy = entityManager.create();
 	enemy.assign<cEnemyType>(type);
+	enemy.assign<cSound>(); auto sound = enemy.component<cSound>();
+	sound->spatial = true;
 
 	if (type == 1)
 	{
@@ -88,6 +90,12 @@ void enemySpawnSystem::spawnEnemy(int type, sf::Vector2f position)
 
 		//                                  ent,  weapon type,      name,   dmg,  cd
 		eventManager.emit<evAddWeaponEnemy>(enemy, kk::WEAPON_MELEE, "knife", 5, 0.15f);
+
+		std::shared_ptr<sf::Sound> weaponSound(new sf::Sound()); weaponSound->setBuffer(*kk::getSound("knife"));
+		weaponSound->setPosition(position.x, position.y, 0);
+		weaponSound->setAttenuation(0);
+		sound->sounds.push_back(weaponSound);
+		sound->names.emplace_back("knife");
 	}
 	else if (type == 2)
 	{
@@ -114,6 +122,12 @@ void enemySpawnSystem::spawnEnemy(int type, sf::Vector2f position)
 
 		//                                  ent,  weapon type,      name,   dmg,  cd
 		eventManager.emit<evAddWeaponEnemy>(enemy, kk::WEAPON_PROJECTILE, "proj", 10, 0.75f);
+
+		std::shared_ptr<sf::Sound> weaponSound(new sf::Sound()); weaponSound->setBuffer(*kk::getSound("proj"));
+		weaponSound->setPosition(position.x, 0, 0);
+		weaponSound->setAttenuation(0);
+		sound->sounds.push_back(weaponSound);
+		sound->names.emplace_back("proj");
 	}
 }
 

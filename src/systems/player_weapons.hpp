@@ -9,6 +9,7 @@
 #include "input.hpp"
 #include "log.hpp"
 #include "resource.hpp"
+#include "player_stats.hpp"
 #include "components/events.hpp"
 #include <memory>
 #include <vector>
@@ -21,6 +22,9 @@ public:
 	void update(entityx::EntityManager &entities, entityx::EventManager &events, entityx::TimeDelta dt);
 	void receive(const evFire& event);
 	void receive(const evAddWeapon& event);
+	void receive(const evBuyDamage& event);
+	void receive(const evBuyCooldown& event);
+	void receive(const evStatsCreated& event);
 	void receive(const entityx::ComponentAddedEvent<cPlayerID> &event);
 
 private:
@@ -31,6 +35,8 @@ private:
 	int currentWeapon;
 	std::string currentDirection;
 	//bool swappingWeapons;
+
+	stats* pStats;
 
 	void pollWeaponSwap();
 	void swapWeapons(int index);

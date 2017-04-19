@@ -22,6 +22,7 @@ private:
 	entityx::EntityManager& entityManager;
 	entityx::EventManager& eventManager;
 	stats* pStats;
+	entityx::Entity guiEntity;
 
 	template <typename T>
 	tgui::Layout centerVertical(T widget, tgui::Layout width);
@@ -33,5 +34,12 @@ private:
 
 	// Pregame menu
 	std::vector <std::shared_ptr<tgui::Widget>> statWidgets;
-	// "update" vector?
+
+	// Pregame: player stats
+	std::vector<std::shared_ptr<tgui::Widget>> pStatWidgets;
+	// Pregame: weapon stats
+	std::vector<std::shared_ptr<tgui::Widget>> wStatWidgets;
+
+	// function for when tab switched
+	void tabSwitched(const std::string& name);
 };

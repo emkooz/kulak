@@ -39,7 +39,7 @@ void stateSystem::receive(const evSetState &event)
 
 	if (event.state == kk::STATE_MENU)
 	{
-		eventManager.emit<evChangeBackground>("menu-bg");
+		eventManager.emit<evChangeBackground>("menubg");
 	}
 	else if (event.state == kk::STATE_PREGAME)
 	{

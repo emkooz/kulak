@@ -113,6 +113,8 @@ void enemyWeaponSystem::receive(const evFireEnemy &event)
 				projectile.assign<cProjectileOrigin>(false); // from an enemy
 				projectile.assign<cWeaponBase>(weapon.component<cWeaponBase>());
 			}
+
+			eventManager.emit<evPlaySound>(enemy.component<cSound>(), weapon.component<cWeaponBase>()->name);
 		}
 	}
 }

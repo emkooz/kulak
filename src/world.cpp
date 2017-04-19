@@ -33,6 +33,7 @@ void World::update(sf::Time deltaTime)
 		systems.update<animationSystem>(deltaTime.asSeconds());
 	}
 	//systems.update<stateSystem>(deltaTime.asSeconds());
+	systems.update<soundSystem>(deltaTime.asSeconds());
 
 	// update GUI with the new values
 	gui.update();
@@ -55,6 +56,7 @@ void World::createSystems()
 	systems.add<menuSystem>(entities, events, window);
 	systems.add<enemyWeaponSystem>(entities, events);
 	systems.add<levelSystem>(entities, events, window);
+	systems.add<soundSystem>(entities, events);
 	systems.configure();
 }
 
@@ -111,6 +113,24 @@ void World::createEntities(entityx::EventManager& event_manager)
 	event_manager.emit<evAddWeapon>(kk::WEAPON_PROJECTILE, "proj", 45, 0.35f, sf::Vector2f(500.f, 0.f));
 
 	ePlayer.assign<cCurrentWeapon>("rail");
+
+	ePlayer.assign<cSound>(); auto sound = ePlayer.component<cSound>();
+	sound->spatial = false;
+	std::shared_ptr<sf::Sound> akSound(new sf::Sound()); akSound->setBuffer(*kk::getSound("ak"));
+	akSound->setRelativeToListener(true); akSound->setPosition(0, 0, 0);
+	sound->sounds.push_back(akSound);
+
+	std::shared_ptr<sf::Sound> knifeSound(new sf::Sound()); knifeSound->setBuffer(*kk::getSound("knife"));
+	knifeSound->setRelativeToListener(true); knifeSound->setPosition(0, 0, 0);
+	sound->sounds.push_back(knifeSound);
+
+	std::shared_ptr<sf::Sound> projSound(new sf::Sound()); projSound->setBuffer(*kk::getSound("proj"));
+	projSound->setRelativeToListener(true); projSound->setPosition(0, 0, 0);
+	sound->sounds.push_back(projSound);
+
+	sound->names.emplace_back("rail");
+	sound->names.emplace_back("knife");
+	sound->names.emplace_back("proj");
 
 	event_manager.emit<evPlayerCreated>(ePlayer);
 

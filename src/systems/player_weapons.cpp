@@ -8,6 +8,9 @@ void playerWeaponSystem::configure(entityx::EventManager& eventManager)
 {
 	eventManager.subscribe<evFire>(*this);
 	eventManager.subscribe<evAddWeapon>(*this);
+	eventManager.subscribe<evBuyDamage>(*this);
+	eventManager.subscribe<evBuyCooldown>(*this);
+	eventManager.subscribe<evStatsCreated>(*this);
 	eventManager.subscribe<entityx::ComponentAddedEvent<cPlayerID>>(*this);
 }
 
@@ -50,6 +53,7 @@ void playerWeaponSystem::update(entityx::EntityManager &entities, entityx::Event
 				eventManager.emit<evFireProjectile>(base, 0, weapon.component<cPosition>(), weapon.component<cDirection>(), weapon.component<cWeaponHitbox>());
 			}
 
+			eventManager.emit<evPlaySound>(pEntity.component<cSound>(), base->name);
 			base->cooldownTimer.restart();
 		}
 	}
@@ -85,6 +89,7 @@ void playerWeaponSystem::update(entityx::EntityManager &entities, entityx::Event
 				eventManager.emit<evFireProjectile>(base, 0, weapon.component<cPosition>(), weapon.component<cDirection>(), weapon.component<cWeaponHitbox>());
 			}
 
+			eventManager.emit<evPlaySound>(pEntity.component<cSound>(), base->name);
 			base->cooldownTimer.restart();
 		}
 	}
@@ -195,6 +200,36 @@ void playerWeaponSystem::receive(const entityx::ComponentAddedEvent<cPlayerID> &
 	currentWeapon = 0;
 }
 
+void playerWeaponSystem::receive(const evBuyDamage &event)
+{
+	// TODO add upgrade cost later
+	int remainingGold = pStats->getGold() - 10;
+	if (remainingGold >= 0)
+	{
+		pStats->setGold(remainingGold);
+		
+		auto base = weaponInventory[currentWeapon].component<cWeaponBase>();
+		base->damage += 10;
+		// add upgrade cost
+	}
+}
+
+void playerWeaponSystem::receive(const evBuyCooldown &event)
+{
+	int remainingGold = pStats->getGold() - 10;
+	if (remainingGold >= 0)
+	{
+		pStats->setGold(remainingGold);
+
+		auto base = weaponInventory[currentWeapon].component<cWeaponBase>();
+		if (base->cooldown > 0)
+		{
+			base->cooldown -= 0.01;
+		}
+		// add upgrade cost
+	}
+}
+
 void playerWeaponSystem::receive(const evFire& event)
 {
 	if (currentWeapon == 0)
@@ -203,6 +238,11 @@ void playerWeaponSystem::receive(const evFire& event)
 		/*cRailWeapon rail = cRailWeapon(sf::Vector2f(pEntity->component<cPosition>()->pos.x, pEntity->component<cPosition>()->pos.y));
 		eventManager.emit<evFireRail>(rail, *pEntity->component<cPlayerID>().get(), *pEntity->component<cPosition>().get(), *pEntity->component<cDirection>().get());*/
 	}
+}
+
+void playerWeaponSystem::receive(const evStatsCreated& event)
+{
+	pStats = event.pStats;
 }
 
 // TODO: make fireWeapon() function

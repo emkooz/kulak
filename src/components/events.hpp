@@ -6,6 +6,7 @@
 #include "components/cWeapon.hpp"
 #include "components/cAnimation.hpp"
 #include "components/cRender.hpp"
+#include "components/cSound.hpp"
 
 // forward declaration
 class background;
@@ -227,6 +228,14 @@ struct evBuyMPS
 {
 };
 
+struct evBuyDamage
+{
+};
+
+struct evBuyCooldown
+{
+};
+
 struct evAllEnemiesDead
 {
 };
@@ -241,4 +250,11 @@ struct evLevelFailed
 {
 	evLevelFailed(int currentLevel) : currentLevel(currentLevel) {}
 	int currentLevel;
+};
+
+struct evPlaySound
+{
+	evPlaySound(entityx::ComponentHandle<cSound> sound, std::string name) : sound(sound), name(name) {}
+	entityx::ComponentHandle<cSound> sound;
+	std::string name;
 };

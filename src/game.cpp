@@ -22,11 +22,15 @@ void Game::loadTextures()
 	kk::loadTexture("adventurer", "adventurer.png");
 	kk::loadTexture("weapons", "player_weapons.png");
 	kk::loadTexture("bg", "bg.png");
-	kk::loadTexture("health", "health.png");
-	kk::loadTexture("coin", "coin.png");
+	kk::loadTexture("health", "health-normal.png");
+	kk::loadTexture("coin", "cash.png");
 	kk::loadTexture("menubg", "menu-bg.png");
 	kk::loadTexture("statbg", "statbg.png");
 	kk::loadTexture("hud", "hud.png");
+	kk::loadSound("ak", "ak47.wav");
+	kk::loadSound("knife", "knife.wav");
+	kk::loadSound("proj", "proj.wav");
+	kk::loadSound("click", "click.wav");
 	kk::loadFont("font", "Verdana.ttf");
 
 	kk::getTexture("adventurer")->setSmooth(true);

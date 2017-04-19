@@ -33,8 +33,7 @@ void weaponSystem::update(entityx::EntityManager &entities, entityx::EventManage
 			}
 			else
 			{ // check collision between each enemy (use quadtree later)
-
-			bool destroyed = false;
+				bool destroyed = false;
 
 				entityManager.each<cEnemyType, cPosition, cRenderable, cAnimation>([this, &render, &base, &entity, &destroyed](entityx::Entity _entity, cEnemyType &_type, cPosition &_pos, cRenderable &_render, cAnimation &_animation)
 				{
