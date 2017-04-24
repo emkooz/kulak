@@ -66,9 +66,9 @@ void weaponSystem::receive(const evFireRail& _rail)
 		{
 			sf::Vector2f result;
 			// TODO: replace "4000" with the actual distance
-			if (line_intersects({ railX, railY }, { railX + 4000, railY }, { enemyGlobal.left, enemyGlobal.top }, { enemyGlobal.left + enemyLocal.width, enemyGlobal.top }, result) || // top of box
-				line_intersects({ railX, railY }, { railX + 4000, railY }, { enemyGlobal.left, enemyGlobal.top }, { enemyGlobal.left, enemyGlobal.top + enemyLocal.height }, result) || // left of box
-				line_intersects({ railX, railY }, { railX + 4000, railY }, { enemyGlobal.left, enemyGlobal.top + enemyLocal.height }, { enemyGlobal.left + enemyLocal.width, enemyGlobal.top + enemyLocal.height }, result)) // bottom of box
+			if (line_intersects({ railX, railY }, { railX + 4000, railY }, { enemyGlobal.left, enemyGlobal.top }, { enemyGlobal.left + (enemyLocal.width * render.box->getScale().x), enemyGlobal.top }, result) || // top of box
+				line_intersects({ railX, railY }, { railX + 4000, railY }, { enemyGlobal.left, enemyGlobal.top }, { enemyGlobal.left, enemyGlobal.top + (enemyLocal.height * render.box->getScale().y) }, result) || // left of box
+				line_intersects({ railX, railY }, { railX + 4000, railY }, { enemyGlobal.left, enemyGlobal.top + (enemyLocal.height * render.box->getScale().y) }, { enemyGlobal.left + (enemyLocal.width * render.box->getScale().x), enemyGlobal.top + (enemyLocal.height * render.box->getScale().y) }, result)) // bottom of box
 			{
 				if (closestEnemyHit == NULL)
 				{
@@ -87,9 +87,9 @@ void weaponSystem::receive(const evFireRail& _rail)
 		else if (railX > pos.pos.x && !_rail.dir.right)
 		{
 			sf::Vector2f result;
-			if (line_intersects({ railX, railY }, { railX - 4000, railY }, { enemyGlobal.left, enemyGlobal.top }, { enemyGlobal.left + enemyLocal.width, enemyGlobal.top }, result) || // top of box
-				line_intersects({ railX, railY }, { railX - 4000, railY }, { enemyGlobal.left + enemyLocal.width, enemyGlobal.top }, { enemyGlobal.left + enemyLocal.width, enemyGlobal.top + enemyLocal.height }, result) || // right of box
-				line_intersects({ railX, railY }, { railX - 4000, railY }, { enemyGlobal.left, enemyGlobal.top + enemyLocal.height }, { enemyGlobal.left + enemyLocal.width, enemyGlobal.top + enemyLocal.height }, result)) // bottom of box
+			if (line_intersects({ railX, railY }, { railX - 4000, railY }, { enemyGlobal.left, enemyGlobal.top }, { enemyGlobal.left + (enemyLocal.width * render.box->getScale().x), enemyGlobal.top }, result) || // top of box
+				line_intersects({ railX, railY }, { railX - 4000, railY }, { enemyGlobal.left + (enemyLocal.width * render.box->getScale().x), enemyGlobal.top }, { enemyGlobal.left + (enemyLocal.width * render.box->getScale().x), enemyGlobal.top + (enemyLocal.height * render.box->getScale().y) }, result) || // right of box
+				line_intersects({ railX, railY }, { railX - 4000, railY }, { enemyGlobal.left, enemyGlobal.top + (enemyLocal.height * render.box->getScale().y) }, { enemyGlobal.left + (enemyLocal.width * render.box->getScale().x), enemyGlobal.top + (enemyLocal.height * render.box->getScale().y) }, result)) // bottom of box
 			{
 				if (closestEnemyHit == NULL)
 				{

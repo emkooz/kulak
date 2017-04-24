@@ -72,20 +72,21 @@ void enemySpawnSystem::spawnEnemy(int type, sf::Vector2f position)
 		enemy.assign<cDirection>(true);
 		enemy.assign<cVelocity>(130.f, 130.f);
 		std::shared_ptr<sf::Sprite> sprite(new sf::Sprite());
-		sprite->setTexture(*kk::getTexture("player"));
+		sprite->setTexture(*kk::getTexture("ninja"));
 		sprite->setTextureRect({ 0,0,0,0 });
 		sprite->setPosition(position);
+		sprite->setScale(0.2, 0.2);
 		enemy.assign<cRenderable>(
 			sprite,
 			1,
 			true);
 		enemy.assign<cAnimation>(
-			kk::getTexture("player"),
-			8,
-			65,
-			sf::Vector2i(64, 64),
+			kk::getTexture("ninja"),
+			5,
+			20,
+			sf::Vector2i(363, 458),
 			10);
-		enemy.component<cAnimation>()->animations.addAnimation("running", 5, 12);
+		enemy.component<cAnimation>()->animations.addAnimation("running", 11, 20);
 		enemy.component<cAnimation>()->animations.setAnimation("running", false);
 
 		//                                  ent,  weapon type,      name,   dmg,  cd
@@ -104,20 +105,21 @@ void enemySpawnSystem::spawnEnemy(int type, sf::Vector2f position)
 		enemy.assign<cDirection>(true);
 		enemy.assign<cVelocity>(130.f, 130.f);
 		std::shared_ptr<sf::Sprite> sprite(new sf::Sprite());
-		sprite->setTexture(*kk::getTexture("player"));
+		sprite->setTexture(*kk::getTexture("ninja"));
 		sprite->setTextureRect({ 0,0,0,0 });
 		sprite->setPosition(position);
+		sprite->setScale(0.2, 0.2);
 		enemy.assign<cRenderable>(
 			sprite,
 			1,
 			true);
 		enemy.assign<cAnimation>(
-			kk::getTexture("player"),
-			8,
-			65,
-			sf::Vector2i(64, 64),
+			kk::getTexture("ninja"),
+			5,
+			20,
+			sf::Vector2i(363, 458),
 			10);
-		enemy.component<cAnimation>()->animations.addAnimation("running", 5, 12);
+		enemy.component<cAnimation>()->animations.addAnimation("running", 11, 20);
 		enemy.component<cAnimation>()->animations.setAnimation("running", false);
 
 		//                                  ent,  weapon type,      name,   dmg,  cd

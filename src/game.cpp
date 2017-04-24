@@ -18,7 +18,7 @@ Game::~Game()
 void Game::loadTextures()
 {
 	kk::log("Loading textures...");
-	kk::loadTexture("player", "player_sheet_fix.png");
+	kk::loadTexture("ninja", "ninja.png");
 	kk::loadTexture("adventurer", "adventurer.png");
 	kk::loadTexture("weapons", "player_weapons.png");
 	kk::loadTexture("bg", "bg.png");
