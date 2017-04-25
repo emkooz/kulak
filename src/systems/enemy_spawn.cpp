@@ -70,7 +70,7 @@ void enemySpawnSystem::spawnEnemy(int type, sf::Vector2f position)
 		enemy.assign<cHealth>(100);
 		enemy.assign<cPosition>(position);
 		enemy.assign<cDirection>(true);
-		enemy.assign<cVelocity>(130.f, 130.f);
+		enemy.assign<cVelocity>(300.f, 300.f);
 		std::shared_ptr<sf::Sprite> sprite(new sf::Sprite());
 		sprite->setTexture(*kk::getTexture("ninja"));
 		sprite->setTextureRect({ 0,0,0,0 });

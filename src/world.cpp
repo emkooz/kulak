@@ -110,7 +110,7 @@ void World::createEntities(entityx::EventManager& event_manager)
 	//                              weapon type,     name,     tex,   dmg, cd,    range,  size
 	event_manager.emit<evAddWeapon>(kk::WEAPON_RAIL, "rail",   20, 0.1f);
 	event_manager.emit<evAddWeapon>(kk::WEAPON_MELEE, "knife", 5, 0.15);
-	event_manager.emit<evAddWeapon>(kk::WEAPON_PROJECTILE, "proj", 45, 0.35f, sf::Vector2f(500.f, 0.f));
+	event_manager.emit<evAddWeapon>(kk::WEAPON_PROJECTILE, "proj", 45, 0.35f, sf::Vector2f(800.f, 0.f));
 
 	ePlayer.assign<cCurrentWeapon>("rail");
 

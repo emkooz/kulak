@@ -137,8 +137,8 @@ SpinButton {
 }
 
 Tab {
-    NormalImage       : "red.png" Part(0, 188, 190, 45) Middle(10, 188, 170, 45);
-    SelectedImage     : "red.png" Part(190, 0, 190, 49) Middle(200, 0, 170, 49);
+    NormalImage       : "red.png" Part(0, 188, 190, 45) Middle(0,0,0,0);
+    SelectedImage     : "red.png" Part(190, 0, 190, 49) Middle(0,0,0,0);
     TextColor         : rgb(11, 11, 11);
     SelectedTextColor : rgb(11, 11, 11);
     DistanceToSide    : 11;

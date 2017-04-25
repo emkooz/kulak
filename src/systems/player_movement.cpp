@@ -11,6 +11,7 @@ void movementSystem::configure(entityx::EventManager& eventManager)
 	eventManager.subscribe<evStatsCreated>(*this);
 	eventManager.subscribe<evLevelCompleted>(*this);
 	eventManager.subscribe<evLevelFailed>(*this);
+	eventManager.subscribe<evSetState>(*this);
 }
 
 // TODO: major rewrite of movement system for player
@@ -95,23 +96,25 @@ void movementSystem::update(entityx::EntityManager &entities, entityx::EventMana
 			float deltaPosX = vel.x * dt;
 			float deltaPosY = vel.y * dt;
 
+			auto halfSize = render.box->getGlobalBounds().width * render.box->getScale().x; // half of the width of the player
+
 			// TODO: MAJOR: window size and player size is currently hardwired, fix
-			if ((deltaPosY + pos.pos.y - 32) > (bg->getBounds().top + 50) &&
-				(deltaPosY + pos.pos.y + 32) < 300)
+			if ((deltaPosY + pos.pos.y - halfSize) > (bg->getBounds().top + 50) &&
+				(deltaPosY + pos.pos.y + halfSize) < 300)
 				pos.pos.y += deltaPosY;
-			else if ((deltaPosY + pos.pos.y - 32) < (bg->getBounds().top + 50)) // hit top
-				pos.pos.y = bg->getBounds().top + 50 + 32 + 1;
+			else if ((deltaPosY + pos.pos.y - halfSize) < (bg->getBounds().top + 50)) // hit top
+				pos.pos.y = bg->getBounds().top + 50 + halfSize + 1;
 			else // hit bottom
-				pos.pos.y = 300 - 32 - 1;
+				pos.pos.y = 300 - halfSize - 1;
 
 			sf::FloatRect bounds = bg->getBounds();
-			if ((deltaPosX + pos.pos.x + 32) < (bounds.left + bounds.width) &&
-				(deltaPosX + pos.pos.x - 32) > bounds.left)
+			if ((deltaPosX + pos.pos.x + halfSize) < (bounds.left + bounds.width) &&
+				(deltaPosX + pos.pos.x - halfSize) > bounds.left)
 				pos.pos.x += deltaPosX;
-			else if ((deltaPosX + pos.pos.x + 32) > (bounds.left + bounds.width)) // hit right
-				pos.pos.x = (bounds.left + bounds.width) - 32 - 1;
+			else if ((deltaPosX + pos.pos.x + halfSize) > (bounds.left + bounds.width)) // hit right
+				pos.pos.x = (bounds.left + bounds.width) - halfSize - 1;
 			else // hit left
-				pos.pos.x = bounds.left + 32 + 1;
+				pos.pos.x = bounds.left + halfSize + 1;
 
 			render.box->setPosition(pos.pos);
 			// maybe use .move() instead of setPosition() and ditch position component?
@@ -133,7 +136,7 @@ void movementSystem::receive(const evLevelCompleted &event)
 {
 	entityManager.each<cPlayerID, cPosition, cVelocity, cRenderable, cCurrentWeapon>([this](entityx::Entity entity, cPlayerID &player, cPosition &pos, cVelocity &velocity, cRenderable &render, cCurrentWeapon &weapon)
 	{
-		pos.pos = sf::Vector2f(0.f, 0.f);
+		pos.pos = sf::Vector2f(600.0f, 300.0f);
 		velocity.velocity = sf::Vector2f(0.f, 0.f);
 		render.box->setPosition(pos.pos);
 		eventManager.emit<evPlayerAnimationSet>(0, false, weapon.name + "_idle");
@@ -144,11 +147,35 @@ void movementSystem::receive(const evLevelFailed& event)
 {
 	entityManager.each<cPlayerID, cPosition, cVelocity, cRenderable, cCurrentWeapon>([this](entityx::Entity entity, cPlayerID &player, cPosition &pos, cVelocity &velocity, cRenderable &render, cCurrentWeapon &weapon)
 	{
-		pos.pos = sf::Vector2f(0.f, 0.f);
+		pos.pos = sf::Vector2f(600.0f, 300.0f);
 		velocity.velocity = sf::Vector2f(0.f, 0.f);
 		render.box->setPosition(pos.pos);
 		eventManager.emit<evPlayerAnimationSet>(0, false, weapon.name + "_idle");
 	});
+}
+
+void movementSystem::receive(const evSetState& event)
+{
+	if (event.state == kk::STATE_PREGAME)
+	{
+		entityManager.each<cPlayerID, cPosition, cVelocity, cRenderable, cCurrentWeapon>([this](entityx::Entity entity, cPlayerID &player, cPosition &pos, cVelocity &velocity, cRenderable &render, cCurrentWeapon &weapon)
+		{
+			pos.pos = sf::Vector2f(600.0f, 300.0f);
+			velocity.velocity = sf::Vector2f(0.f, 0.f);
+			render.box->setPosition(pos.pos);
+			eventManager.emit<evPlayerAnimationSet>(0, false, weapon.name + "_idle");
+		});
+	}
+	else if (event.state == kk::STATE_PLAYING)
+	{
+		entityManager.each<cPlayerID, cPosition, cVelocity, cRenderable, cCurrentWeapon>([this](entityx::Entity entity, cPlayerID &player, cPosition &pos, cVelocity &velocity, cRenderable &render, cCurrentWeapon &weapon)
+		{
+			pos.pos = sf::Vector2f(0.f, 0.f);
+			velocity.velocity = sf::Vector2f(0.f, 0.f);
+			render.box->setPosition(pos.pos);
+			eventManager.emit<evPlayerAnimationSet>(0, false, weapon.name + "_idle");
+		});
+	}
 }
 
 // TODO: maybe it's better to store a pointer to the player entity? instead of searching

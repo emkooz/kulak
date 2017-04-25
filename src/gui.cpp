@@ -144,7 +144,7 @@ void GUI::init(sf::RenderWindow* _window)
 
 	// Max mana upgrade text + value + upgrade button
 	auto tMMText = tgui::Label::create();
-		tMMText->setText("Max mana:");
+		tMMText->setText("Max energy:");
 		tMMText->setTextSize(26);
 		tMMText->setPosition(10, tMHPText->getPosition().y + tMHPText->getFullSize().y + 15);
 		tMMText->hide();
@@ -231,7 +231,7 @@ void GUI::init(sf::RenderWindow* _window)
 
 	// Mana/s upgrade text + value + upgrade button
 	auto tMPSText = tgui::Label::create();
-		tMPSText->setText("Mana per second:");
+		tMPSText->setText("Energy/second:");
 		tMPSText->setTextSize(26);
 		tMPSText->setPosition(10, tGGText->getPosition().y + tGGText->getFullSize().y + 15);
 		tMPSText->hide();

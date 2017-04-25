@@ -17,6 +17,7 @@ public:
 	void receive(const evStatsCreated& event);
 	void receive(const evLevelCompleted& event);
 	void receive(const evLevelFailed& event);
+	void receive(const evSetState& event);
 
 private:
 	entityx::EntityManager& entityManager;

@@ -1,7 +1,7 @@
 #include "player_stats.hpp"
 
 stats::stats() :
-	movementSpeed(350), goldGain(0), manaPS(0), maxHP(100), maxMana(100),
+	movementSpeed(400), goldGain(0), manaPS(0), maxHP(100), maxMana(100),
 	maxHPUC(15), maxManaUC(15), goldGainUC(20), MSUC(5), manaPSUC(20),
 	currentLevel(1), goldAtLevel(0)
 {
