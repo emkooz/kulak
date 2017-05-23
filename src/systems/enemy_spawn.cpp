@@ -180,7 +180,7 @@ void enemySpawnSystem::receive(const evLevelCompleted& event)
 	}
 	else // TODO: account for this
 	{
-		kk::log("No more levels left! Randomizing.");
+		kk::log("No more levels left!");
 		/* randomize here */
 	}
 }

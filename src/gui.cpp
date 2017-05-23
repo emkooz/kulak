@@ -257,6 +257,25 @@ void GUI::init(sf::RenderWindow* _window)
 		gui.add(bMPSUpgrade, "bStatsMPSUpgrade");
 		statWidgets.emplace_back(bMPSUpgrade);
 		pStatWidgets.emplace_back(bMPSUpgrade);
+
+	// Placeholder text for weapon upgrades and shop
+	auto tWeaponUpgradeText = tgui::Label::create();
+		tWeaponUpgradeText->setText("Not yet implemented.");
+		tWeaponUpgradeText->setTextSize(26);
+		tWeaponUpgradeText->setPosition(10, height * 0.3);
+		tWeaponUpgradeText->hide();
+		gui.add(tWeaponUpgradeText, "tWeaponUpgradeText");
+		statWidgets.emplace_back(tWeaponUpgradeText);
+		wStatWidgets.emplace_back(tWeaponUpgradeText);
+
+	auto tShopText = tgui::Label::create();
+		tShopText->setText("Not yet implemented.");
+		tShopText->setTextSize(26);
+		tShopText->setPosition(10, height * 0.3);
+		tShopText->hide();
+		gui.add(tShopText, "tShopText");
+		statWidgets.emplace_back(tShopText);
+		sStatWidgets.emplace_back(tShopText);
 }
 
 void GUI::receive(const evSetState& event)
@@ -276,6 +295,12 @@ void GUI::receive(const evSetState& event)
 	{
 		for (auto x : statWidgets)
 			x->show();
+
+		for (auto x : wStatWidgets)
+			x->hide();
+
+		for (auto x : sStatWidgets)
+			x->hide();
 	}
 }
 
@@ -288,6 +313,9 @@ void GUI::tabSwitched(const std::string& name)
 
 		for (auto x : wStatWidgets)
 			x->hide();
+
+		for (auto x : sStatWidgets)
+			x->hide();
 	}
 	else if (name == "Weapon Upgrades")
 	{
@@ -296,10 +324,20 @@ void GUI::tabSwitched(const std::string& name)
 
 		for (auto x : pStatWidgets)
 			x->hide();
+
+		for (auto x : sStatWidgets)
+			x->hide();
 	}
 	else if (name == "Weapon Store")
 	{
-		// todo
+		for (auto x : sStatWidgets)
+			x->show();
+
+		for (auto x : pStatWidgets)
+			x->hide();
+
+		for (auto x : wStatWidgets)
+			x->hide();
 	}
 
 	eventManager.emit<evPlaySound>(guiEntity.component<cSound>(), "click");

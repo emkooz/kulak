@@ -39,6 +39,8 @@ private:
 	std::vector<std::shared_ptr<tgui::Widget>> pStatWidgets;
 	// Pregame: weapon stats
 	std::vector<std::shared_ptr<tgui::Widget>> wStatWidgets;
+	// Pregame: weapon shop
+	std::vector<std::shared_ptr<tgui::Widget>> sStatWidgets;
 
 	// function for when tab switched
 	void tabSwitched(const std::string& name);
